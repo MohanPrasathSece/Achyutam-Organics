@@ -5,10 +5,10 @@ import { useCart } from "@/context/cart";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
 import { ArrowLeft, Plus, Minus, ShoppingCart, X } from "lucide-react";
-import ghee250gm from "../../assets/ghee_250gm.jpeg";
-import ghee500ml from "../../assets/ghee_500ml.jpeg";
-import ghee1kg from "../../assets/ghee_1kg.jpeg";
-import freshMilk from "@/assets/fresh-milk.png";
+import ghee250gm from "@/assets/ghee_product/ghee_250gm.jpeg";
+import ghee500ml from "@/assets/ghee_product/ghee_500ml.jpeg";
+import ghee1kg from "@/assets/ghee_product/ghee_1kg.jpeg";
+import freshMilk from "@/assets/fresh-milk.jpg";
 
 // Quantity Selection Modal Component
 const QuantityModal = ({ 
@@ -241,7 +241,7 @@ const ProductDetail = () => {
             <Button
               variant="outline"
               onClick={() => navigate(-1)}
-              className="rounded-full px-6 py-3 text-sm font-semibold border-gray-300 text-gray-600 hover:border-gray-400 hover:text-gray-800 transition-colors"
+              className="rounded-full px-6 py-3 text-sm font-semibold border-primary/30 text-primary hover:bg-primary/5 hover:brightness-95 transition-all"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
@@ -358,7 +358,7 @@ const ProductDetail = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 onClick={handleCartClick}
-                className="flex-1 rounded-full px-8 py-4 text-sm sm:text-base font-semibold bg-primary text-white hover:bg-primary/90 transition-colors"
+                className="flex-1 rounded-full py-6 text-sm sm:text-base font-bold bg-accent text-accent-foreground hover:brightness-95 transition-all"
               >
                 <ShoppingCart className="w-5 h-5 mr-2" />
                 Add to Cart
@@ -366,7 +366,7 @@ const ProductDetail = () => {
               <Button
                 onClick={handleBuyNowClick}
                 variant="outline"
-                className="flex-1 rounded-full px-8 py-4 text-sm sm:text-base font-semibold border-primary text-primary hover:bg-primary hover:text-white transition-colors"
+                className="flex-1 rounded-full py-6 text-sm sm:text-base font-bold border-primary/30 text-primary hover:bg-primary/5 hover:brightness-95 transition-all"
               >
                 Buy Now
               </Button>

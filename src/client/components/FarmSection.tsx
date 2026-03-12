@@ -1,18 +1,15 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Import farm images from assets
-import farmLandscape from '../assets/hero-farm.jpg';
-import gheeHero from '../assets/ghee-hero.jpg';
-import bilonaProcess from '../assets/bilona-process.jpg';
-import aboutProcess from '../assets/about-process.jpg';
+import farm1 from '@/assets/farm imags/farm.png';
+import farm2 from '@/assets/farm imags/farm2.png';
+import cow from '@/assets/farm imags/cow.png';
 
 // Farm images array
 const farmImages = [
-  { src: farmLandscape, alt: 'Our Beautiful Farm Landscape' },
-  { src: gheeHero, alt: 'Premium Desi Cow Ghee Products' },
-  { src: bilonaProcess, alt: 'Traditional Bilona Method' },
-  { src: aboutProcess, alt: 'Farm Production Process' },
+  { src: farm1, alt: 'Our Beautiful Farm Landscape' },
+  { src: farm2, alt: 'Sustainable Farming Practices' },
+  { src: cow, alt: 'Our Healthy Gir Cows' },
 ];
 
 const FarmSection = () => {
@@ -28,14 +25,6 @@ const FarmSection = () => {
 
     return () => clearInterval(interval);
   }, []);
-
-  const goToPrevious = () => {
-    setCurrentImageIndex(currentImageIndex === 0 ? farmImages.length - 1 : currentImageIndex - 1);
-  };
-
-  const goToNext = () => {
-    setCurrentImageIndex(currentImageIndex === farmImages.length - 1 ? 0 : currentImageIndex + 1);
-  };
 
   return (
     <section className="py-16 md:py-24 bg-gradient-to-br from-emerald-50 to-white">
@@ -78,23 +67,6 @@ const FarmSection = () => {
                   />
                 ))}
               </div>
-
-              {/* Navigation Buttons */}
-              <button
-                onClick={goToPrevious}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white transition-colors"
-                aria-label="Previous image"
-              >
-                <ChevronLeft className="w-6 h-6 text-slate-700" />
-              </button>
-
-              <button
-                onClick={goToNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white transition-colors"
-                aria-label="Next image"
-              >
-                <ChevronRight className="w-6 h-6 text-slate-700" />
-              </button>
 
               {/* Indicators */}
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">

@@ -94,7 +94,7 @@ const OrderManagement = () => {
                     orderId,
                     status: newStatus,
                     trackingNumber: order.tracking_number || "",
-                    trackingUrl: order.tracking_url || ""
+                    trackingId: order.tracking_url || ""
                 })
             });
 
@@ -370,10 +370,10 @@ const OrderManagement = () => {
                                             <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 md:text-right">Tracking ID</h4>
                                             <Input
                                                 placeholder="e.g. SF123456789"
-                                                value={selectedOrder.tracking_id || ""}
-                                                onChange={(e) => setSelectedOrder({ ...selectedOrder, tracking_id: e.target.value })}
+                                                value={selectedOrder.tracking_number || ""}
+                                                onChange={(e) => setSelectedOrder({ ...selectedOrder, tracking_number: e.target.value })}
                                                 onBlur={async (e) => {
-                                                    await supabase.from("orders").update({ tracking_id: e.target.value }).eq("id", selectedOrder.id);
+                                                    await supabase.from("orders").update({ tracking_number: e.target.value }).eq("id", selectedOrder.id);
                                                 }}
                                                 className="md:text-right h-10 rounded-xl border-slate-200 focus:ring-emerald-500"
                                             />

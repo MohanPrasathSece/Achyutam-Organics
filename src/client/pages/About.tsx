@@ -1,6 +1,4 @@
-import heroFarm from "@/assets/hero-farm.jpg";
-import heroGhee from "@/assets/ghee-hero.jpg";
-import bilonaProcess from "@/assets/bilona-process.jpg";
+import heroFarm from "@/assets/farm imags/farm.png";
 import SEO from "@/components/SEO";
 import { Shield, Leaf, Award, Users } from "lucide-react";
 

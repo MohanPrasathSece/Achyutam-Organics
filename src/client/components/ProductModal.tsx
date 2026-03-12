@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/context/cart";
 import { useToast } from "@/hooks/use-toast";
+import { ShieldCheck, Leaf, Sparkles } from "lucide-react";
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -116,6 +117,28 @@ const ProductModal = ({ isOpen, onClose, product }: ProductModalProps) => {
                   </div>
                 </div>
               )}
+
+              {/* Trust Badges */}
+              <div className="grid grid-cols-3 gap-2 pt-4 pb-2 text-center border-t border-gray-50 mt-4">
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <ShieldCheck className="w-6 h-6" />
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-tighter text-gray-500">100% Pure</span>
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-tighter text-gray-500">Bilona Method</span>
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <Leaf className="w-6 h-6" />
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-tighter text-gray-500">Direct Farm</span>
+                </div>
+              </div>
             </div>
 
             {/* Description */}
@@ -127,19 +150,19 @@ const ProductModal = ({ isOpen, onClose, product }: ProductModalProps) => {
             )}
 
             {/* Action Buttons */}
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-4 pt-6">
               <Button
                 onClick={handleAddToCart}
-                className="flex-1 rounded-full px-8 py-4 text-sm sm:text-base font-semibold bg-primary text-white hover:shadow-glow hover:scale-[1.02] transition-transform"
+                className="flex-1 rounded-full py-6 text-sm md:text-base font-bold bg-primary text-white hover:brightness-95 hover:scale-[1.01] transition-all"
               >
                 Add to Cart
               </Button>
               <Button
                 variant="outline"
                 onClick={onClose}
-                className="rounded-full px-8 py-4 text-sm sm:text-base font-semibold border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300"
+                className="flex-1 rounded-full py-6 text-sm md:text-base font-bold border-primary/20 text-primary hover:bg-primary/5 hover:brightness-95 transition-all"
               >
-                Close
+                Keep Browsing
               </Button>
             </div>
           </div>

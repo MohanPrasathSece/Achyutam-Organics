@@ -37,7 +37,7 @@ const Contact = () => {
     "@context": "https://schema.org",
     "@type": "DairyFarm",
     "name": "Achyutam Organics",
-    "image": "https://achyutamorganics.com/src/client/assets/hero-ghee.png",
+    "image": "https://achyutamorganics.com/src/client/assets/ghee-hero.jpg",
     "@id": "https://achyutamorganics.com/#organization",
     "url": "https://achyutamorganics.com/contact",
     "telephone": "+91-9425156801",

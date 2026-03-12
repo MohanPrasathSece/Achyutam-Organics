@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cart";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
-import ghee250 from "@/assets/ghee-250ml.png";
-import ghee500 from "@/assets/ghee-500ml.png";
-import ghee1kg from "@/assets/ghee-1kg.png";
-import freshMilk from "@/assets/fresh-milk.png";
+import ghee250 from "@/assets/ghee_product/ghee_250gm.jpeg";
+import ghee500 from "@/assets/ghee_product/ghee_500ml.jpeg";
+import ghee1kg from "@/assets/ghee_product/ghee_1kg.jpeg";
+import freshMilk from "@/assets/fresh-milk.jpg";
 
 const ProductOptions = () => {
   const navigate = useNavigate();
@@ -63,13 +63,14 @@ const ProductOptions = () => {
             <Button
               variant="outline"
               onClick={handleBack}
-              className="rounded-full px-8 py-4 text-sm sm:text-base font-semibold border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300"
+              className="rounded-full px-6 py-3 text-sm font-semibold border-primary/30 text-primary hover:bg-primary/5 hover:brightness-95 transition-all"
             >
               ← Back
             </Button>
-            <h1 className="text-2xl font-bold text-gray-900 capitalize">
+            <h1 className="text-xl font-playfair font-bold text-slate-800 capitalize">
               {category === 'ghee' ? 'Ghee Options' : 'Milk Options'}
             </h1>
+            <div className="w-[88px]" />{/* spacer to center title */}
           </div>
         </div>
       </div>
@@ -113,20 +114,20 @@ const ProductOptions = () => {
                   )}
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex gap-3">
+              {/* Action Buttons */}
+                <div className="flex flex-col gap-3">
                   <Button
                     onClick={() => handleAddToCart(product)}
-                    className="flex-1 rounded-full px-8 py-4 text-sm sm:text-base font-semibold bg-primary text-white hover:shadow-glow hover:scale-[1.02] transition-transform"
+                    className="w-full rounded-full py-6 text-sm sm:text-base font-semibold bg-accent text-accent-foreground hover:brightness-95 transition-all"
                   >
                     Add to Cart
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => navigate('/checkout')}
-                    className="rounded-full px-8 py-4 text-sm sm:text-base font-semibold border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300"
+                    onClick={() => { handleAddToCart(product); navigate('/checkout'); }}
+                    className="w-full rounded-full py-6 text-sm sm:text-base font-semibold border-primary/30 text-primary hover:bg-primary/5 hover:brightness-95 transition-all"
                   >
-                    Checkout
+                    Buy Now
                   </Button>
                 </div>
               </div>

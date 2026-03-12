@@ -307,6 +307,19 @@ export const updateOrderStatus = async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
 
+    // Update order in Supabase
+    const { error: updateError } = await supabase
+      .from("orders")
+      .update({
+        status,
+        tracking_number: trackingNumber || order.tracking_number,
+        tracking_url: trackingId || order.tracking_url,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", orderId);
+
+    if (updateError) throw updateError;
+
     // Send email via existing email util
     try {
       // Background email sending
@@ -322,7 +335,7 @@ export const updateOrderStatus = async (req, res) => {
       console.error("Failed to send status email", emailErr);
     }
 
-    return res.json({ success: true, message: "Status updated and email queued" });
+    return res.json({ success: true, message: "Status updated successfully" });
   } catch (error) {
     console.error("Update status failed", error);
     return res.status(500).json({ error: "Interal server error" });

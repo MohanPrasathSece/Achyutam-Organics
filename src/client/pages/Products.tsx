@@ -14,15 +14,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import SEO from "@/components/SEO";
-import heroGhee from "@/assets/hero-ghee.png";
+import heroGhee from "@/assets/ghee-hero.jpg";
 
 // New ghee images from src/assets folder
-import ghee250gm from "../../assets/ghee_250gm.jpeg";
-import ghee500ml from "../../assets/ghee_500ml.jpeg";
-import ghee1kg from "../../assets/ghee_1kg.jpeg";
+import ghee250gm from "@/assets/ghee_product/ghee_250gm.jpeg";
+import ghee500ml from "@/assets/ghee_product/ghee_500ml.jpeg";
+import ghee1kg from "@/assets/ghee_product/ghee_1kg.jpeg";
 
 // Fallback fresh milk image
-import freshMilk from "@/assets/fresh-milk.png";
+import freshMilk from "@/assets/fresh-milk.jpg";
 
 type CategoryName = string;
 
@@ -384,7 +384,7 @@ const Products = () => {
                   </p>
                   <Button
                     variant="outline"
-                    className="w-full h-9 md:h-11 text-xs md:text-sm border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300 rounded-full font-semibold"
+                    className="w-full h-9 md:h-11 text-xs md:text-sm border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
                     onClick={() => navigate(`/product/${product.id}`)}
                     disabled={product.stock_status === false}
                   >

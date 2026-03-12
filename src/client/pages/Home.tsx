@@ -1,34 +1,26 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useCart } from "@/context/cart";
-import ghee250 from "@/assets/ghee-250ml.png";
-import ghee500 from "@/assets/ghee-500ml.png";
-import ghee1kg from "@/assets/ghee-1kg.png";
+import ghee250 from "@/assets/ghee_product/ghee_250gm.jpeg";
+import ghee500 from "@/assets/ghee_product/ghee_500ml.jpeg";
+import gheeTexture from "@/assets/ghee-texture.jpg";
 import freshMilk from "@/assets/fresh-milk.jpg";
-import heroFarm from "@/assets/hero-farm.jpg";
+import hero1 from "@/assets/new_hero_add_images/hero1.png";
+import hero3 from "@/assets/new_hero_add_images/hero3.png";
 import heroGhee from "@/assets/ghee-hero.jpg";
 import bilonaProcess from "@/assets/bilona-churning.jpg";
-import gheeTexture from "@/assets/ghee-texture.jpg";
 import gheeJar from "@/assets/ghee-jar.jpg";
 import gheePour from "@/assets/ghee-pour.jpg";
 import gheeProduct from "@/assets/ghee-product.jpg";
 import bilonaMethod from "@/assets/bilona-method.jpg";
 import aboutProcess from "@/assets/about-process.jpg";
+import bilonaProcessAlt from "@/assets/bilona-process.jpg";
 import { Sparkles, ShieldCheck, Leaf } from "lucide-react";
 import { cn } from "@/lib/utils";
 import SEO from "@/components/SEO";
-import ProductModal from "@/components/ProductModal";
 import FarmSection from "@/components/FarmSection";
 
-// Hero images for carousel
-const heroImages = [
-  { src: heroFarm, alt: 'Beautiful Farm Landscape with Gir Cows' },
-  { src: heroGhee, alt: 'Premium Desi Cow Ghee Products' },
-  { src: gheeJar, alt: 'Traditional Ghee Packaging' },
-  { src: gheePour, alt: 'Pure Ghee Pouring' },
-];
 
 type FeaturedProduct = {
   id: number;
@@ -100,21 +92,12 @@ const parsePrice = (price: string) => Number(price.replace(/[^0-9.-]+/g, "")) ||
 const Home = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { addItem } = useCart();
   const { toast } = useToast();
   
-  const [selectedProduct, setSelectedProduct] = useState<FeaturedProduct | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentHeroImage, setCurrentHeroImage] = useState(0);
-  
-  // Hero image carousel - change every 5 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
-    
-    return () => clearInterval(interval);
-  }, []);
+  const handleProductNavigation = (category: string) => {
+    navigate(`/products/${category}`);
+  };
+
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const toggleFaq = (index: number) => {
@@ -122,7 +105,7 @@ const Home = () => {
   };
 
   const [bgIndex, setBgIndex] = useState(0);
-  const heroBgs = [heroFarm, heroGhee, bilonaProcess];
+  const heroBgs = [hero1, hero3];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -139,34 +122,7 @@ const Home = () => {
     }
   }, [location.state, location.pathname, navigate]);
 
-  const handleAddToCart = (product: FeaturedProduct) => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: parsePrice(product.price),
-      image: product.image,
-      quantity: 1,
-    });
 
-    toast({
-      title: "Added to your cart",
-      description: `${product.name} is now in your basket.`,
-    });
-  };
-
-  const handleProductClick = (product: FeaturedProduct) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedProduct(null);
-  };
-
-  const handleProductNavigation = (category: string) => {
-    navigate(`/products/${category}`);
-  };
 
   const featuredProductsSchema = {
     "@context": "https://schema.org",
@@ -241,7 +197,7 @@ const Home = () => {
         description="Experience the purity of traditional Bilona method Desi Cow Ghee from Achyutam Organics. Farm-fresh, 100% natural, and highly nutritious."
         canonicalUrl="/"
         schemas={[featuredProductsSchema, breadcrumbSchema, faqSchema]}
-        preloadImage={heroFarm}
+        preloadImage={hero1}
       />
       {/* Hero Section */}
        <section
@@ -284,11 +240,11 @@ const Home = () => {
             <Button
               asChild
               variant="default"
-              className="rounded-full px-8 py-4 text-sm sm:text-base bg-accent text-accent-foreground hover:shadow-glow hover:scale-[1.02] transition-transform"
+              className="rounded-full px-10 py-7 text-base md:text-lg bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.02] transition-all shadow-xl hover:shadow-accent/20"
             >
-              <Link to="/products" className="flex items-center gap-2">
+              <Link to="/products" className="flex items-center gap-3">
                 Order Fresh Ghee
-                <span className="group-hover:translate-x-1 transition-transform">→</span>
+                <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </Button>
           </div>
@@ -314,11 +270,11 @@ const Home = () => {
                   style={{ animationDelay: `${index * 100}ms` }}
                   role="button"
                   tabIndex={0}
-                  onClick={() => handleProductClick(product)}
+                  onClick={() => navigate(`/product/${product.id}`)}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
                       event.preventDefault();
-                      handleProductClick(product);
+                      navigate(`/product/${product.id}`);
                     }
                   }}
                 >
@@ -344,13 +300,13 @@ const Home = () => {
                     )}
                     <Button
                       variant="outline"
-                      className="rounded-full px-8 py-4 text-sm sm:text-base border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300"
+                      className="w-full rounded-full py-6 text-sm border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all"
                       onClick={(event) => {
                         event.stopPropagation();
-                        handleAddToCart(product);
+                        navigate(`/product/${product.id}`);
                       }}
                     >
-                      Add to Cart
+                      View Details
                     </Button>
                   </div>
                 </div>
@@ -361,7 +317,7 @@ const Home = () => {
               <Button
                 asChild
                 variant="default"
-                className="rounded-full px-8 py-4 text-sm sm:text-base bg-accent text-accent-foreground hover:shadow-glow hover:scale-[1.02] transition-transform"
+                className="rounded-full px-10 py-6 text-base bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.02] transition-all"
               >
                 <Link to="/products/ghee">Explore Ghee Options</Link>
               </Button>
@@ -512,14 +468,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Product Modal */}
-      {selectedProduct && (
-        <ProductModal
-          isOpen={isModalOpen}
-          onClose={handleModalClose}
-          product={selectedProduct}
-        />
-      )}
+
 
       </main>
   );

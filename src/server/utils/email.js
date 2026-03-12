@@ -121,7 +121,7 @@ export const sendOrderEmails = async ({ order }) => {
   ]);
 };
 
-export const sendStatusUpdateEmail = async ({ email, customerName, status, orderId, trackingNumber, trackingId }) => {
+export const sendStatusUpdateEmail = async ({ email, customerName, status, orderId, trackingNumber, trackingUrl }) => {
   const statusMessages = {
     Confirmed: "Great news! Your organic order has been confirmed and is now being prepared using traditional methods.",
     Shipped: `Your farm-fresh products are on their way! They've officially left our Katni farm.`,
@@ -133,12 +133,12 @@ export const sendStatusUpdateEmail = async ({ email, customerName, status, order
   const message = statusMessages[status] || `Your order status has been updated to ${status}.`;
 
   let trackingBlock = "";
-  if ((status === 'Shipped' || status === 'Out for Delivery') && (trackingId || trackingNumber)) {
+  if ((status === 'Shipped' || status === 'Out for Delivery') && (trackingNumber || trackingUrl)) {
     trackingBlock = `
       <div style="margin-top: 20px; padding: 15px; background-color: #f0fdf4; border-left: 4px solid #10b981; border-radius: 4px;">
         <h4 style="margin: 0 0 10px 0; color: #065f46;">Tracking Information</h4>
-        ${trackingId ? `<p style="margin: 5px 0;"><strong>Tracking ID:</strong> ${trackingId}</p>` : ""}
-        ${trackingNumber ? `<p style="margin: 5px 0;"><a href="${trackingNumber}" style="color: #059669; font-weight: bold; text-decoration: underline;">Track your package here &rarr;</a></p>` : ""}
+        ${trackingNumber ? `<p style="margin: 5px 0;"><strong>Tracking ID:</strong> ${trackingNumber}</p>` : ""}
+        ${trackingUrl ? `<p style="margin: 5px 0;"><a href="${trackingUrl}" style="color: #059669; font-weight: bold; text-decoration: underline;">Track your package here &rarr;</a></p>` : ""}
       </div>
     `;
   }
