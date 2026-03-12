@@ -1,0 +1,23 @@
+{
+    "name": "Achyutam Organics | Pure Desi Cow Ghee",
+    "short_name": "Achyutam",
+    "description": "Pure traditional Bilona Desi Cow Ghee and farm-fresh dairy products.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#065f46",
+    "icons": [
+        {
+            "src": "/favicon.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/favicon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}
