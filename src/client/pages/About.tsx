@@ -1,4 +1,4 @@
-import heroFarm from "@/assets/farm imags/farm.png";
+import aboutProcess from "@/assets/about-process.jpg";
 import SEO from "@/components/SEO";
 import { Shield, Leaf, Award, Users } from "lucide-react";
 
@@ -32,19 +32,24 @@ const About = () => {
       />
       
       {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[80vh] overflow-hidden">
+      <section className="relative h-[70vh] md:h-[85vh] overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroFarm})` }}
+          style={{ backgroundImage: `url(${aboutProcess})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70" />
         </div>
         <div className="relative z-10 h-full flex items-center justify-center px-4">
-            <h1 className="font-playfair text-4xl md:text-6xl text-center animate-fade-in leading-tight">
-            Nurtured by Nature,
-            <br />
-            <span className="text-primary">Delivered with Care</span>
-          </h1>
+          <div className="text-center animate-fade-in">
+            <h1 className="font-playfair text-4xl md:text-7xl text-white mb-6 leading-tight">
+              Our Journey,
+              <br />
+              <span className="text-accent">From Farm to Table</span>
+            </h1>
+            <p className="text-white/90 font-lato text-lg md:text-xl max-w-3xl mx-auto">
+              Discover the story behind Achyutam Organics and our commitment to bringing you the purest traditional dairy products
+            </p>
+          </div>
         </div>
       </section>
 

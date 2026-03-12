@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ChevronRight, ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/cart";
 import { cn } from "@/lib/utils";
+import logoMain from "@/assets/logo_main.png";
 
 const Navigation = () => {
   const location = useLocation();
@@ -59,9 +60,9 @@ const Navigation = () => {
                 navigate("/", { state: { scrollToHero: true } });
               }
             }}
-            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
+            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md flex items-center"
           >
-            <span className="text-xl md:text-2xl font-playfair text-foreground tracking-tight">Achyutam Organics</span>
+            <img src={logoMain} alt="Achyutam Organics" className="h-12 md:h-16 w-auto" />
           </button>
         </div>
 
@@ -91,9 +92,10 @@ const Navigation = () => {
             type="button"
             aria-label={`View cart${hasCartItems ? ` with ${totalQuantity} item${totalQuantity === 1 ? "" : "s"}` : ""}`}
             className={cn(
-              "relative inline-flex h-11 w-11 items-center justify-center rounded-xl shadow-soft",
-              "bg-white/70 text-foreground border border-white/40 backdrop-blur-md",
-              "transition-all hover:shadow-glow hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              "flex items-center gap-2 px-4 py-2 rounded-full shadow-soft border border-blue-500/50 backdrop-blur-md",
+              "transition-all hover:shadow-glow hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+              "bg-blue-500 text-white hover:bg-blue-600",
+              isTransparent ? "bg-blue-500/80 text-white hover:bg-blue-600/80" : ""
             )}
             onClick={() => {
               setIsMobileMenuOpen(false);
@@ -101,9 +103,10 @@ const Navigation = () => {
             }}
           >
             <ShoppingBag className="h-5 w-5" />
+            <span className="text-sm font-semibold hidden md:block">View Cart</span>
             {hasCartItems ? (
               <span
-                className="absolute -top-1 -right-1 min-w-[1.5rem] h-6 px-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold flex items-center justify-center shadow-soft ring-2 ring-background"
+                className="min-w-[1.5rem] h-6 px-1 rounded-full bg-white text-blue-500 text-xs font-semibold flex items-center justify-center shadow-soft ring-2 ring-blue-300"
                 aria-hidden
               >
                 {displayQuantity}

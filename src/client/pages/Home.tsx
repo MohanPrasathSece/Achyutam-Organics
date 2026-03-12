@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import ghee250 from "@/assets/ghee_product/ghee_250gm.jpeg";
 import ghee500 from "@/assets/ghee_product/ghee_500ml.jpeg";
+import ghee1kg from "@/assets/ghee_product/ghee_1kg.jpeg";
 import gheeTexture from "@/assets/ghee-texture.jpg";
 import freshMilk from "@/assets/fresh-milk.jpg";
 import hero1 from "@/assets/new_hero_add_images/hero1.png";
@@ -20,6 +21,8 @@ import { Sparkles, ShieldCheck, Leaf } from "lucide-react";
 import { cn } from "@/lib/utils";
 import SEO from "@/components/SEO";
 import FarmSection from "@/components/FarmSection";
+import logoMain from "@/assets/logo_main.png";
+import { supabase, useMockData } from "@/lib/supabase";
 
 
 type FeaturedProduct = {
@@ -41,21 +44,49 @@ const products: FeaturedProduct[] = [
   { 
     id: 101, 
     name: "Pure Desi Cow Ghee - 250gm", 
-    price: "₹250", 
-    image: gheeTexture, 
+    price: "₹550", 
+    image: ghee250, 
     category: "Ghee", 
     deliveryInfo: "All India Delivery",
     description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
     weight: 250,
     unit: "gm",
     shelfLife: "12 months from manufacturing date",
-    storage: "Store in a cool, dry place away from direct sunlight. Use a clean, dry spoon. Keep the container tightly closed. No refrigeration needed.",
+    storage: "Store in a cool, dry place away from direct sunlight.",
     ingredients: ["Pure Cow Milk", "Traditional Bilona Method"]
   },
   { 
     id: 102, 
+    name: "Pure Desi Cow Ghee - 500ml", 
+    price: "₹1050", 
+    image: ghee500, 
+    category: "Ghee", 
+    deliveryInfo: "All India Delivery",
+    description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+    weight: 500,
+    unit: "ml",
+    shelfLife: "12 months from manufacturing date",
+    storage: "Store in a cool, dry place away from direct sunlight.",
+    ingredients: ["Pure Cow Milk", "Traditional Bilona Method"]
+  },
+  { 
+    id: 103, 
+    name: "Pure Desi Cow Ghee - 1kg", 
+    price: "₹2100", 
+    image: ghee1kg, 
+    category: "Ghee", 
+    deliveryInfo: "All India Delivery",
+    description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+    weight: 1000,
+    unit: "gm",
+    shelfLife: "12 months from manufacturing date",
+    storage: "Store in a cool, dry place away from direct sunlight.",
+    ingredients: ["Pure Cow Milk", "Traditional Bilona Method"]
+  },
+  { 
+    id: 104, 
     name: "Fresh Cow Milk - Daily Delivery", 
-    price: "₹60", 
+    price: "₹80", 
     image: freshMilk, 
     category: "Milk", 
     deliveryInfo: "Katni Area Only",
@@ -106,6 +137,36 @@ const Home = () => {
 
   const [bgIndex, setBgIndex] = useState(0);
   const heroBgs = [hero1, hero3];
+  const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      if (useMockData) {
+        setFeaturedProducts(products);
+        return;
+      }
+      const { data } = await supabase
+        .from("products")
+        .select("*, categories(name)")
+        .eq("status", "active")
+        .eq("featured", true)
+        .limit(4);
+
+      if (data && data.length > 0) {
+        setFeaturedProducts(data.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          price: `₹${p.price.toLocaleString()}`,
+          image: Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : gheeTexture,
+          category: p.categories?.name || "Dairy",
+          deliveryInfo: p.categories?.name === "Fresh Milk" ? "Katni Area Only" : "All India Delivery"
+        })));
+      } else {
+        setFeaturedProducts(products);
+      }
+    };
+    fetchFeatured();
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -261,67 +322,48 @@ const Home = () => {
             <div className="w-24 h-1 bg-accent mx-auto rounded-full" />
           </div>
 
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8 max-w-4xl mx-auto">
-              {products.map((product, index) => (
-                <div
-                  key={product.id}
-                  className="group bg-card rounded-2xl overflow-hidden shadow-soft hover:shadow-glow hover-lift transition-all duration-500 animate-fade-in cursor-pointer"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => navigate(`/product/${product.id}`)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      navigate(`/product/${product.id}`);
-                    }
-                  }}
-                >
-                  <div className="aspect-square overflow-hidden bg-white">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      loading="lazy"
-                      className="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110 rounded-[10px]"
-                    />
-                  </div>
-                  <div className="p-4 md:p-6">
-                    <h3 className="font-playfair text-sm md:text-lg mb-2">
-                      {product.name}
-                    </h3>
-                    <p className="text-accent text-sm md:text-lg mb-2">
-                      {product.price}
-                    </p>
-                    {product.deliveryInfo && (
-                      <p className="text-xs md:text-sm text-muted-foreground mb-4">
-                        {product.deliveryInfo}
-                      </p>
-                    )}
-                    <Button
-                      variant="outline"
-                      className="w-full rounded-full py-6 text-sm border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        navigate(`/product/${product.id}`);
-                      }}
-                    >
-                      View Details
-                    </Button>
-                  </div>
+          {/* Additional Product Images */}
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="relative overflow-hidden rounded-2xl shadow-xl group">
+              <img 
+                src={gheeProduct} 
+                alt="Premium Ghee Products" 
+                className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                <div className="text-white">
+                  <h3 className="text-xl md:text-2xl font-playfair font-bold mb-2 text-white">Premium Quality Ghee</h3>
+                  <p className="text-white/90 text-sm md:text-base">Traditional Bilona Method - ₹2100 per litre</p>
                 </div>
-              ))}
+              </div>
             </div>
+            
+            <div className="relative overflow-hidden rounded-2xl shadow-xl group">
+              <img 
+                src={freshMilk} 
+                alt="Fresh Cow Milk" 
+                className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                <div className="text-white">
+                  <h3 className="text-xl md:text-2xl font-playfair font-bold mb-2 text-white">Farm Fresh Milk</h3>
+                  <p className="text-white/90 text-sm md:text-base">Daily Delivery - ₹80 per litre</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-            <div className="flex justify-center">
-              <Button
-                asChild
-                variant="default"
-                className="rounded-full px-10 py-6 text-base bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.02] transition-all"
-              >
-                <Link to="/products/ghee">Explore Ghee Options</Link>
-              </Button>
-            </div>
+          <div className="flex justify-center pt-8">
+            <Button
+              asChild
+              variant="default"
+              className="rounded-full px-12 py-8 text-lg bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.05] transition-all shadow-xl shadow-accent/20"
+            >
+              <Link to="/products" className="flex items-center gap-3">
+                Explore Our Collection
+                <span className="text-xl">→</span>
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -369,7 +411,9 @@ const Home = () => {
                 <div className="w-16 h-16 rounded-2xl bg-accent text-accent-foreground flex items-center justify-center mb-6 shadow-glow mx-auto group-hover:rotate-12 transition-transform">
                   <item.icon className="w-8 h-8" />
                 </div>
-                <h3 className="font-playfair text-xl md:text-2xl mb-4">{item.title}</h3>
+                <h3 className="font-lato font-semibold text-sm md:text-lg mb-2">
+                      {item.title}
+                    </h3>
                 <p className="text-muted-foreground font-lato leading-relaxed">{item.desc}</p>
               </div>
             ))}

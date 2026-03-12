@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import logoMain from "@/assets/logo_main.png";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Sparkles } from "lucide-react";
 
@@ -37,7 +38,7 @@ const AdminLogin = () => {
                         title: "Welcome, Admin",
                         description: "Successfully logged in to Achyutam Organics portal.",
                     });
-                    navigate("/admin-portal");
+                    navigate("/admin");
                 } else {
                     throw new Error("Invalid credentials");
                 }
@@ -46,7 +47,7 @@ const AdminLogin = () => {
                     title: "Welcome, Admin",
                     description: "Successfully logged in to Achyutam Organics portal.",
                 });
-                navigate("/admin-portal");
+                navigate("/admin");
             }
         } catch (error: any) {
             toast({
@@ -60,7 +61,7 @@ const AdminLogin = () => {
     };
 
     return (
-        <div className="flex min-h-screen font-manrope admin-portal bg-white overflow-hidden">
+        <div className="flex min-h-screen font-lato admin-portal bg-white overflow-hidden">
             {/* Left Side - Image Landing */}
             <div className="hidden lg:flex lg:w-1/2 relative bg-emerald-900 items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-black/40 z-10" />
@@ -71,10 +72,10 @@ const AdminLogin = () => {
                     className="absolute inset-0 w-full h-full object-cover opacity-50 z-0"
                 />
                 <div className="relative z-20 text-center text-white p-12 max-w-lg">
-                    <div className="w-24 h-24 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-8 border border-white/20 shadow-2xl overflow-hidden p-4">
-                        <span className="text-xl font-playfair font-bold text-white text-center leading-tight">Achyutam<br />Organics</span>
+                    <div className="w-32 h-32 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/20 shadow-2xl overflow-hidden p-4">
+                        <img src={logoMain} alt="Achyutam Organics" className="w-full h-auto" />
                     </div>
-                    <h2 className="text-4xl font-playfair font-bold mb-6 tracking-wide">Farm Management</h2>
+                    <h2 className="text-4xl font-lato font-bold mb-6 tracking-wide">Farm Management</h2>
                     <p className="text-lg text-white/80 leading-relaxed font-light border-t border-white/10 pt-6">
                         "Purity in every drop, tradition in every jar."
                     </p>
@@ -101,7 +102,7 @@ const AdminLogin = () => {
 
                 <div className="w-full max-w-md space-y-8">
                     <div className="text-center lg:text-left">
-                        <h1 className="text-3xl font-bold text-slate-900 mb-2 font-playfair">Admin Portal</h1>
+                        <h1 className="text-3xl font-bold text-slate-900 mb-2 font-lato">Admin Portal</h1>
                         <p className="text-slate-500">Secure access for Achyutam Organics management.</p>
                     </div>
 
@@ -111,7 +112,7 @@ const AdminLogin = () => {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="saritaagarwal287@gmail.com"
+                                placeholder="Enter Email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="rounded-xl border-slate-200 focus:ring-emerald-500 h-12 bg-white/80 backdrop-blur-sm"
@@ -127,6 +128,7 @@ const AdminLogin = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="rounded-xl border-slate-200 focus:ring-emerald-500 h-12 bg-white/80 backdrop-blur-sm"
+                                placeholder="Enter Password"
                                 required
                             />
                         </div>

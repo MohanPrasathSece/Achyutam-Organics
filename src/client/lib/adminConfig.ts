@@ -1,8 +1,8 @@
 // Admin Configuration
 export const ADMIN_CONFIG = {
   // Default admin credentials (can be overridden by environment variables)
-  email: import.meta.env.ADMIN_EMAIL || "saritaagarwal287@gmail.com",
-  password: import.meta.env.ADMIN_PASSWORD || "admin123",
+  email: import.meta.env.VITE_ADMIN_EMAIL || "admin@achyutamorganics.com",
+  password: import.meta.env.VITE_ADMIN_PASSWORD || "admin@2026achyutam",
   
   // Admin features
   features: {

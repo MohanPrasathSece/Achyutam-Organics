@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import logoMain from "@/assets/logo_main.png";
 
 interface SidebarProps {
     onLogout: () => void;
@@ -22,11 +23,9 @@ const Sidebar = ({ onLogout, isOpen, onClose }: SidebarProps) => {
     const currentPath = location.pathname;
 
     const menuItems = [
-        { icon: LayoutDashboard, label: "Overview", path: "/admin-portal" },
-        { icon: ShoppingBag, label: "Products", path: "/admin-portal/products" },
-        { icon: ListTree, label: "Categories", path: "/admin-portal/categories" },
-        { icon: Sparkles, label: "Gifting Options", path: "/admin-portal/gifting" },
-        { icon: ClipboardList, label: "Orders", path: "/admin-portal/orders" },
+        { icon: LayoutDashboard, label: "Overview", path: "/admin" },
+        { icon: ShoppingBag, label: "Products", path: "/admin/products" },
+        { icon: ClipboardList, label: "Orders", path: "/admin/orders" },
     ];
 
     return (
@@ -46,8 +45,8 @@ const Sidebar = ({ onLogout, isOpen, onClose }: SidebarProps) => {
             )}>
                 <div className="p-6">
                     <div className="flex items-center justify-between mb-8">
-                        <Link to="/admin-portal" className="flex items-center gap-2">
-                            <span className="text-xl font-playfair font-bold text-emerald-800">Achyutam Organics</span>
+                        <Link to="/admin" className="flex items-center">
+                            <img src={logoMain} alt="Achyutam Organics" className="h-12 w-auto" />
                         </Link>
                         <Button variant="ghost" size="icon" className="md:hidden text-slate-500" onClick={onClose}>
                             <X className="w-5 h-5" />

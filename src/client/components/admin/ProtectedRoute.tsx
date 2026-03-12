@@ -55,11 +55,11 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     if (loading) {
-        return <div className="flex h-screen items-center justify-center font-playfair text-2xl text-emerald-800 animate-pulse">Verifying Achyutam Organics credentials...</div>;
+        return <div className="flex h-screen items-center justify-center font-lato text-2xl text-emerald-800 animate-pulse">Verifying Achyutam Organics credentials...</div>;
     }
 
     if (!authenticated) {
-        return <Navigate to="/admin-portal/login" replace />;
+        return <Navigate to="/admin/login" replace />;
     }
 
     return <>{children}</>;

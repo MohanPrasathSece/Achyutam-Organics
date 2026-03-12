@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import SEO from "@/components/SEO";
-import heroGhee from "@/assets/ghee-hero.jpg";
+import bilonaProcess from "@/assets/bilona-process.jpg";
 
 const faqs = [
     { q: "Is your ghee organic?", a: "Yes, our ghee is made from 100% organic A2 milk sourced from our own farm. No chemicals, pesticides, or artificial additives are used at any stage of production." },
@@ -31,17 +31,17 @@ const FAQ = () => {
             />
 
             {/* Hero Section */}
-            <section className="relative h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden">
+            <section className="relative h-[50vh] md:h-[60vh] flex items-center justify-center overflow-hidden">
                 <div
                     className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url(${heroGhee})` }}
+                    style={{ backgroundImage: `url(${bilonaProcess})` }}
                 >
-                    <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/80" />
                 </div>
                 <div className="relative z-10 text-center px-4 animate-fade-in">
-                    <h1 className="text-4xl md:text-6xl font-playfair mb-4">FAQ</h1>
-                    <p className="text-muted-foreground font-lato text-lg md:text-xl max-w-2xl mx-auto uppercase tracking-widest">
-                        Questions You Might Have
+                    <h1 className="text-4xl md:text-6xl font-playfair mb-4 text-white">Frequently Asked Questions</h1>
+                    <p className="text-white/90 font-lato text-lg md:text-xl max-w-3xl mx-auto">
+                        Everything you need to know about our traditional Bilona ghee and farm-fresh products
                     </p>
                 </div>
             </section>

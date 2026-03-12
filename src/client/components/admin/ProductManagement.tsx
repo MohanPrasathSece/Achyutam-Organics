@@ -24,6 +24,9 @@ interface Product {
     stock_quantity?: number;
     status: string; // 'active' | 'inactive' | 'draft'
     images: string[];
+    organic: boolean;
+    bestseller: boolean;
+    featured: boolean;
 }
 
 const ProductManagement = () => {
@@ -42,6 +45,9 @@ const ProductManagement = () => {
         status: "active" as string,
         stock_quantity: 0,
         images: [] as string[],
+        organic: true,
+        bestseller: false,
+        featured: false,
     });
 
     const fetchProducts = async () => {
@@ -86,6 +92,9 @@ const ProductManagement = () => {
             category_id: formData.category_id || null,
             status: formData.status,
             images: formData.images,
+            organic: formData.organic,
+            bestseller: formData.bestseller,
+            featured: formData.featured,
         };
 
         // Only include stock_quantity if it's non-zero or we want to track it
@@ -138,6 +147,9 @@ const ProductManagement = () => {
             status: "active",
             stock_quantity: 0,
             images: [],
+            organic: true,
+            bestseller: false,
+            featured: false,
         });
     };
 
@@ -191,9 +203,9 @@ const ProductManagement = () => {
                             <Plus className="w-4 h-4" /> Add Dairy Product
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-2xl w-[95%] md:w-full bg-white rounded-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto font-manrope">
+                    <DialogContent className="max-w-2xl w-[95%] md:w-full bg-white rounded-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto font-lato">
                         <DialogHeader>
-                            <DialogTitle className="text-2xl font-playfair">{formData.id ? "Edit Dairy Product" : "New Dairy Product"}</DialogTitle>
+                            <DialogTitle className="text-2xl font-lato">{formData.id ? "Edit Dairy Product" : "New Dairy Product"}</DialogTitle>
                         </DialogHeader>
                         <form onSubmit={handleSave} className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -226,15 +238,42 @@ const ProductManagement = () => {
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Stock Quantity</Label>
-                                    <Input type="number" value={formData.stock_quantity ?? 0} onChange={e => setFormData({ ...formData, stock_quantity: Number(e.target.value) })} className="rounded-xl border-slate-200" />
+                                    <Input 
+                                        type="number" 
+                                        value={formData.stock_quantity ?? 0} 
+                                        onChange={e => {
+                                            const val = Number(e.target.value);
+                                            setFormData({ 
+                                                ...formData, 
+                                                stock_quantity: val,
+                                                status: val <= 0 ? "inactive" : "active"
+                                            });
+                                        }} 
+                                        className="rounded-xl border-slate-200" 
+                                    />
                                 </div>
-                                <div className="flex gap-4 items-end pb-1 pt-2 md:pt-0">
+                                <div className="flex flex-wrap gap-4 items-end pb-1 pt-2 md:pt-0">
                                     <div
-                                        className="flex items-center gap-2 cursor-pointer"
+                                        className="flex items-center gap-2 cursor-pointer p-2 border rounded-xl hover:bg-slate-50 transition-colors"
                                         onClick={() => setFormData({ ...formData, status: formData.status === "active" ? "inactive" : "active" })}
                                     >
                                         {formData.status === "active" ? <Package className="w-5 h-5 text-green-500" /> : <PackageX className="w-5 h-5 text-red-500" />}
-                                        <span className="text-sm font-medium">{formData.status === "active" ? "Active" : formData.status === "inactive" ? "Inactive" : "Draft"}</span>
+                                        <span className="text-sm font-bold">{formData.status === "active" ? "In Stock" : "Out of Stock"}</span>
+                                    </div>
+
+                                    <div className="flex items-center gap-4 border p-2 rounded-xl">
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" checked={formData.organic} onChange={e => setFormData({...formData, organic: e.target.checked})} className="rounded text-emerald-600" />
+                                            <span className="text-xs font-bold">Organic</span>
+                                        </label>
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" checked={formData.bestseller} onChange={e => setFormData({...formData, bestseller: e.target.checked})} className="rounded text-amber-600" />
+                                            <span className="text-xs font-bold">Bestseller</span>
+                                        </label>
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" checked={formData.featured} onChange={e => setFormData({...formData, featured: e.target.checked})} className="rounded text-blue-600" />
+                                            <span className="text-xs font-bold">Featured</span>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -306,6 +345,9 @@ const ProductManagement = () => {
                                             {(product.stock_quantity ?? 0) < 5 && "Low: "}{product.stock_quantity}
                                         </span>
                                     )}
+                                    {product.organic && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase bg-emerald-100 text-emerald-800">Organic</span>}
+                                    {product.bestseller && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase bg-amber-100 text-amber-800 border border-amber-200">Bestseller</span>}
+                                    {product.featured && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase bg-blue-100 text-blue-800 border border-blue-200">Featured</span>}
                                 </div>
                             </div>
                         </div>

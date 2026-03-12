@@ -116,7 +116,7 @@ export const sendOrderEmails = async ({ order }) => {
   `;
 
   await Promise.all([
-    sendMail({ to: (process.env.OWNER_EMAIL || "saritaagarwal287@gmail.com"), subject: "New Achyutam Organics Order", html: ownerHtml }),
+    sendMail({ to: (process.env.OWNER_EMAIL || "admin@achyutamorganics.com"), subject: "New Achyutam Organics Order", html: ownerHtml }),
     sendMail({ to: order.customer.email, subject: "Your Achyutam Organics order is confirmed", html: customerHtml }),
   ]);
 };
@@ -189,7 +189,7 @@ export const sendLowStockEmail = async ({ productName, productId, remainingStock
   `;
 
   await sendMail({
-    to: (process.env.OWNER_EMAIL || "saritaagarwal287@gmail.com"),
+    to: (process.env.OWNER_EMAIL || "admin@achyutamorganics.com"),
     subject: `Running Low: ${productName}`,
     html
   });

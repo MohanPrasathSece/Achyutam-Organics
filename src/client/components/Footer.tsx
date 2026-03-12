@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Instagram, Facebook } from "lucide-react";
+import logoMain from "@/assets/logo_main.png";
 
 const Footer = () => {
   return (
@@ -7,8 +8,8 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="text-center md:text-left">
-            <Link to="/" className="inline-block mb-4">
-              <span className="text-xl md:text-2xl font-playfair text-foreground tracking-tight">Achyutam Organics</span>
+            <Link to="/" className="flex items-center mb-4">
+              <img src={logoMain} alt="Achyutam Organics" className="h-14 w-auto" />
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs transition-colors hover:text-foreground">
               Creating the finest Organic Desi Ghee and creamy milk straight from our farm to your home.
@@ -67,11 +68,11 @@ const Footer = () => {
         {/* Contact Information */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left pt-8 border-t border-border/60">
           <div>
-            <h4 className="font-playfair mb-2">Our Location</h4>
+            <h4 className="font-lato font-bold mb-2">Our Location</h4>
             <p className="text-sm text-muted-foreground">Katni, Madhya Pradesh 483501, India</p>
           </div>
           <div>
-            <h4 className="font-playfair mb-2">Contact Us</h4>
+            <h4 className="font-lato font-bold mb-2">Contact Us</h4>
             <p className="text-sm text-muted-foreground mb-1">
               <a href="tel:+919425156801" className="hover:text-primary transition-colors">+91 94251 56801</a>
             </p>
@@ -80,7 +81,7 @@ const Footer = () => {
             </p>
           </div>
           <div>
-            <h4 className="font-playfair mb-2">Business Hours</h4>
+            <h4 className="font-lato font-bold mb-2">Business Hours</h4>
             <p className="text-sm text-muted-foreground">Mon-Sat: 9AM - 6PM</p>
             <p className="text-sm text-muted-foreground">Sunday: Closed</p>
           </div>

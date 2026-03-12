@@ -11,7 +11,8 @@
     "build": "vite build",
     "start": "node src/server/index.js",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "create-admin": "node scripts/create-admin.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

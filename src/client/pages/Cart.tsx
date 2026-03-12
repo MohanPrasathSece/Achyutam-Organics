@@ -67,17 +67,17 @@ Please confirm my order and share delivery schedule. Thank you!`.trim();
                     {items.map((item, index) => (
                       <div
                         key={`${item.id}-${index}`}
-                        className="flex flex-row items-center gap-3 md:gap-6 p-3 md:p-6 rounded-xl md:rounded-3xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300"
+                        className="flex flex-row items-center gap-3 md:gap-4 p-3 md:p-4 rounded-xl md:rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300"
                       >
-                        <div className="w-16 sm:w-20 md:w-36 shrink-0 aspect-square overflow-hidden rounded-lg md:rounded-2xl bg-slate-50 border border-slate-100">
+                        <div className="w-16 sm:w-20 md:w-24 shrink-0 aspect-square overflow-hidden rounded-lg md:rounded-xl bg-slate-50 border border-slate-100">
                           <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
                         </div>
-                        <div className="flex-1 space-y-1 md:space-y-2">
+                        <div className="flex-1 space-y-1">
                           <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-1 xl:gap-3">
                             <div>
-                              <h2 className="text-sm sm:text-base md:text-xl lg:text-2xl text-primary line-clamp-2 md:line-clamp-none leading-snug">{item.name}</h2>
+                              <h2 className="text-sm sm:text-base md:text-lg text-primary line-clamp-2 md:line-clamp-none leading-tight">{item.name}</h2>
                             </div>
-                            <span className="text-primary text-sm sm:text-base md:text-xl">{formatter.format(item.price * item.quantity)}</span>
+                            <span className="text-primary text-sm sm:text-base md:text-lg font-bold">{formatter.format(item.price * item.quantity)}</span>
                           </div>
                           <div className="flex flex-wrap items-center gap-2 md:gap-4 md:pt-1 text-xs md:text-sm text-slate-500 font-medium">
                             <div className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50">
@@ -122,17 +122,19 @@ Please confirm my order and share delivery schedule. Thank you!`.trim();
                     </div>
                   </>
                 ) : (
-                  <div className="p-16 rounded-3xl bg-white border border-slate-100 text-center space-y-8 shadow-sm">
-                    <div className="mx-auto w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center">
-                      <ShoppingBag className="w-12 h-12 text-slate-300" />
+                  <div className="flex items-center justify-center min-h-[60vh]">
+                    <div className="p-16 rounded-3xl bg-white border border-slate-100 text-center space-y-8 shadow-sm max-w-md w-full">
+                      <div className="mx-auto w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center">
+                        <ShoppingBag className="w-12 h-12 text-slate-300" />
+                      </div>
+                      <div>
+                        <h2 className="font-playfair text-3xl mb-2">Your cart is empty</h2>
+                        <p className="text-slate-500 font-medium font-lato">Bring home the purity of traditional Bilona Ghee.</p>
+                      </div>
+                      <Button asChild className="rounded-full bg-primary text-white hover:bg-primary/90 shadow-xl shadow-primary/10 px-12 py-8 text-lg">
+                        <Link to="/products">Explore Our Products</Link>
+                      </Button>
                     </div>
-                    <div>
-                      <h2 className="font-playfair text-3xl mb-2">Your cart is empty</h2>
-                      <p className="text-slate-500 font-medium font-lato">Bring home the purity of traditional Bilona Ghee.</p>
-                    </div>
-                    <Button asChild className="rounded-full bg-primary text-white hover:bg-primary/90 shadow-xl shadow-primary/10 px-12 py-8 text-lg">
-                      <Link to="/products">Explore Our Products</Link>
-                    </Button>
                   </div>
                 )}
               </div>

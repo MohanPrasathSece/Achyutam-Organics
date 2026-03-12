@@ -23,45 +23,30 @@ const DashboardOverview = () => {
 
     useEffect(() => {
         const fetchStats = async () => {
-            // Products count
-            const { count: productsCount } = await supabase
-                .from('products')
-                .select('*', { count: 'exact', head: true });
+            const [productsRes, ordersRes, lowStockRes, recentProdsRes] = await Promise.all([
+                supabase.from('products').select('*', { count: 'exact', head: true }),
+                supabase.from('orders').select('total_price, status, created_at, customer_name'),
+                supabase.from('products').select('*', { count: 'exact', head: true }).lt('stock_quantity', 5),
+                supabase.from('products').select('name, price, created_at').order('created_at', { ascending: false }).limit(5)
+            ]);
 
-            // Orders count & Revenue
-            const { data: ordersData } = await supabase
-                .from('orders')
-                .select('total_price, status, created_at, customer_name');
+            const productsCount = productsRes.count || 0;
+            const ordersData = ordersRes.data || [];
+            const lowStockCount = lowStockRes.count || 0;
+            const recentProds = recentProdsRes.data || [];
 
-            const totalOrders = ordersData?.length || 0;
-            const revenue = ordersData?.reduce((acc, order) => acc + (order.total_price || 0), 0) || 0;
-
-            // Low stock
-            const { count: lowStockCount } = await supabase
-                .from('products')
-                .select('*', { count: 'exact', head: true })
-                .lt('stock_quantity', 5);
+            const totalOrders = ordersData.length;
+            const revenue = ordersData.reduce((acc, order) => acc + (order.total_price || 0), 0);
 
             setStats({
-                products: productsCount || 0,
+                products: productsCount,
                 orders: totalOrders,
-                lowStock: lowStockCount || 0,
+                lowStock: lowStockCount,
                 revenue: revenue
             });
 
-            if (ordersData) {
-                setRecentOrders(ordersData.slice(0, 5));
-            }
-
-            const { data: recentProds } = await supabase
-                .from('products')
-                .select('name, price, created_at')
-                .order('created_at', { ascending: false })
-                .limit(5);
-
-            if (recentProds) {
-                setRecentProducts(recentProds);
-            }
+            setRecentOrders(ordersData.slice(0, 5));
+            setRecentProducts(recentProds);
         };
 
         fetchStats();
@@ -95,7 +80,7 @@ const DashboardOverview = () => {
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-lg md:text-xl font-bold text-slate-800">Recent Orders</h3>
                         <button
-                            onClick={() => navigate("/admin-portal/orders")}
+                            onClick={() => navigate("/admin/orders")}
                             className="text-primary text-sm font-medium flex items-center gap-1 hover:underline"
                         >
                             View All <ArrowUpRight className="w-4 h-4" />
@@ -124,7 +109,7 @@ const DashboardOverview = () => {
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-lg md:text-xl font-bold text-slate-800">New Products</h3>
                         <button
-                            onClick={() => navigate("/admin-portal/products")}
+                            onClick={() => navigate("/admin/products")}
                             className="text-primary text-sm font-medium flex items-center gap-1 hover:underline"
                         >
                             Add New <ArrowUpRight className="w-4 h-4" />

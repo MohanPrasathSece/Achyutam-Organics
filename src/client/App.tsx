@@ -42,7 +42,7 @@ const queryClient = new QueryClient({
 
 const AppContent = () => {
   const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith("/admin-portal");
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
     <>
@@ -64,8 +64,8 @@ const AppContent = () => {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
           {/* Admin Routes */}
-          <Route path="/admin-portal/login" element={<AdminLogin />} />
-          <Route path="/admin-portal/*" element={
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/*" element={
             <ProtectedRoute>
               <AdminDashboard />
             </ProtectedRoute>

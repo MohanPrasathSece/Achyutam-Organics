@@ -16,10 +16,10 @@ import { cn } from "@/lib/utils";
 import SEO from "@/components/SEO";
 import heroGhee from "@/assets/ghee-hero.jpg";
 
-// New ghee images from src/assets folder
-import ghee250gm from "@/assets/ghee_product/ghee_250gm.jpeg";
-import ghee500ml from "@/assets/ghee_product/ghee_500ml.jpeg";
-import ghee1kg from "@/assets/ghee_product/ghee_1kg.jpeg";
+// New ghee images from src/client/assets folder
+import ghee250gm from "../assets/ghee_product/ghee_250gm.jpeg";
+import ghee500ml from "../assets/ghee_product/ghee_500ml.jpeg";
+import ghee1kg from "../assets/ghee_product/ghee_1kg.jpeg";
 
 // Fallback fresh milk image
 import freshMilk from "@/assets/fresh-milk.jpg";
@@ -38,8 +38,8 @@ interface Product {
 }
 
 const MOCK_PRODUCTS: Product[] = [
-  { id: 101, name: "Pure Desi Cow Ghee", price: "₹250", category: "Ghee", image: ghee1kg, visibility: true, stock_status: true },
-  { id: 104, name: "Fresh Cow Milk - Daily Delivery", price: "₹60", category: "Milk", image: freshMilk, visibility: true, stock_status: true },
+  { id: 101, name: "Pure Desi Cow Ghee", price: "₹2100/l", category: "Ghee", image: ghee1kg, visibility: true, stock_status: true, featured: true },
+  { id: 104, name: "Fresh Cow Milk - Daily Delivery", price: "₹80/l", category: "Milk", image: freshMilk, visibility: true, stock_status: true, featured: true },
 ];
 
 const Products = () => {
@@ -282,21 +282,42 @@ const Products = () => {
           <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-center justify-between">
             {/* Category Filter */}
             <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto no-scrollbar scroll-smooth py-1 mt-1 md:mt-0">
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  onClick={() => updateCategory(category)}
-                  className={cn(
-                    "h-8 md:h-10 text-xs md:text-sm px-4 md:px-6 rounded-full whitespace-nowrap transition-all duration-300",
-                    selectedCategory === category
-                      ? "bg-primary text-primary-foreground border-transparent shadow-soft"
-                      : "bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
-                  )}
-                >
-                  {category}
-                </Button>
-              ))}
+              <Button
+                variant={selectedCategory === "All" ? "default" : "outline"}
+                onClick={() => updateCategory("All")}
+                className={cn(
+                  "h-8 md:h-10 text-xs md:text-sm px-4 md:px-6 rounded-full whitespace-nowrap transition-all duration-300",
+                  selectedCategory === "All"
+                    ? "bg-primary text-primary-foreground border-transparent shadow-soft"
+                    : "bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
+                )}
+              >
+                All Products
+              </Button>
+              <Button
+                variant={selectedCategory === "Ghee" ? "default" : "outline"}
+                onClick={() => updateCategory("Ghee")}
+                className={cn(
+                  "h-8 md:h-10 text-xs md:text-sm px-4 md:px-6 rounded-full whitespace-nowrap transition-all duration-300",
+                  selectedCategory === "Ghee"
+                    ? "bg-primary text-primary-foreground border-transparent shadow-soft"
+                    : "bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
+                )}
+              >
+                Ghee
+              </Button>
+              <Button
+                variant={selectedCategory === "Milk" ? "default" : "outline"}
+                onClick={() => updateCategory("Milk")}
+                className={cn(
+                  "h-8 md:h-10 text-xs md:text-sm px-4 md:px-6 rounded-full whitespace-nowrap transition-all duration-300",
+                  selectedCategory === "Milk"
+                    ? "bg-primary text-primary-foreground border-transparent shadow-soft"
+                    : "bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
+                )}
+              >
+                Milk
+              </Button>
             </div>
 
             {/* Search and Sort */}
@@ -317,24 +338,8 @@ const Products = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-card border-border rounded-xl shadow-glow p-1">
-                  <DropdownMenuItem
-                    onClick={() => setSortBy("featured")}
-                    className={cn("flex justify-between rounded-lg px-3 py-2 cursor-pointer transition-colors", sortBy === "featured" ? "bg-primary/5 text-primary font-bold" : "hover:bg-secondary")}
-                  >
-                    Featured {sortBy === "featured" && "✓"}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => setSortBy("price-low")}
-                    className={cn("flex justify-between rounded-lg px-3 py-2 cursor-pointer transition-colors", sortBy === "price-low" ? "bg-primary/5 text-primary font-bold" : "hover:bg-secondary")}
-                  >
-                    Price: Low to High <ArrowUpWideNarrow className="w-3 h-3 ml-2" />
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => setSortBy("price-high")}
-                    className={cn("flex justify-between rounded-lg px-3 py-2 cursor-pointer transition-colors", sortBy === "price-high" ? "bg-primary/5 text-primary font-bold" : "hover:bg-secondary")}
-                  >
-                    Price: High to Low <ArrowDownWideNarrow className="w-3 h-3 ml-2" />
-                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("price-low")}>Price: Low to High</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("price-high")}>Price: High to Low</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -350,7 +355,7 @@ const Products = () => {
             </p>
           </div>
 
-          <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+          <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
             {filteredProducts.map((product, index) => (
               <div
                 key={product.id}
@@ -370,21 +375,17 @@ const Products = () => {
                       <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-[10px] md:text-xs font-bold tracking-widest uppercase shadow-soft">Out of Stock</span>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
                 <div className="p-4 md:p-6">
-                  <h3 className="font-playfair text-base md:text-xl mb-0.5 md:mb-1 truncate">
+                  <h3 className="font-lato text-lg md:text-xl mb-2">
                     {product.name}
                   </h3>
-                  <p className="text-[10px] md:text-sm text-muted-foreground mb-2 md:mb-3">
-                    {product.category}
-                  </p>
-                  <p className="text-foreground font-bold text-base md:text-2xl mb-3 md:mb-4">
+                  <p className="text-accent text-lg md:text-xl mb-2">
                     {typeof product.price === "number" ? `₹${product.price.toLocaleString()}` : product.price}
                   </p>
                   <Button
                     variant="outline"
-                    className="w-full h-9 md:h-11 text-xs md:text-sm border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
+                    className="w-full h-11 md:h-12 text-sm md:text-base border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
                     onClick={() => navigate(`/product/${product.id}`)}
                     disabled={product.stock_status === false}
                   >

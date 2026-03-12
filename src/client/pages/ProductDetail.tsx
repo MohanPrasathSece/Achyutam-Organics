@@ -103,9 +103,9 @@ const getProductData = (id: string) => {
       name: "Pure Desi Cow Ghee",
       description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
       variants: [
-        { id: "101", name: "250gm", price: "₹250", image: ghee250gm },
-        { id: "102", name: "500ml", price: "₹450", image: ghee500ml },
-        { id: "103", name: "1kg", price: "₹850", image: ghee1kg }
+        { id: "101", name: "250gm", price: "₹550", image: ghee250gm },
+        { id: "102", name: "500ml", price: "₹1050", image: ghee500ml },
+        { id: "103", name: "1kg", price: "₹2100", image: ghee1kg }
       ],
       features: ["100% Organic", "Traditional Bilona Method", "A2 Cow Milk", "No Preservatives"],
       nutritionalInfo: "Rich in healthy fats, vitamins A, D, E, and K",
@@ -115,7 +115,7 @@ const getProductData = (id: string) => {
       name: "Fresh Cow Milk",
       description: "Pure and fresh cow milk delivered daily at your doorstep. Sourced from healthy grass-fed cows.",
       variants: [
-        { id: "104", name: "Daily Delivery - 1L", price: "₹60", image: freshMilk }
+        { id: "104", name: "Daily Delivery - 1L", price: "₹80", image: freshMilk }
       ],
       features: ["Farm Fresh", "Daily Delivery", "No Preservatives", "Grass-fed Cows"],
       nutritionalInfo: "Rich in calcium, protein, and essential nutrients",
@@ -252,22 +252,67 @@ const ProductDetail = () => {
 
       {/* Product Details */}
       <div className="container mx-auto px-4 py-8">
+        {/* Category Section Header */}
+        <section className="mb-12">
+          <div className="text-center">
+            <h2 className="font-playfair text-3xl md:text-5xl mb-4">
+              {product.category === "Ghee" ? "Premium Ghee Collection" : "Fresh Dairy Products"}
+            </h2>
+            <div className="w-24 h-1 bg-accent mx-auto rounded-full mb-6" />
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              {product.category === "Ghee" 
+                ? "Traditional Bilona method ghee made from pure A2 cow milk. Available in multiple sizes for your convenience."
+                : "Farm-fresh cow milk delivered daily from our grass-fed cows. Pure and nutritious."
+              }
+            </p>
+          </div>
+          
+          {/* Category Navigation */}
+          <div className="flex justify-center mt-8">
+            <div className="inline-flex items-center bg-white rounded-full shadow-lg p-2">
+              <Button
+                variant={product.category === "Ghee" ? "default" : "ghost"}
+                size="lg"
+                className="rounded-full px-6 py-3 font-semibold"
+                disabled
+              >
+                Ghee
+              </Button>
+              <div className="w-px h-8 bg-gray-300 mx-2" />
+              <Button
+                variant={product.category === "Milk" ? "default" : "ghost"}
+                size="lg"
+                className="rounded-full px-6 py-3 font-semibold"
+                disabled
+              >
+                Milk
+              </Button>
+            </div>
+          </div>
+        </section>
+
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Product Image */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-8">
-              <img
-                src={selectedVariant ? product.variants.find(v => v.id === selectedVariant)?.image || product.variants[0].image : product.variants[0].image}
-                alt={product.name}
-                className="w-full h-auto max-h-96 object-contain rounded-lg"
-              />
+              {(() => {
+                const currentVariant = selectedVariant ? product.variants.find(v => v.id === selectedVariant) : product.variants[0];
+                const isSmallVariant = currentVariant?.name === "250gm" || currentVariant?.name === "500ml";
+                return (
+                  <img
+                    src={selectedVariant ? product.variants.find(v => v.id === selectedVariant)?.image || product.variants[0].image : product.variants[0].image}
+                    alt={product.name}
+                    className={`w-full h-auto max-h-[600px] object-contain rounded-lg transition-transform duration-700 hover:scale-${isSmallVariant ? 150 : 125} cursor-zoom-in`}
+                  />
+                );
+              })()}
             </div>
           </div>
 
           {/* Product Info */}
           <div className="lg:col-span-1 space-y-6">
             {/* Product Name */}
-            <h1 className="text-3xl mb-4">
+            <h1 className="text-3xl mb-4 font-lato">
               {product.name}
             </h1>
             
@@ -374,7 +419,49 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
-      
+
+      {/* Recommended Products */}
+      <div className="container mx-auto px-4 py-12 bg-white">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-playfair mb-4">Recommended Products</h2>
+          <div className="w-16 h-1 bg-accent mx-auto rounded-full" />
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Ghee Products */}
+          <div className="bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/product/101')}>
+            <img src={ghee250gm} alt="Ghee 250gm" className="w-32 h-32 mx-auto object-contain mb-4 rounded-lg" />
+            <h3 className="font-lato font-semibold mb-2">Pure Desi Cow Ghee - 250gm</h3>
+            <p className="text-accent font-bold mb-2">₹550</p>
+            <p className="text-sm text-gray-600">Traditional Bilona Method</p>
+          </div>
+          
+          <div className="bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/product/101')}>
+            <img src={ghee500ml} alt="Ghee 500ml" className="w-32 h-32 mx-auto object-contain mb-4 rounded-lg" />
+            <h3 className="font-lato font-semibold mb-2">Pure Desi Cow Ghee - 500ml</h3>
+            <p className="text-accent font-bold mb-2">₹1050</p>
+            <p className="text-sm text-gray-600">Traditional Bilona Method</p>
+          </div>
+          
+          <div className="bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/product/101')}>
+            <img src={ghee1kg} alt="Ghee 1kg" className="w-32 h-32 mx-auto object-contain mb-4 rounded-lg" />
+            <h3 className="font-lato font-semibold mb-2">Pure Desi Cow Ghee - 1kg</h3>
+            <p className="text-accent font-bold mb-2">₹2100</p>
+            <p className="text-sm text-gray-600">Traditional Bilona Method</p>
+          </div>
+        </div>
+        
+        <div className="text-center mt-8">
+          <Button
+            onClick={() => navigate('/products')}
+            variant="outline"
+            className="rounded-full px-8 py-3 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all"
+          >
+            View All Products
+          </Button>
+        </div>
+      </div>
+
       {/* Quantity Selection Modal */}
       <QuantityModal
         isOpen={showQuantityModal}
