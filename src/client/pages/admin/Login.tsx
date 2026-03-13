@@ -61,90 +61,91 @@ const AdminLogin = () => {
     };
 
     return (
-        <div className="flex min-h-screen font-lato admin-portal bg-white overflow-hidden">
-            {/* Left Side - Image Landing */}
-            <div className="hidden lg:flex lg:w-1/2 relative bg-emerald-900 items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-black/40 z-10" />
-                <div className="absolute inset-0 bg-emerald-950 opacity-60 z-0" />
+        <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-slate-50 flex items-center justify-center p-4 font-lato admin-portal">
+            {/* Background Image Section */}
+            <div className="absolute inset-0">
                 <img
                     src="https://images.unsplash.com/photo-1546501669-79a838be8196?auto=format&fit=crop&q=80"
                     alt="Achyutam Farm"
-                    className="absolute inset-0 w-full h-full object-cover opacity-50 z-0"
+                    className="absolute inset-0 w-full h-full object-cover opacity-30"
                 />
-                <div className="relative z-20 text-center text-white p-12 max-w-lg">
-                    <div className="w-32 h-32 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/20 shadow-2xl overflow-hidden p-4">
-                        <img src={logoMain} alt="Achyutam Organics" className="w-full h-auto" />
-                    </div>
-                    <h2 className="text-4xl font-lato font-bold mb-6 tracking-wide">Farm Management</h2>
-                    <p className="text-lg text-white/80 leading-relaxed font-light border-t border-white/10 pt-6">
-                        "Purity in every drop, tradition in every jar."
-                    </p>
-                </div>
-
-                <Link
-                    to="/"
-                    className="absolute top-8 left-8 z-30 flex items-center gap-3 text-white/70 hover:text-white transition-all bg-black/20 hover:bg-black/50 px-5 py-2.5 rounded-full backdrop-blur-md border border-white/10 text-sm font-medium group"
-                >
-                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    Back to Store
-                </Link>
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-white/90 to-slate-500/10" />
             </div>
 
-            {/* Right Side - Login Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12 relative bg-gradient-to-br from-emerald-50/50 to-slate-50/50">
-                <Link
-                    to="/"
-                    className="absolute top-6 left-6 lg:hidden flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors"
-                >
-                    <ArrowLeft className="w-4 h-4" />
-                    Store
-                </Link>
+            {/* Back to Store Button */}
+            <Link
+                to="/"
+                className="absolute top-8 left-8 z-20 flex items-center gap-3 text-emerald-700 hover:text-emerald-900 transition-all bg-white/80 hover:bg-white px-6 py-3 rounded-full shadow-lg border border-emerald-200 text-sm font-medium group"
+            >
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                Back to Store
+            </Link>
 
-                <div className="w-full max-w-md space-y-8">
-                    <div className="text-center lg:text-left">
-                        <h1 className="text-3xl font-bold text-slate-900 mb-2 font-lato">Admin Portal</h1>
-                        <p className="text-slate-500">Secure access for Achyutam Organics management.</p>
+            {/* Main Login Card - Single Column */}
+            <div className="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-xl rounded-3xl border border-emerald-200 shadow-2xl overflow-hidden">
+                <div className="p-8 lg:p-12">
+                    <div className="text-center space-y-8">
+                        <div className="w-24 h-24 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-3xl flex items-center justify-center mx-auto border border-emerald-300 shadow-xl overflow-hidden p-4">
+                            <img src={logoMain} alt="Achyutam Organics" className="w-full h-auto" />
+                        </div>
+                        <div className="space-y-4">
+                            <h2 className="text-3xl font-lato font-bold text-emerald-800 tracking-wide">Admin Portal</h2>
+                            <div className="w-16 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 mx-auto rounded-full" />
+                            <p className="text-lg text-emerald-700 leading-relaxed font-light">
+                                Farm Management System
+                            </p>
+                            <p className="text-emerald-600 text-sm italic">
+                                "Purity in every drop, tradition in every jar."
+                            </p>
+                        </div>
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-6 mt-8">
                         <div className="space-y-2">
-                            <Label htmlFor="email" className="font-bold text-slate-700">Admin Email</Label>
+                            <Label htmlFor="email" className="font-bold text-emerald-700">Admin Email</Label>
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="Enter Email"
+                                placeholder="Enter your admin email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="rounded-xl border-slate-200 focus:ring-emerald-500 h-12 bg-white/80 backdrop-blur-sm"
+                                className="rounded-xl border-emerald-200 bg-white/90 backdrop-blur-sm text-emerald-900 placeholder-emerald-400 focus:ring-emerald-500 focus:border-emerald-500 h-12"
                                 required
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="password" className="font-bold text-slate-700">Security Key</Label>
+                            <Label htmlFor="password" className="font-bold text-emerald-700">Security Key</Label>
                             <Input
                                 id="password"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="rounded-xl border-slate-200 focus:ring-emerald-500 h-12 bg-white/80 backdrop-blur-sm"
-                                placeholder="Enter Password"
+                                className="rounded-xl border-emerald-200 bg-white/90 backdrop-blur-sm text-emerald-900 placeholder-emerald-400 focus:ring-emerald-500 focus:border-emerald-500 h-12"
+                                placeholder="Enter your password"
                                 required
                             />
                         </div>
 
                         <Button
                             type="submit"
-                            className="w-full rounded-xl bg-emerald-700 text-white hover:bg-emerald-800 h-12 transition-all font-bold tracking-wide mt-4 shadow-lg hover:shadow-emerald-100"
+                            className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700 h-12 transition-all font-bold tracking-wide mt-4 shadow-lg hover:shadow-emerald-300/50 hover:scale-[1.02] border border-emerald-400"
                             disabled={loading}
                         >
-                            {loading ? "Authenticating..." : "Access Dashboard"}
+                            {loading ? (
+                                <span className="flex items-center gap-2">
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    Authenticating...
+                                </span>
+                            ) : (
+                                "Access Dashboard"
+                            )}
                         </Button>
                     </form>
 
-                    <div className="pt-8 mt-8 border-t border-slate-200/60 text-center">
-                        <p className="text-xs text-slate-400">
-                            &copy; 2026 Achyutam Organics. <span className="hidden sm:inline">Protected by strict security protocols.</span>
+                    <div className="pt-6 mt-8 border-t border-emerald-200 text-center">
+                        <p className="text-xs text-emerald-600">
+                            &copy; 2026 Achyutam Organics. Protected by enterprise-grade security.
                         </p>
                     </div>
                 </div>

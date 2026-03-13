@@ -260,17 +260,17 @@ const Products = () => {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroGhee})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70" />
         </div>
         <div className="relative z-10 h-full flex items-center justify-center px-4">
           <div className="text-center">
             <div className="bg-secondary/60 border border-accent/20 rounded-full px-4 py-2 mb-4 inline-block">
               <span className="text-xs text-accent font-medium">Dairy Products</span>
             </div>
-            <h1 className="font-playfair text-4xl md:text-6xl mb-4">
+            <h1 className="font-playfair text-4xl md:text-6xl mb-4 text-white">
               Shop Organic
             </h1>
-            <p className="text-lg text-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-white/90 max-w-2xl mx-auto">
               Experience the purity of traditional Vedic methods, delivered directly from our farm to your home.
             </p>
           </div>
@@ -285,8 +285,9 @@ const Products = () => {
               <Button
                 variant={selectedCategory === "All" ? "default" : "outline"}
                 onClick={() => updateCategory("All")}
+                size="sm"
                 className={cn(
-                  "h-8 md:h-10 text-xs md:text-sm px-4 md:px-6 rounded-full whitespace-nowrap transition-all duration-300",
+                  "h-8 md:h-10 text-xs md:text-sm rounded-full whitespace-nowrap transition-all duration-300",
                   selectedCategory === "All"
                     ? "bg-primary text-primary-foreground border-transparent shadow-soft"
                     : "bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
@@ -297,8 +298,9 @@ const Products = () => {
               <Button
                 variant={selectedCategory === "Ghee" ? "default" : "outline"}
                 onClick={() => updateCategory("Ghee")}
+                size="sm"
                 className={cn(
-                  "h-8 md:h-10 text-xs md:text-sm px-4 md:px-6 rounded-full whitespace-nowrap transition-all duration-300",
+                  "h-8 md:h-10 text-xs md:text-sm rounded-full whitespace-nowrap transition-all duration-300",
                   selectedCategory === "Ghee"
                     ? "bg-primary text-primary-foreground border-transparent shadow-soft"
                     : "bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
@@ -309,8 +311,9 @@ const Products = () => {
               <Button
                 variant={selectedCategory === "Milk" ? "default" : "outline"}
                 onClick={() => updateCategory("Milk")}
+                size="sm"
                 className={cn(
-                  "h-8 md:h-10 text-xs md:text-sm px-4 md:px-6 rounded-full whitespace-nowrap transition-all duration-300",
+                  "h-8 md:h-10 text-xs md:text-sm rounded-full whitespace-nowrap transition-all duration-300",
                   selectedCategory === "Milk"
                     ? "bg-primary text-primary-foreground border-transparent shadow-soft"
                     : "bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
@@ -385,7 +388,8 @@ const Products = () => {
                   </p>
                   <Button
                     variant="outline"
-                    className="w-full h-11 md:h-12 text-sm md:text-base border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
+                    size="sm"
+                    className="w-full h-8 md:h-11 text-xs md:text-sm border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
                     onClick={() => navigate(`/product/${product.id}`)}
                     disabled={product.stock_status === false}
                   >

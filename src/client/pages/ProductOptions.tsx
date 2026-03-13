@@ -63,7 +63,8 @@ const ProductOptions = () => {
             <Button
               variant="outline"
               onClick={handleBack}
-              className="rounded-full px-6 py-3 text-sm font-semibold border-primary/30 text-primary hover:bg-primary/5 hover:brightness-95 transition-all"
+              size="sm"
+              className="rounded-full px-3 py-2 md:px-6 md:py-3 text-xs md:text-sm font-semibold border-primary/30 text-primary hover:bg-primary/5 hover:brightness-95 transition-all"
             >
               ← Back
             </Button>
@@ -115,17 +116,19 @@ const ProductOptions = () => {
                 </div>
 
               {/* Action Buttons */}
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2 md:gap-3">
                   <Button
                     onClick={() => handleAddToCart(product)}
-                    className="w-full rounded-full py-6 text-sm sm:text-base font-semibold bg-accent text-accent-foreground hover:brightness-95 transition-all"
+                    size="sm"
+                    className="w-full rounded-full py-2 md:py-4 text-xs md:text-sm font-semibold bg-accent text-accent-foreground hover:brightness-95 transition-all"
                   >
                     Add to Cart
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => { handleAddToCart(product); navigate('/checkout'); }}
-                    className="w-full rounded-full py-6 text-sm sm:text-base font-semibold border-primary/30 text-primary hover:bg-primary/5 hover:brightness-95 transition-all"
+                    size="sm"
+                    className="w-full rounded-full py-2 md:py-4 text-xs md:text-sm font-semibold border-primary/30 text-primary hover:bg-primary/5 hover:brightness-95 transition-all"
                   >
                     Buy Now
                   </Button>

@@ -27,15 +27,15 @@ const FarmSection = () => {
   }, []);
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-br from-emerald-50 to-white">
+    <section className="py-12 md:py-24 bg-gradient-to-br from-emerald-50 to-white">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Text Content */}
-          <div className="animate-fade-in">
+          <div className="animate-fade-in text-center lg:text-left">
             <h2 className="text-3xl md:text-4xl font-cormorant font-bold text-slate-800 mb-6">
               Visit Our Farm
             </h2>
-            <div className="space-y-4 text-lg text-slate-600">
+            <div className="space-y-4 text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0">
               <p>
                 Our farm is home to healthy Gir cows that provide the pure A2 milk used in our traditional ghee making process.
               </p>
@@ -53,7 +53,7 @@ const FarmSection = () => {
 
           {/* Image Carousel */}
           <div className="relative animate-fade-in" style={{ animationDelay: "200ms" }}>
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl max-w-lg mx-auto lg:max-w-none">
               <div className="aspect-[4/3] relative">
                 {farmImages.map((image, index) => (
                   <img

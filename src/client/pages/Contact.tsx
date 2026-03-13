@@ -102,17 +102,17 @@ const Contact = () => {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroGhee})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70" />
         </div>
         <div className="relative z-10 h-full flex items-center justify-center px-4">
           <div className="text-center">
             <div className="bg-secondary border border-accent/20 rounded-full px-4 py-2 mb-4 inline-block">
               <span className="text-xs text-accent font-medium">Contact Us</span>
             </div>
-            <h1 className="font-playfair text-4xl md:text-6xl mb-4">
+            <h1 className="font-playfair text-4xl md:text-6xl mb-4 text-white">
               We're Here to Help
             </h1>
-            <p className="text-lg text-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-white/90 max-w-2xl mx-auto">
               Reach out with questions or orders.
             </p>
           </div>

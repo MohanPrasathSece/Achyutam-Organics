@@ -42,7 +42,7 @@ const QuantityModal = ({
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Select Quantity</h3>
           <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </Button>
         </div>
         
@@ -71,22 +71,22 @@ const QuantityModal = ({
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 disabled={quantity <= 1}
               >
-                <Minus className="w-4 h-4" />
+                <Minus className="w-3 h-3" />
               </Button>
-              <span className="px-4 py-2 border rounded-lg min-w-[60px] text-center">{quantity}</span>
+              <span className="px-3 py-1 border rounded-lg min-w-[50px] text-center text-sm">{quantity}</span>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => setQuantity(quantity + 1)}
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-3 h-3" />
               </Button>
             </div>
           </div>
           
           <div className="flex space-x-2 pt-4">
-            <Button onClick={handleConfirm} className="flex-1">
-              <ShoppingCart className="w-4 h-4 mr-2" />
+            <Button onClick={handleConfirm} size="sm" className="flex-1">
+              <ShoppingCart className="w-3 h-3 mr-2" />
               Add to Cart
             </Button>
           </div>
@@ -103,9 +103,9 @@ const getProductData = (id: string) => {
       name: "Pure Desi Cow Ghee",
       description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
       variants: [
-        { id: "101", name: "250gm", price: "₹550", image: ghee250gm },
-        { id: "102", name: "500ml", price: "₹1050", image: ghee500ml },
-        { id: "103", name: "1kg", price: "₹2100", image: ghee1kg }
+        { id: "101", name: "250gm", price: "₹550 per litre", image: ghee250gm },
+        { id: "102", name: "500ml", price: "₹1050 per litre", image: ghee500ml },
+        { id: "103", name: "1kg", price: "₹2100 per litre", image: ghee1kg }
       ],
       features: ["100% Organic", "Traditional Bilona Method", "A2 Cow Milk", "No Preservatives"],
       nutritionalInfo: "Rich in healthy fats, vitamins A, D, E, and K",
@@ -115,7 +115,7 @@ const getProductData = (id: string) => {
       name: "Fresh Cow Milk",
       description: "Pure and fresh cow milk delivered daily at your doorstep. Sourced from healthy grass-fed cows.",
       variants: [
-        { id: "104", name: "Daily Delivery - 1L", price: "₹80", image: freshMilk }
+        { id: "104", name: "Daily Delivery - 1L", price: "₹80 per litre", image: freshMilk }
       ],
       features: ["Farm Fresh", "Daily Delivery", "No Preservatives", "Grass-fed Cows"],
       nutritionalInfo: "Rich in calcium, protein, and essential nutrients",
@@ -241,9 +241,10 @@ const ProductDetail = () => {
             <Button
               variant="outline"
               onClick={() => navigate(-1)}
-              className="rounded-full px-6 py-3 text-sm font-semibold border-primary/30 text-primary hover:bg-primary/5 hover:brightness-95 transition-all"
+              size="sm"
+              className="rounded-full px-3 py-2 md:px-6 md:py-3 text-xs md:text-sm font-semibold border-primary/30 text-primary hover:bg-primary/5 hover:brightness-95 transition-all"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <ArrowLeft className="w-3 h-3 mr-2" />
               Back
             </Button>
           </div>
@@ -272,8 +273,8 @@ const ProductDetail = () => {
             <div className="inline-flex items-center bg-white rounded-full shadow-lg p-2">
               <Button
                 variant={product.category === "Ghee" ? "default" : "ghost"}
-                size="lg"
-                className="rounded-full px-6 py-3 font-semibold"
+                size="sm"
+                className="rounded-full px-3 py-2 md:px-6 md:py-3 font-semibold"
                 disabled
               >
                 Ghee
@@ -281,8 +282,8 @@ const ProductDetail = () => {
               <div className="w-px h-8 bg-gray-300 mx-2" />
               <Button
                 variant={product.category === "Milk" ? "default" : "ghost"}
-                size="lg"
-                className="rounded-full px-6 py-3 font-semibold"
+                size="sm"
+                className="rounded-full px-3 py-2 md:px-6 md:py-3 font-semibold"
                 disabled
               >
                 Milk
@@ -427,27 +428,13 @@ const ProductDetail = () => {
           <div className="w-16 h-1 bg-accent mx-auto rounded-full" />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Ghee Products */}
-          <div className="bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/product/101')}>
-            <img src={ghee250gm} alt="Ghee 250gm" className="w-32 h-32 mx-auto object-contain mb-4 rounded-lg" />
-            <h3 className="font-lato font-semibold mb-2">Pure Desi Cow Ghee - 250gm</h3>
-            <p className="text-accent font-bold mb-2">₹550</p>
-            <p className="text-sm text-gray-600">Traditional Bilona Method</p>
-          </div>
-          
-          <div className="bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/product/101')}>
-            <img src={ghee500ml} alt="Ghee 500ml" className="w-32 h-32 mx-auto object-contain mb-4 rounded-lg" />
-            <h3 className="font-lato font-semibold mb-2">Pure Desi Cow Ghee - 500ml</h3>
-            <p className="text-accent font-bold mb-2">₹1050</p>
-            <p className="text-sm text-gray-600">Traditional Bilona Method</p>
-          </div>
-          
-          <div className="bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/product/101')}>
-            <img src={ghee1kg} alt="Ghee 1kg" className="w-32 h-32 mx-auto object-contain mb-4 rounded-lg" />
-            <h3 className="font-lato font-semibold mb-2">Pure Desi Cow Ghee - 1kg</h3>
-            <p className="text-accent font-bold mb-2">₹2100</p>
-            <p className="text-sm text-gray-600">Traditional Bilona Method</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {/* Only Milk Product */}
+          <div className="bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/product/104')}>
+            <img src={freshMilk} alt="Fresh Cow Milk" className="w-32 h-32 mx-auto object-contain mb-4 rounded-lg" />
+            <h3 className="font-lato font-semibold mb-2">Fresh Cow Milk - Daily Delivery</h3>
+            <p className="text-accent font-bold mb-2">₹80 per litre</p>
+            <p className="text-sm text-gray-600">Farm Fresh Daily</p>
           </div>
         </div>
         

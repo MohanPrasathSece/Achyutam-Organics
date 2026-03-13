@@ -44,7 +44,7 @@ const products: FeaturedProduct[] = [
   { 
     id: 101, 
     name: "Pure Desi Cow Ghee - 250gm", 
-    price: "₹550", 
+    price: "₹550 per litre", 
     image: ghee250, 
     category: "Ghee", 
     deliveryInfo: "All India Delivery",
@@ -58,7 +58,7 @@ const products: FeaturedProduct[] = [
   { 
     id: 102, 
     name: "Pure Desi Cow Ghee - 500ml", 
-    price: "₹1050", 
+    price: "₹1050 per litre", 
     image: ghee500, 
     category: "Ghee", 
     deliveryInfo: "All India Delivery",
@@ -72,7 +72,7 @@ const products: FeaturedProduct[] = [
   { 
     id: 103, 
     name: "Pure Desi Cow Ghee - 1kg", 
-    price: "₹2100", 
+    price: "₹2100 per litre", 
     image: ghee1kg, 
     category: "Ghee", 
     deliveryInfo: "All India Delivery",
@@ -86,7 +86,7 @@ const products: FeaturedProduct[] = [
   { 
     id: 104, 
     name: "Fresh Cow Milk - Daily Delivery", 
-    price: "₹80", 
+    price: "₹80 per litre", 
     image: freshMilk, 
     category: "Milk", 
     deliveryInfo: "Katni Area Only",
@@ -263,7 +263,7 @@ const Home = () => {
       {/* Hero Section */}
        <section
         id="hero"
-        className="relative min-h-[90vh] md:h-screen flex items-center justify-start overflow-hidden pt-32 pb-16 md:pt-0 md:pb-0 font-lato"
+        className="relative h-screen md:h-screen flex items-center justify-start overflow-hidden font-lato"
       >
         <div className="absolute inset-0 z-0">
           {heroBgs.map((bg, idx) => (
@@ -279,7 +279,7 @@ const Home = () => {
               }}
             />
           ))}
-          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/60 to-transparent md:from-background/90 md:via-background/40 md:to-transparent" />
         </div>
 
         <div className="relative z-10 text-left px-6 md:px-12 animate-fade-in-slow max-w-4xl">
@@ -297,13 +297,14 @@ const Home = () => {
             Pure Desi Cow Ghee delivered all over India. Fresh cow milk available daily in Katni only. Experience the taste of tradition.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-center sm:items-start">
             <Button
               asChild
               variant="default"
-              className="rounded-full px-10 py-7 text-base md:text-lg bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.02] transition-all shadow-xl hover:shadow-accent/20"
+              size="sm"
+              className="rounded-full px-6 py-3 md:px-10 md:py-4 text-sm md:text-base bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.02] transition-all shadow-xl hover:shadow-accent/20"
             >
-              <Link to="/products" className="flex items-center gap-3">
+              <Link to="/products" className="flex items-center gap-2 md:gap-3">
                 Order Fresh Ghee
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>

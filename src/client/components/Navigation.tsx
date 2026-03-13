@@ -92,8 +92,8 @@ const Navigation = () => {
             type="button"
             aria-label={`View cart${hasCartItems ? ` with ${totalQuantity} item${totalQuantity === 1 ? "" : "s"}` : ""}`}
             className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-full shadow-soft border border-blue-500/50 backdrop-blur-md",
-              "transition-all hover:shadow-glow hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+              "flex items-center gap-3 px-5 py-3 rounded-full shadow-soft border border-blue-400/30 backdrop-blur-md relative",
+              "transition-all duration-300 hover:shadow-glow hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
               "bg-blue-500 text-white hover:bg-blue-600",
               isTransparent ? "bg-blue-500/80 text-white hover:bg-blue-600/80" : ""
             )}
@@ -103,15 +103,12 @@ const Navigation = () => {
             }}
           >
             <ShoppingBag className="h-5 w-5" />
-            <span className="text-sm font-semibold hidden md:block">View Cart</span>
-            {hasCartItems ? (
-              <span
-                className="min-w-[1.5rem] h-6 px-1 rounded-full bg-white text-blue-500 text-xs font-semibold flex items-center justify-center shadow-soft ring-2 ring-blue-300"
-                aria-hidden
-              >
+            <span className="text-sm font-lato font-semibold hidden md:block">View Cart</span>
+            {hasCartItems && (
+              <span className="absolute -top-1 -right-1 min-w-[1.5rem] h-6 px-2 rounded-full bg-red-500 text-white text-xs font-lato font-bold flex items-center justify-center shadow-lg border-2 border-white">
                 {displayQuantity}
               </span>
-            ) : null}
+            )}
           </button>
 
           <button

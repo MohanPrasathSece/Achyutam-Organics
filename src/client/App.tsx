@@ -11,7 +11,6 @@ import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { CartProvider } from "./context/cart";
 import ScrollToTop from "./components/ScrollToTop";
 import SchemaMarkup from "./components/SchemaMarkup";
-import WhatsAppButton from "./components/WhatsAppButton";
 
 // Lazy-loaded components
 const Home = lazy(() => import("./pages/Home"));
@@ -75,7 +74,6 @@ const AppContent = () => {
         </Routes>
       </Suspense>
       {!isAdminRoute && <Footer />}
-      {!isAdminRoute && <WhatsAppButton />}
     </>
   );
 };
