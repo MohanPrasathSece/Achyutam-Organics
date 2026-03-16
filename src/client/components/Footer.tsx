@@ -41,6 +41,12 @@ const Footer = () => {
                 Products
               </Link>
               <Link
+                to="/track-order"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Track Order
+              </Link>
+              <Link
                 to="/contact"
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >
