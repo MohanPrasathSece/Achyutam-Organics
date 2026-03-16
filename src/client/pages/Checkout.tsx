@@ -326,7 +326,8 @@ const Checkout = () => {
                             <Button
                                 type="submit"
                                 disabled={isProcessing}
-                                className="w-full mt-6 md:mt-8 rounded-full bg-emerald-700 py-5 md:py-6 text-base md:text-lg font-bold shadow-lg shadow-emerald-100 hover:bg-emerald-800 hover:scale-[1.02] transition-all disabled:opacity-50"
+                                size="lg"
+                                className="w-full mt-6 md:mt-8 rounded-full bg-emerald-700 py-3 md:py-4 text-xs md:text-base font-bold shadow-lg shadow-emerald-100 hover:bg-emerald-800 hover:scale-[1.02] transition-all disabled:opacity-50"
                             >
                                 {isProcessing ? "Processing..." : `Pay ₹${subtotal}`}
                             </Button>

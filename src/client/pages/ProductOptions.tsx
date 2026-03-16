@@ -17,12 +17,12 @@ const ProductOptions = () => {
 
   const products = {
     ghee: [
-      { id: 101, name: "Pure Desi Cow Ghee - 250ml", price: "₹250", image: ghee250 },
-      { id: 102, name: "Pure Desi Cow Ghee - 500ml", price: "₹450", image: ghee500 },
-      { id: 103, name: "Pure Desi Cow Ghee - 1 Liter", price: "₹850", image: ghee1kg },
+      { id: 101, name: "Pure Desi Cow Ghee - 250gm", price: "₹550", image: ghee250 },
+      { id: 102, name: "Pure Desi Cow Ghee - 500ml", price: "₹1050", image: ghee500 },
+      { id: 103, name: "Pure Desi Cow Ghee - 1kg", price: "₹2100", image: ghee1kg },
     ],
     milk: [
-      { id: 104, name: "Fresh Cow Milk - Daily Delivery", price: "₹60", image: freshMilk },
+      { id: 104, name: "Fresh Cow Milk - Daily Delivery", price: "₹80", image: freshMilk },
     ]
   };
 
@@ -78,7 +78,7 @@ const ProductOptions = () => {
 
       {/* Product Grid */}
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
           {currentProducts.map((product) => (
             <div
               key={product.id}
@@ -89,16 +89,16 @@ const ProductOptions = () => {
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-full object-contain p-8 rounded-[10px]"
+                  className="w-full h-full object-contain p-4 rounded-[10px]"
                 />
               </div>
 
               {/* Product Details */}
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <div className="p-4">
+                <h3 className="text-sm font-semibold text-gray-900 mb-1 leading-tight">
                   {product.name}
                 </h3>
-                <p className="text-2xl font-bold text-primary mb-4">
+                <p className="text-lg font-bold text-primary mb-3">
                   {product.price}
                 </p>
                 

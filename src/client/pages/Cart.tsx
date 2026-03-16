@@ -169,15 +169,17 @@ Please confirm my order and share delivery schedule. Thank you!`.trim();
 
                   <div className="space-y-3 pt-4">
                     <Button
-                      className="w-full rounded-full bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/10 py-5 md:py-6 text-base md:text-lg group transition-all"
+                      size="lg"
+                      className="w-full rounded-full bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/10 py-3 md:py-4 text-xs md:text-base group transition-all"
                       onClick={() => navigate("/checkout")}
                     >
                       Checkout Now
-                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full rounded-full border-2 border-primary text-primary hover:bg-primary/5 py-5 md:py-6 text-base md:text-lg transition-all"
+                      size="lg"
+                      className="w-full rounded-full border-2 border-primary text-primary hover:bg-primary/5 py-3 md:py-4 text-xs md:text-base transition-all"
                       onClick={handleWhatsAppCheckout}
                     >
                       Order via WhatsApp

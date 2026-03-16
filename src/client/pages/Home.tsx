@@ -294,7 +294,7 @@ const Home = () => {
           </h1>
 
           <p className="text-sm md:text-lg text-foreground/80 max-w-2xl mb-12 leading-relaxed">
-            Pure Desi Cow Ghee delivered all over India. Fresh cow milk available daily in Katni only. Experience the taste of tradition.
+            Pure Desi Cow Ghee from indigenous Gir cows delivered all over India. Fresh cow milk available daily in Katni only. Experience the taste of tradition from our single-breed specialty farm.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-center sm:items-start">

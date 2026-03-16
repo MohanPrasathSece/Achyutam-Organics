@@ -37,16 +37,16 @@ const FarmSection = () => {
             </h2>
             <div className="space-y-4 text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0">
               <p>
-                Our farm is home to healthy Gir cows that provide the pure A2 milk used in our traditional ghee making process.
+                Our farm specializes in indigenous Gir cows that provide the pure A2 milk used in our traditional ghee making process. We are proud to have only this single, exceptional breed.
               </p>
               <p>
-                We maintain sustainable farming practices, ensuring our cows graze on natural grass and receive the best care possible.
+                We maintain sustainable farming practices, ensuring our Gir cows graze on natural grass and receive the best care possible. This single-breed focus is our specialty and commitment to quality.
               </p>
               <p>
-                Every day, our skilled artisans follow the ancient Bilona method to create ghee that's rich in nutrients and flavor.
+                Every day, our skilled artisans follow the ancient Bilona method to create ghee that's rich in nutrients and flavor from our indigenous Gir cows' pure A2 milk.
               </p>
               <p>
-                From pasture to pantry, we maintain complete transparency in our production process, ensuring you get the purest ghee available.
+                From pasture to pantry, we maintain complete transparency in our production process, ensuring you get the purest ghee available from our specialty Gir cow farm.
               </p>
             </div>
           </div>

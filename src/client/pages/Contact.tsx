@@ -176,7 +176,8 @@ const Contact = () => {
 
                 <Button
                   type="submit"
-                  className="w-full rounded-full px-8 py-4 text-sm sm:text-base font-semibold bg-accent text-accent-foreground hover:shadow-glow hover:scale-[1.02] transition-transform"
+                  size="sm"
+                  className="w-full rounded-full px-6 py-3 md:px-8 md:py-4 text-xs md:text-sm font-semibold bg-accent text-accent-foreground hover:shadow-glow hover:scale-[1.02] transition-transform"
                 >
                   Send Message
                 </Button>
@@ -243,16 +244,18 @@ const Contact = () => {
                   <div className="flex flex-col sm:flex-row gap-4">
                     <Button
                       onClick={handleWhatsApp}
-                      className="flex-1 rounded-full px-6 py-3 text-sm font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
+                      size="sm"
+                      className="flex-1 rounded-full px-4 py-2 md:px-6 md:py-3 text-xs md:text-sm font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
                     >
-                      <MessageCircle className="w-4 h-4 mr-2" />
+                      <MessageCircle className="w-3 h-3 mr-2" />
                       WhatsApp
                     </Button>
                     <Button
                       variant="outline"
-                      className="flex-1 rounded-full px-6 py-3 text-sm font-semibold border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-colors"
+                      size="sm"
+                      className="flex-1 rounded-full px-4 py-2 md:px-6 md:py-3 text-xs md:text-sm font-semibold border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-colors"
                     >
-                      <Mail className="w-4 h-4 mr-2" />
+                      <Mail className="w-3 h-3 mr-2" />
                       Email
                     </Button>
                   </div>

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import SEO from "@/components/SEO";
+import { Button } from "@/components/ui/button";
 import bilonaProcess from "@/assets/bilona-process.jpg";
 
 const faqs = [
@@ -83,9 +85,13 @@ const FAQ = () => {
                     <div className="mt-16 text-center bg-background rounded-3xl p-10 border border-border/40 shadow-soft">
                         <h3 className="text-3xl font-playfair mb-4">Still have questions?</h3>
                         <p className="text-muted-foreground mb-8">We're here to help you choose the best for your family.</p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <a href="/contact" className="rounded-full px-8 py-4 text-sm sm:text-base font-semibold bg-primary text-white hover:shadow-glow hover:scale-[1.02] transition-transform">Contact Us</a>
-                            <a href="https://wa.me/919425156801" className="rounded-full px-8 py-4 text-sm sm:text-base font-semibold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300">Order via WhatsApp</a>
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                            <Button asChild size="sm" className="rounded-full px-6 py-3 md:px-8 md:py-4 text-xs md:text-sm font-semibold bg-primary text-white hover:shadow-glow hover:scale-[1.02] transition-transform">
+                              <Link to="/contact">Contact Us</Link>
+                            </Button>
+                            <Button asChild variant="outline" size="sm" className="rounded-full px-6 py-3 md:px-8 md:py-4 text-xs md:text-sm font-semibold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300">
+                              <a href="https://wa.me/919425156801">Order via WhatsApp</a>
+                            </Button>
                         </div>
                     </div>
                 </AnimateOnScroll>

@@ -139,10 +139,10 @@ const About = () => {
               </h2>
               <div className="w-24 h-1 bg-accent rounded-full mb-8" />
               <p className="text-lg text-foreground/90 leading-relaxed mb-6">
-                To bring back the purity of traditional dairy products to modern homes, using ancient wisdom and sustainable practices that honor both nature and health.
+                To bring back the purity of traditional dairy products to modern homes, specializing in indigenous Gir cows and using ancient wisdom and sustainable practices that honor both nature and health.
               </p>
               <p className="text-lg text-foreground/90 leading-relaxed mb-6">
-                We believe that everyone deserves access to pure, unadulterated dairy products that nourish the body and soul.
+                We believe that everyone deserves access to pure, unadulterated dairy products from our single-breed Gir cow farm that nourish the body and soul.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
@@ -155,7 +155,15 @@ const About = () => {
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-accent rounded-full"></div>
-                  <span className="text-muted-foreground">Farm-to-Home Delivery</span>
+                  <span className="text-muted-foreground">Indigenous Gir Cows Only</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-accent rounded-full"></div>
+                  <span className="text-muted-foreground">Single Breed Specialty Farm</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-accent rounded-full"></div>
+                  <span className="text-muted-foreground">Pure A2 Milk Production</span>
                 </div>
               </div>
             </div>
@@ -186,7 +194,7 @@ const About = () => {
                 Sourcing
               </h3>
               <p className="text-muted-foreground">
-                We source milk from our own farm and trusted local farmers who follow organic practices.
+                We source milk exclusively from our own farm where we follow organic practices with our indigenous Gir cows.
               </p>
             </div>
             <div className="text-center animate-fade-in" style={{ animationDelay: "200ms" }}>

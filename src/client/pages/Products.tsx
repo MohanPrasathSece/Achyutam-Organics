@@ -38,7 +38,9 @@ interface Product {
 }
 
 const MOCK_PRODUCTS: Product[] = [
-  { id: 101, name: "Pure Desi Cow Ghee", price: "₹2100/l", category: "Ghee", image: ghee1kg, visibility: true, stock_status: true, featured: true },
+  { id: 101, name: "Pure Desi Cow Ghee - 250gm", price: "₹550/jar", category: "Ghee", image: ghee250gm, visibility: true, stock_status: true, featured: true },
+  { id: 102, name: "Pure Desi Cow Ghee - 500ml", price: "₹1050/jar", category: "Ghee", image: ghee500ml, visibility: true, stock_status: true, featured: true },
+  { id: 103, name: "Pure Desi Cow Ghee - 1kg", price: "₹2100/jar", category: "Ghee", image: ghee1kg, visibility: true, stock_status: true, featured: true },
   { id: 104, name: "Fresh Cow Milk - Daily Delivery", price: "₹80/l", category: "Milk", image: freshMilk, visibility: true, stock_status: true, featured: true },
 ];
 
@@ -271,7 +273,7 @@ const Products = () => {
               Shop Organic
             </h1>
             <p className="text-lg text-white/90 max-w-2xl mx-auto">
-              Experience the purity of traditional Vedic methods, delivered directly from our farm to your home.
+              Experience the purity of traditional Vedic methods from our indigenous Gir cows, delivered directly from our single-breed specialty farm to your home.
             </p>
           </div>
         </div>
@@ -358,7 +360,7 @@ const Products = () => {
             </p>
           </div>
 
-          <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
+          <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
             {filteredProducts.map((product, index) => (
               <div
                 key={product.id}
@@ -370,26 +372,26 @@ const Products = () => {
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-contain p-4 transition-all duration-1000 group-hover:scale-110"
+                    className="w-full h-full object-contain p-3 transition-all duration-1000 group-hover:scale-110"
                     loading="lazy"
                   />
                   {product.stock_status === false && (
                     <div className="absolute inset-0 bg-background/60 flex items-center justify-center backdrop-blur-[1px]">
-                      <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-[10px] md:text-xs font-bold tracking-widest uppercase shadow-soft">Out of Stock</span>
+                      <span className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-[9px] font-bold tracking-widest uppercase shadow-soft">Out of Stock</span>
                     </div>
                   )}
                 </div>
-                <div className="p-4 md:p-6">
-                  <h3 className="font-lato text-lg md:text-xl mb-2">
+                <div className="p-3">
+                  <h3 className="font-lato text-sm mb-1 leading-tight">
                     {product.name}
                   </h3>
-                  <p className="text-accent text-lg md:text-xl mb-2">
+                  <p className="text-accent text-sm mb-2">
                     {typeof product.price === "number" ? `₹${product.price.toLocaleString()}` : product.price}
                   </p>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full h-8 md:h-11 text-xs md:text-sm border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
+                    className="w-full h-7 text-xs border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
                     onClick={() => navigate(`/product/${product.id}`)}
                     disabled={product.stock_status === false}
                   >
