@@ -10,6 +10,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import SEO from "@/components/SEO";
+import { useToast } from "@/hooks/use-toast";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { CheckCircle2, ArrowRight, Phone, MapPin, Package } from "lucide-react";
 
 const checkoutSchema = z.object({
     name: z.string().trim().min(1, "Name is required").max(100),
@@ -38,6 +46,8 @@ const Checkout = () => {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [submitted, setSubmitted] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [orderDetails, setOrderDetails] = useState<any>(null);
 
     if (items.length === 0 && !submitted) {
         navigate("/cart");
@@ -88,7 +98,53 @@ const Checkout = () => {
         }
 
         if (form.payment === "cod") {
-            toast.error("Cash on Delivery is currently unavailable. Please select Online Payment.");
+            // Create demo order for Cash on Delivery
+            setIsProcessing(true);
+            try {
+                // Create demo order
+                const demoOrder = {
+                    id: `ORD-${Date.now()}`,
+                    customer: {
+                        name: form.name,
+                        email: form.email,
+                        phone: form.phone,
+                    },
+                    shippingAddress: {
+                        line1: form.street,
+                        city: form.city,
+                        state: form.state,
+                        postalCode: form.pincode,
+                        country: "India",
+                    },
+                    items: items.map(item => ({
+                        id: item.id,
+                        name: item.name,
+                        price: item.price,
+                        quantity: item.quantity,
+                    })),
+                    totalAmount: subtotal,
+                    paymentMethod: "COD",
+                    status: "pending",
+                    createdAt: new Date().toISOString(),
+                };
+
+                // Store demo order in localStorage for admin to see
+                const existingOrders = JSON.parse(localStorage.getItem('demoOrders') || '[]');
+                existingOrders.push(demoOrder);
+                localStorage.setItem('demoOrders', JSON.stringify(existingOrders));
+
+                // Show success message
+                toast.success("Order placed successfully! Your order ID is " + demoOrder.id);
+                setOrderDetails(demoOrder);
+                setShowSuccessModal(true);
+                clearCart();
+                setSubmitted(true);
+                
+            } catch (error) {
+                toast.error("Failed to place order. Please try again.");
+            } finally {
+                setIsProcessing(false);
+            }
             return;
         }
 
@@ -180,14 +236,18 @@ const Checkout = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pt-24 pb-12">
+        <div className="min-h-screen bg-gray-50 py-8 px-4">
             <SEO
                 title="Checkout | Achyutam Organics"
-                description="Complete your purchase of pure organic Desi Cow Ghee and dairy products."
+                description="Complete your order for pure organic ghee and dairy products."
                 canonicalUrl="/checkout"
             />
-            <div className="container mx-auto px-4 max-w-6xl">
-                <h1 className="text-4xl font-playfair mb-8">Checkout</h1>
+
+            <div className="container mx-auto max-w-6xl">
+                <div className="mb-8 text-center">
+                    <h1 className="text-3xl md:text-4xl font-playfair font-bold text-slate-800 mb-2">Checkout</h1>
+                    <p className="text-muted-foreground">Complete your order details below</p>
+                </div>
 
                 <form onSubmit={handleSubmit} className="grid gap-6 lg:gap-10 lg:grid-cols-3">
                     <div className="space-y-4 md:space-y-6 lg:col-span-2">
@@ -276,7 +336,7 @@ const Checkout = () => {
                             <div className="mt-4 flex flex-col sm:flex-row gap-4">
                                 {[
                                     { value: "online", label: "Online Payment", disabled: false },
-                                    { value: "cod", label: "Cash on Delivery", disabled: true },
+                                    { value: "cod", label: "Cash on Delivery", disabled: false },
                                 ].map((opt) => (
                                     <label key={opt.value} className={`flex-1 cursor-pointer rounded-xl md:rounded-2xl border-2 p-4 md:p-6 transition-all ${opt.disabled ? "opacity-50 cursor-not-allowed bg-slate-50 border-slate-100" :
                                         form.payment === opt.value ? "border-emerald-600 bg-emerald-50/30" : "border-slate-100 hover:border-emerald-200"
@@ -329,7 +389,7 @@ const Checkout = () => {
                                 size="lg"
                                 className="w-full mt-6 md:mt-8 rounded-full bg-emerald-700 py-3 md:py-4 text-xs md:text-base font-bold shadow-lg shadow-emerald-100 hover:bg-emerald-800 hover:scale-[1.02] transition-all disabled:opacity-50"
                             >
-                                {isProcessing ? "Processing..." : `Pay ₹${subtotal}`}
+                                {isProcessing ? "Processing..." : form.payment === "cod" ? `Place Order ₹${subtotal}` : `Pay ₹${subtotal}`}
                             </Button>
                         </div>
 
@@ -340,6 +400,66 @@ const Checkout = () => {
                     </aside>
                 </form>
             </div>
+
+            {/* Success Modal */}
+            <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+                <DialogContent className="max-w-md w-full bg-white rounded-2xl p-6 text-center">
+                    <DialogHeader>
+                        <DialogTitle className="text-center">
+                            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+                            </div>
+                            <h2 className="text-2xl font-bold text-gray-900">Order Confirmed!</h2>
+                        </DialogTitle>
+                    </DialogHeader>
+                    
+                    {orderDetails && (
+                        <div className="space-y-4">
+                            <div className="bg-emerald-50 rounded-lg p-4">
+                                <p className="text-sm text-gray-600 mb-1">Order ID</p>
+                                <p className="font-bold text-emerald-700">{orderDetails.id}</p>
+                            </div>
+                            
+                            <div className="bg-gray-50 rounded-lg p-4">
+                                <p className="text-sm text-gray-600 mb-1">Total Amount</p>
+                                <p className="font-bold text-gray-900">₹{orderDetails.totalAmount}</p>
+                            </div>
+                            
+                            <div className="bg-blue-50 rounded-lg p-4">
+                                <p className="text-sm text-gray-600 mb-1">Payment Method</p>
+                                <p className="font-bold text-blue-700">{orderDetails.paymentMethod}</p>
+                            </div>
+                            
+                            <div className="border-t pt-4">
+                                <div className="flex items-center gap-2 text-gray-600 mb-2">
+                                    <Phone className="w-4 h-4" />
+                                    <span className="text-sm">We'll call you to confirm delivery details</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-gray-600">
+                                    <MapPin className="w-4 h-4" />
+                                    <span className="text-sm">Delivery to {orderDetails.shippingAddress.city}</span>
+                                </div>
+                            </div>
+                            
+                            <div className="mt-6 space-y-2">
+                                <Button 
+                                    onClick={() => { setShowSuccessModal(false); navigate("/"); }} 
+                                    className="w-full rounded-full bg-emerald-600 text-white hover:bg-emerald-700"
+                                >
+                                    Continue Shopping
+                                </Button>
+                                <Button 
+                                    variant="outline"
+                                    onClick={() => setShowSuccessModal(false)}
+                                    className="w-full rounded-full"
+                                >
+                                    View Order Details
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

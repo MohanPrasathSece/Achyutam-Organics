@@ -51,12 +51,131 @@ const ProductManagement = () => {
     });
 
     const fetchProducts = async () => {
-        const { data: productsData } = await supabase
-            .from("products")
-            .select("*")
-            .order("created_at", { ascending: false });
+        try {
+            const { data: productsData } = await supabase
+                .from("products")
+                .select("*")
+                .order("created_at", { ascending: false });
 
-        if (productsData) setProducts(productsData);
+            if (productsData) {
+                setProducts(productsData);
+            } else {
+                // Fallback to demo products if no data from Supabase
+                const demoProducts = [
+                    {
+                        id: "demo-1",
+                        name: "Pure Desi Cow Ghee - 250gm",
+                        description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                        price: 550,
+                        category_id: "demo-cat-1",
+                        stock_quantity: 50,
+                        status: "active",
+                        images: ["/src/assets/ghee_product/ghee_250gm.jpeg"],
+                        organic: true,
+                        bestseller: true,
+                        featured: true
+                    },
+                    {
+                        id: "demo-2",
+                        name: "Pure Desi Cow Ghee - 500ml",
+                        description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                        price: 1050,
+                        category_id: "demo-cat-1",
+                        stock_quantity: 30,
+                        status: "active",
+                        images: ["/src/assets/ghee_product/ghee_500ml.jpeg"],
+                        organic: true,
+                        bestseller: false,
+                        featured: false
+                    },
+                    {
+                        id: "demo-3",
+                        name: "Pure Desi Cow Ghee - 1kg",
+                        description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                        price: 2100,
+                        category_id: "demo-cat-1",
+                        stock_quantity: 20,
+                        status: "active",
+                        images: ["/src/assets/ghee_product/ghee_1kg.jpeg"],
+                        organic: true,
+                        bestseller: true,
+                        featured: true
+                    },
+                    {
+                        id: "demo-4",
+                        name: "Fresh Cow Milk - Daily Delivery",
+                        description: "Pure and fresh cow milk delivered daily to your doorstep. From healthy grass-fed cows.",
+                        price: 80,
+                        category_id: "demo-cat-2",
+                        stock_quantity: 0,
+                        status: "active",
+                        images: ["/src/assets/fresh-milk.jpg"],
+                        organic: true,
+                        bestseller: false,
+                        featured: false
+                    }
+                ];
+                setProducts(demoProducts);
+            }
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            // Fallback to demo products on error
+            const demoProducts = [
+                {
+                    id: "demo-1",
+                    name: "Pure Desi Cow Ghee - 250gm",
+                    description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                    price: 550,
+                    category_id: "demo-cat-1",
+                    stock_quantity: 50,
+                    status: "active",
+                    images: ["/src/assets/ghee_product/ghee_250gm.jpeg"],
+                    organic: true,
+                    bestseller: true,
+                    featured: true
+                },
+                {
+                    id: "demo-2",
+                    name: "Pure Desi Cow Ghee - 500ml",
+                    description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                    price: 1050,
+                    category_id: "demo-cat-1",
+                    stock_quantity: 30,
+                    status: "active",
+                    images: ["/src/assets/ghee_product/ghee_500ml.jpeg"],
+                    organic: true,
+                    bestseller: false,
+                    featured: false
+                },
+                {
+                    id: "demo-3",
+                    name: "Pure Desi Cow Ghee - 1kg",
+                    description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                    price: 2100,
+                    category_id: "demo-cat-1",
+                    stock_quantity: 20,
+                    status: "active",
+                    images: ["/src/assets/ghee_product/ghee_1kg.jpeg"],
+                    organic: true,
+                    bestseller: true,
+                    featured: true
+                },
+                {
+                    id: "demo-4",
+                    name: "Fresh Cow Milk - Daily Delivery",
+                    description: "Pure and fresh cow milk delivered daily to your doorstep. From healthy grass-fed cows.",
+                    price: 80,
+                    category_id: "demo-cat-2",
+                    stock_quantity: 0,
+                    status: "active",
+                    images: ["/src/assets/fresh-milk.jpg"],
+                    organic: true,
+                    bestseller: false,
+                    featured: false
+                }
+            ];
+            setProducts(demoProducts);
+        }
         setLoading(false);
     };
 

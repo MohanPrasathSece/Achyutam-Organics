@@ -56,6 +56,32 @@ const SchemaMarkup = () => {
         ]
     };
 
+    const productSchema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Pure Desi Cow Ghee",
+        "description": "100% pure A2 milk ghee from indigenous Gir cows, handcrafted using traditional Vedic Bilona methods.",
+        "brand": {
+            "@type": "Brand",
+            "name": "Achyutam Organics"
+        },
+        "offers": {
+            "@type": "Offer",
+            "priceCurrency": "INR",
+            "priceRange": "550-2100",
+            "availability": "https://schema.org/InStock",
+            "seller": {
+                "@type": "Organization",
+                "name": "Achyutam Organics"
+            }
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5.0",
+            "reviewCount": "50"
+        }
+    };
+
     return (
         <Helmet>
             <script type="application/ld+json">
@@ -66,6 +92,9 @@ const SchemaMarkup = () => {
             </script>
             <script type="application/ld+json">
                 {JSON.stringify(navigationSchema)}
+            </script>
+            <script type="application/ld+json">
+                {JSON.stringify(productSchema)}
             </script>
         </Helmet>
     );

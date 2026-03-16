@@ -38,16 +38,16 @@ interface Product {
 }
 
 const MOCK_PRODUCTS: Product[] = [
-  { id: 101, name: "Pure Desi Cow Ghee - 250gm", price: "₹550/jar", category: "Ghee", image: ghee250gm, visibility: true, stock_status: true, featured: true },
-  { id: 102, name: "Pure Desi Cow Ghee - 500ml", price: "₹1050/jar", category: "Ghee", image: ghee500ml, visibility: true, stock_status: true, featured: true },
-  { id: 103, name: "Pure Desi Cow Ghee - 1kg", price: "₹2100/jar", category: "Ghee", image: ghee1kg, visibility: true, stock_status: true, featured: true },
-  { id: 104, name: "Fresh Cow Milk - Daily Delivery", price: "₹80/l", category: "Milk", image: freshMilk, visibility: true, stock_status: true, featured: true },
+  { id: 101, name: "Ghee Products - 250ml", price: 550, category: "Ghee", image: ghee250gm, visibility: true, stock_status: true, featured: true },
+  { id: 102, name: "Ghee Products - 500g", price: 1050, category: "Ghee", image: ghee500ml, visibility: true, stock_status: true, featured: true },
+  { id: 103, name: "Pure Desi Cow Ghee - 1kg", price: 2100, category: "Ghee", image: ghee1kg, visibility: true, stock_status: true, featured: true },
+  { id: 104, name: "Fresh Cow Milk - Daily Delivery", price: 80, category: "Milk", image: freshMilk, visibility: true, stock_status: true, featured: true },
 ];
 
 const Products = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { addItem } = useCart();
+  const { addItem, clearCart, items } = useCart();
   const { toast } = useToast();
 
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
@@ -381,22 +381,71 @@ const Products = () => {
                     </div>
                   )}
                 </div>
-                <div className="p-3">
-                  <h3 className="font-lato text-sm mb-1 leading-tight">
+                <div className="p-4">
+                  <h3 className="font-lato text-lg mb-2 leading-tight">
                     {product.name}
                   </h3>
-                  <p className="text-accent text-sm mb-2">
+                  <p className="text-accent text-base mb-3">
                     {typeof product.price === "number" ? `₹${product.price.toLocaleString()}` : product.price}
                   </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full h-7 text-xs border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
-                    onClick={() => navigate(`/product/${product.id}`)}
-                    disabled={product.stock_status === false}
-                  >
-                    {product.stock_status === false ? "Out of Stock" : "View Details"}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 h-7 text-sm border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Add to cart logic
+                          if (product.stock_status === false) return;
+                          
+                          // Check if product already exists in cart
+                          const existingItem = items.find(item => item.id === product.id);
+                          
+                          if (existingItem) {
+                            // Update quantity if already exists
+                            addItem({
+                              id: product.id,
+                              name: product.name,
+                              price: parseInt(product.price.toString().replace(/[^0-9.]/g, "")) || 0,
+                              image: product.image,
+                              quantity: existingItem.quantity + 1
+                            });
+                            toast({
+        title: `${product.name} quantity updated in cart!`,
+        description: "Item quantity has been increased.",
+      });
+                          } else {
+                            // Add new item to cart
+                            addItem({
+                              id: product.id,
+                              name: product.name,
+                              price: typeof product.price === "number" ? product.price : parseInt(product.price.replace(/[^0-9.]/g, "")),
+                              image: product.image,
+                              quantity: 1
+                            });
+                            toast({
+                              title: `${product.name} added to cart!`,
+                              description: "Item has been added to your cart.",
+                            });
+                          }
+                        }}
+                        disabled={product.stock_status === false}
+                      >
+                        Add to Cart
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 h-7 text-sm border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/product/${product.id}`);
+                        }}
+                        disabled={product.stock_status === false}
+                      >
+                        {product.stock_status === false ? "Out of Stock" : "View Details"}
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}

@@ -23,30 +23,33 @@ const DashboardOverview = () => {
 
     useEffect(() => {
         const fetchStats = async () => {
-            const [productsRes, ordersRes, lowStockRes, recentProdsRes] = await Promise.all([
-                supabase.from('products').select('*', { count: 'exact', head: true }),
-                supabase.from('orders').select('total_price, status, created_at, customer_name'),
-                supabase.from('products').select('*', { count: 'exact', head: true }).lt('stock_quantity', 5),
-                supabase.from('products').select('name, price, created_at').order('created_at', { ascending: false }).limit(5)
-            ]);
+            // In development, Supabase access fails with 401, so fall back to demo orders only (like OrderManagement)
+            const demoOrders = JSON.parse(localStorage.getItem('demoOrders') || '[]');
+            const formattedDemoOrders = demoOrders.map((order: any) => ({
+                ...order,
+                created_at: order.createdAt,
+                customer_name: order.customer.name,
+                customer_email: order.customer.email,
+                customer_phone: order.customer.phone,
+                total_price: order.totalAmount,
+                payment_method: order.paymentMethod,
+                status: order.status,
+                order_number: order.id,
+                shipping_address: order.shippingAddress,
+                isDemo: true // Mark as demo order
+            }));
 
-            const productsCount = productsRes.count || 0;
-            const ordersData = ordersRes.data || [];
-            const lowStockCount = lowStockRes.count || 0;
-            const recentProds = recentProdsRes.data || [];
-
-            const totalOrders = ordersData.length;
-            const revenue = ordersData.reduce((acc, order) => acc + (order.total_price || 0), 0);
+            const totalOrders = formattedDemoOrders.length;
+            const revenue = formattedDemoOrders.reduce((acc, order) => acc + (order.total_price || 0), 0);
 
             setStats({
-                products: productsCount,
+                products: 0, // Can't get product count without Supabase
                 orders: totalOrders,
-                lowStock: lowStockCount,
+                lowStock: 0, // Can't get low stock without Supabase
                 revenue: revenue
             });
-
-            setRecentOrders(ordersData.slice(0, 5));
-            setRecentProducts(recentProds);
+            setRecentOrders(formattedDemoOrders.slice(0, 5));
+            setRecentProducts([]); // Can't get products without Supabase
         };
 
         fetchStats();

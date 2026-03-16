@@ -87,11 +87,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [state]);
 
   const subtotal = useMemo(
-    () => state.items.reduce((total, item) => total + item.price * item.quantity, 0),
+    () => state.items.reduce((total, item) => {
+      const price = typeof item.price === "number" ? item.price : parseFloat(item.price.toString().replace(/[^0-9.-]/g, "")) || 0;
+      const quantity = typeof item.quantity === "number" ? item.quantity : parseInt(item.quantity.toString()) || 0;
+      return total + (price * quantity);
+    }, 0),
     [state.items],
   );
   const totalQuantity = useMemo(
-    () => state.items.reduce((total, item) => total + item.quantity, 0),
+    () => state.items.reduce((total, item) => {
+      const quantity = typeof item.quantity === "number" ? item.quantity : parseInt(item.quantity.toString()) || 0;
+      return total + quantity;
+    }, 0),
     [state.items],
   );
 
@@ -101,7 +108,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       subtotal,
       totalQuantity,
       addItem: ({ quantity = 1, ...item }: Omit<CartItem, "quantity"> & { quantity?: number }) => {
-        dispatch({ type: "ADD_ITEM", payload: { ...item, quantity } });
+        // Ensure price is always a number
+        const numericPrice = typeof item.price === "string" 
+          ? parseFloat(item.price.replace(/[^0-9.-]/g, "")) || 0
+          : Number(item.price) || 0;
+        
+        dispatch({ type: "ADD_ITEM", payload: { ...item, price: numericPrice, quantity } });
       },
       removeItem: (id: CartItem["id"]) => dispatch({ type: "REMOVE_ITEM", payload: { id } }),
       updateQuantity: (id: CartItem["id"], quantity: number) => dispatch({ type: "UPDATE_QUANTITY", payload: { id, quantity } }),

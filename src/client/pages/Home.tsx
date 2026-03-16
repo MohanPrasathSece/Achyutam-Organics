@@ -302,7 +302,7 @@ const Home = () => {
               asChild
               variant="default"
               size="sm"
-              className="rounded-full px-6 py-3 md:px-10 md:py-4 text-sm md:text-base bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.02] transition-all shadow-xl hover:shadow-accent/20"
+              className="rounded-full px-8 py-4 md:px-12 md:py-6 text-sm md:text-base bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.02] transition-all shadow-xl hover:shadow-accent/20"
             >
               <Link to="/products" className="flex items-center gap-2 md:gap-3">
                 Order Fresh Ghee
@@ -358,7 +358,7 @@ const Home = () => {
             <Button
               asChild
               variant="default"
-              className="rounded-full px-12 py-8 text-lg bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.05] transition-all shadow-xl shadow-accent/20"
+              className="rounded-full px-8 py-4 md:px-12 md:py-6 text-lg bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.05] transition-all shadow-xl shadow-accent/20"
             >
               <Link to="/products" className="flex items-center gap-3">
                 Explore Our Collection

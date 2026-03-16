@@ -98,8 +98,9 @@ const QuantityModal = ({
 
 // Product data - in a real app this would come from API
 const getProductData = (id: string) => {
-  const products = {
-    "101": {
+  // All ghee products (101, 102, 103) should return the same ghee data
+  if (id === "101" || id === "102" || id === "103") {
+    return {
       name: "Pure Desi Cow Ghee",
       description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
       variants: [
@@ -109,8 +110,12 @@ const getProductData = (id: string) => {
       ],
       features: ["100% Organic", "Traditional Bilona Method", "A2 Cow Milk", "No Preservatives"],
       nutritionalInfo: "Rich in healthy fats, vitamins A, D, E, and K",
-      storage: "Store in cool, dry place away from direct sunlight"
-    },
+      storage: "Store in cool, dry place away from direct sunlight",
+      category: "Ghee"
+    };
+  }
+  
+  const products = {
     "104": {
       name: "Fresh Cow Milk",
       description: "Pure and fresh cow milk delivered daily at your doorstep. Sourced from healthy grass-fed cows.",
@@ -119,7 +124,8 @@ const getProductData = (id: string) => {
       ],
       features: ["Farm Fresh", "Daily Delivery", "No Preservatives", "Grass-fed Cows"],
       nutritionalInfo: "Rich in calcium, protein, and essential nutrients",
-      storage: "Refrigerate immediately, consume within 2 days"
+      storage: "Refrigerate immediately, consume within 2 days",
+      category: "Milk"
     }
   };
   

@@ -53,11 +53,54 @@ const OrderManagement = () => {
     };
 
     const fetchOrders = async () => {
-        const { data } = await supabase
-            .from("orders")
-            .select("*")
-            .order("created_at", { ascending: false });
-        if (data) setOrders(data);
+        try {
+            // Fetch orders from Supabase
+            const { data } = await supabase
+                .from("orders")
+                .select("*")
+                .order("created_at", { ascending: false });
+            
+            // Get demo orders from localStorage
+            const demoOrders = JSON.parse(localStorage.getItem('demoOrders') || '[]');
+            
+            // Format demo orders to match Supabase structure
+            const formattedDemoOrders = demoOrders.map((order: any) => ({
+                ...order,
+                created_at: order.createdAt,
+                customer_name: order.customer.name,
+                customer_email: order.customer.email,
+                customer_phone: order.customer.phone,
+                total_price: order.totalAmount,
+                payment_method: order.paymentMethod,
+                status: order.status,
+                order_number: order.id,
+                // Add address fields
+                shipping_address: order.shippingAddress,
+                isDemo: true // Mark as demo order
+            }));
+            
+            // Combine both arrays, with Supabase orders first
+            const allOrders = [...(data || []), ...formattedDemoOrders];
+            setOrders(allOrders);
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+            // Fallback to demo orders only
+            const demoOrders = JSON.parse(localStorage.getItem('demoOrders') || '[]');
+            const formattedDemoOrders = demoOrders.map((order: any) => ({
+                ...order,
+                created_at: order.createdAt,
+                customer_name: order.customer.name,
+                customer_email: order.customer.email,
+                customer_phone: order.customer.phone,
+                total_price: order.totalAmount,
+                payment_method: order.paymentMethod,
+                status: order.status,
+                order_number: order.id,
+                shipping_address: order.shippingAddress,
+                isDemo: true
+            }));
+            setOrders(formattedDemoOrders);
+        }
         setLoading(false);
     };
 
@@ -162,6 +205,12 @@ const OrderManagement = () => {
         toast({ title: "Export Successful", description: `Exported ${filteredOrders.length} orders.` });
     };
 
+    const clearDemoOrders = () => {
+        localStorage.removeItem('demoOrders');
+        toast({ title: "Demo Orders Cleared", description: "All demo orders have been removed." });
+        fetchOrders();
+    };
+
     const triggerManualCleanup = async () => {
         setConfirmAction({ type: 'cleanup', order: null });
     };
@@ -247,6 +296,13 @@ const OrderManagement = () => {
                     </Button>
                     <Button
                         variant="outline"
+                        onClick={clearDemoOrders}
+                        className="rounded-xl border-amber-200 text-amber-600 hover:bg-amber-50 hover:border-amber-100 gap-2 text-xs md:text-sm h-9 md:h-10"
+                    >
+                        <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Clear Demo</span><span className="sm:hidden">Demo</span>
+                    </Button>
+                    <Button
+                        variant="outline"
                         onClick={triggerManualCleanup}
                         className="rounded-xl border-slate-200 text-red-600 hover:bg-red-50 hover:border-red-100 gap-2 text-xs md:text-sm h-9 md:h-10"
                     >
@@ -270,11 +326,14 @@ const OrderManagement = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                             {orders.map(order => (
-                                <tr key={order.id} className="hover:bg-slate-50 transition-colors">
-                                    <td className="px-4 md:px-6 py-4 font-bold text-xs text-slate-500">#{getDisplayId(order)}</td>
+                                <tr key={order.id} className={cn("hover:bg-slate-50 transition-colors", order.isDemo && "bg-amber-50/50")}>
+                                    <td className="px-4 md:px-6 py-4 font-bold text-xs text-slate-500">
+                                        #{getDisplayId(order)}
+                                        {order.isDemo && <span className="ml-2 px-2 py-1 bg-amber-200 text-amber-800 text-[10px] rounded-full font-medium">DEMO</span>}
+                                    </td>
                                     <td className="px-4 md:px-6 py-4">
                                         <div className="font-bold text-slate-700">{order.customer_name}</div>
-                                        <div className="text-xs text-slate-400">{order.email}</div>
+                                        <div className="text-xs text-slate-400">{order.customer_email || order.email}</div>
                                     </td>
                                     <td className="px-4 md:px-6 py-4">
                                         <div className="flex items-center gap-2">
@@ -282,7 +341,7 @@ const OrderManagement = () => {
                                             <span className="text-sm font-medium text-slate-700">{order.status}</span>
                                         </div>
                                     </td>
-                                    <td className="px-4 md:px-6 py-4 font-bold text-slate-800">₹{order.total_price.toLocaleString()}</td>
+                                    <td className="px-4 md:px-6 py-4 font-bold text-slate-800">₹{(order.total_price || order.totalAmount || 0).toLocaleString()}</td>
                                     <td className="px-4 md:px-6 py-4">
                                         <div className="text-sm font-medium text-slate-700">{new Date(order.created_at).toLocaleDateString("en-IN")}</div>
                                         <div className="text-xs text-slate-400">{new Date(order.created_at).toLocaleTimeString("en-IN", { hour: '2-digit', minute: '2-digit' })}</div>
