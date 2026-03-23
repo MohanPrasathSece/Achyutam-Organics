@@ -40,8 +40,8 @@ interface Product {
 const MOCK_PRODUCTS: Product[] = [
   { id: 101, name: "Ghee Products - 250ml", price: 550, category: "Ghee", image: ghee250gm, visibility: true, stock_status: true, featured: true },
   { id: 102, name: "Ghee Products - 500g", price: 1050, category: "Ghee", image: ghee500ml, visibility: true, stock_status: true, featured: true },
-  { id: 103, name: "Pure Desi Cow Ghee - 1kg", price: 2100, category: "Ghee", image: ghee1kg, visibility: true, stock_status: true, featured: true },
-  { id: 104, name: "Fresh Cow Milk - Daily Delivery", price: 80, category: "Milk", image: freshMilk, visibility: true, stock_status: true, featured: true },
+  { id: 103, name: "Pure Desi Gir Cow Ghee - 1kg", price: 2100, category: "Ghee", image: ghee1kg, visibility: true, stock_status: true, featured: true },
+  { id: 104, name: "Fresh Gir Cow Milk - Daily Delivery", price: 80, category: "Milk", image: freshMilk, visibility: true, stock_status: true, featured: true },
 ];
 
 const Products = () => {
@@ -204,7 +204,7 @@ const Products = () => {
         "url": `https://achyutamorganics.com/products?category=${product.category}&id=${product.id}`,
         "name": product.name,
         "image": product.image.startsWith("http") ? product.image : `https://achyutamorganics.com${product.image}`,
-        "description": `Pure traditional Bilona method Indian Desi Cow Ghee from Achyutam Organics.`,
+        "description": `Pure traditional Bilona method Indian Desi Gir Cow Ghee from Achyutam Organics.`,
         "offers": {
           "@type": "Offer",
           "price": parsePrice(product.price),

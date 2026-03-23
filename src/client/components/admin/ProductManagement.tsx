@@ -64,8 +64,8 @@ const ProductManagement = () => {
                 const demoProducts = [
                     {
                         id: "demo-1",
-                        name: "Pure Desi Cow Ghee - 250gm",
-                        description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                        name: "Pure Desi Gir Cow Ghee - 250gm",
+                        description: "Premium quality desi Gir cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
                         price: 550,
                         category_id: "demo-cat-1",
                         stock_quantity: 50,
@@ -77,8 +77,8 @@ const ProductManagement = () => {
                     },
                     {
                         id: "demo-2",
-                        name: "Pure Desi Cow Ghee - 500ml",
-                        description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                        name: "Pure Desi Gir Cow Ghee - 500ml",
+                        description: "Premium quality desi Gir cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
                         price: 1050,
                         category_id: "demo-cat-1",
                         stock_quantity: 30,
@@ -90,8 +90,8 @@ const ProductManagement = () => {
                     },
                     {
                         id: "demo-3",
-                        name: "Pure Desi Cow Ghee - 1kg",
-                        description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                        name: "Pure Desi Gir Cow Ghee - 1kg",
+                        description: "Premium quality desi Gir cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
                         price: 2100,
                         category_id: "demo-cat-1",
                         stock_quantity: 20,
@@ -103,8 +103,8 @@ const ProductManagement = () => {
                     },
                     {
                         id: "demo-4",
-                        name: "Fresh Cow Milk - Daily Delivery",
-                        description: "Pure and fresh cow milk delivered daily to your doorstep. From healthy grass-fed cows.",
+                        name: "Fresh Gir Cow Milk - Daily Delivery",
+                        description: "Pure and fresh Gir cow milk delivered daily to your doorstep. From healthy grass-fed Gir cows.",
                         price: 80,
                         category_id: "demo-cat-2",
                         stock_quantity: 0,
@@ -123,8 +123,8 @@ const ProductManagement = () => {
             const demoProducts = [
                 {
                     id: "demo-1",
-                    name: "Pure Desi Cow Ghee - 250gm",
-                    description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                    name: "Pure Desi Gir Cow Ghee - 250gm",
+                    description: "Premium quality desi Gir cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
                     price: 550,
                     category_id: "demo-cat-1",
                     stock_quantity: 50,
@@ -136,8 +136,8 @@ const ProductManagement = () => {
                 },
                 {
                     id: "demo-2",
-                    name: "Pure Desi Cow Ghee - 500ml",
-                    description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                    name: "Pure Desi Gir Cow Ghee - 500ml",
+                    description: "Premium quality desi Gir cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
                     price: 1050,
                     category_id: "demo-cat-1",
                     stock_quantity: 30,
@@ -149,8 +149,8 @@ const ProductManagement = () => {
                 },
                 {
                     id: "demo-3",
-                    name: "Pure Desi Cow Ghee - 1kg",
-                    description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+                    name: "Pure Desi Gir Cow Ghee - 1kg",
+                    description: "Premium quality desi Gir cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
                     price: 2100,
                     category_id: "demo-cat-1",
                     stock_quantity: 20,
@@ -162,8 +162,8 @@ const ProductManagement = () => {
                 },
                 {
                     id: "demo-4",
-                    name: "Fresh Cow Milk - Daily Delivery",
-                    description: "Pure and fresh cow milk delivered daily to your doorstep. From healthy grass-fed cows.",
+                    name: "Fresh Gir Cow Milk - Daily Delivery",
+                    description: "Pure and fresh Gir cow milk delivered daily to your doorstep. From healthy grass-fed Gir cows.",
                     price: 80,
                     category_id: "demo-cat-2",
                     stock_quantity: 0,

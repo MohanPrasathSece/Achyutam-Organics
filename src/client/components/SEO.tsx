@@ -12,9 +12,9 @@ interface SEOProps {
 }
 
 const SEO = ({
-    title = "Achyutam Organics | Pure Desi Cow Ghee & Organic Dairy",
-    description = "Achyutam Organics brings you the finest Organic Desi Cow Ghee, made using the traditional Bilona method. Fresh from our farm in Katni to your home.",
-    keywords = "organic ghee, desi cow ghee, bilona ghee, A2 cow ghee, farm fresh dairy, organic dairy products, Achyutam Organics",
+    title = "Achyutam Organics | Pure Desi Gir Cow Ghee & Organic Dairy",
+    description = "Achyutam Organics brings you the finest Organic Desi Gir Cow Ghee, made using the traditional Bilona method. Fresh from our farm in Katni to your home.",
+    keywords = "organic ghee, desi Gir cow ghee, bilona ghee, A2 Gir cow ghee, farm fresh dairy, organic dairy products, Achyutam Organics",
     ogImage = "/src/client/assets/ghee-hero.jpg",
     ogType = "website",
     canonicalUrl,

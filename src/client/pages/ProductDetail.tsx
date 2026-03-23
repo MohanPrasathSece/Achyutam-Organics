@@ -101,14 +101,14 @@ const getProductData = (id: string) => {
   // All ghee products (101, 102, 103) should return the same ghee data
   if (id === "101" || id === "102" || id === "103") {
     return {
-      name: "Pure Desi Cow Ghee",
-      description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+      name: "Pure Desi Gir Cow Ghee",
+      description: "Premium quality desi Gir cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
       variants: [
         { id: "101", name: "250gm", price: "₹550 per litre", image: ghee250gm },
         { id: "102", name: "500ml", price: "₹1050 per litre", image: ghee500ml },
         { id: "103", name: "1kg", price: "₹2100 per litre", image: ghee1kg }
       ],
-      features: ["100% Organic", "Traditional Bilona Method", "A2 Cow Milk", "No Preservatives"],
+      features: ["100% Organic", "Traditional Bilona Method", "A2 Gir Cow Milk", "No Preservatives"],
       nutritionalInfo: "Rich in healthy fats, vitamins A, D, E, and K",
       storage: "Store in cool, dry place away from direct sunlight",
       category: "Ghee"
@@ -117,8 +117,8 @@ const getProductData = (id: string) => {
   
   const products = {
     "104": {
-      name: "Fresh Cow Milk",
-      description: "Pure and fresh cow milk delivered daily at your doorstep. Sourced from healthy grass-fed cows.",
+      name: "Fresh Gir Cow Milk",
+      description: "Pure and fresh Gir cow milk delivered daily at your doorstep. Sourced from healthy grass-fed Gir cows.",
       variants: [
         { id: "104", name: "Daily Delivery - 1L", price: "₹80 per litre", image: freshMilk }
       ],
@@ -268,8 +268,8 @@ const ProductDetail = () => {
             <div className="w-24 h-1 bg-accent mx-auto rounded-full mb-6" />
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               {product.category === "Ghee" 
-                ? "Traditional Bilona method ghee made from pure A2 cow milk. Available in multiple sizes for your convenience."
-                : "Farm-fresh cow milk delivered daily from our grass-fed cows. Pure and nutritious."
+                ? "Traditional Bilona method ghee made from pure A2 Gir cow milk. Available in multiple sizes for your convenience."
+                : "Farm-fresh Gir cow milk delivered daily from our grass-fed Gir cows. Pure and nutritious."
               }
             </p>
           </div>

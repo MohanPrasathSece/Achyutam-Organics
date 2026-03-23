@@ -43,7 +43,7 @@ Please confirm my order and share delivery schedule. Thank you!`.trim();
     <>
       <SEO
         title="Your Cart | Achyutam Organics"
-        description="Review your selection of pure organic Desi Cow Ghee and dairy products."
+        description="Review your selection of pure organic Desi Gir cow Ghee and dairy products."
         canonicalUrl="/cart"
       />
 
@@ -56,7 +56,7 @@ Please confirm my order and share delivery schedule. Thank you!`.trim();
                 Pure goodness for your home
               </h1>
               <p className="text-slate-600 max-w-2xl mx-auto mt-4 font-medium font-lato">
-                Review your selection of farm-fresh A2 Desi Cow Ghee and organic dairy products. Each jar is filled with tradition and purity.
+                Review your selection of farm-fresh A2 Desi Gir cow Ghee and organic dairy products. Each jar is filled with tradition and purity.
               </p>
             </div>
 

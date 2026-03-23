@@ -30,7 +30,7 @@ const TermsAndConditions = () => {
                         <section>
                             <h2 className="text-2xl font-bold text-slate-800 mb-4 font-playfair">2. Products & Quality</h2>
                             <p>
-                                We take pride in the purity of our A2 Desi Cow Ghee and fresh dairy products. Our Ghee is made using the traditional Bilona method. As these are natural products, slight variations in color, aroma, and texture are normal and signify their authentic nature.
+                                We take pride in the purity of our A2 Desi Gir Cow Ghee and fresh dairy products. Our Ghee is made using the traditional Bilona method. As these are natural products, slight variations in color, aroma, and texture are normal and signify their authentic nature.
                             </p>
                             <p className="mt-2">
                                 All prices are listed in Indian Rupees (INR) and are subject to change without notice. We reserve the right to modify or discontinue any product or delivery service at any time.

@@ -189,7 +189,7 @@ const Checkout = () => {
                 amount,
                 currency,
                 name: "Achyutam Organics",
-                description: "Pure A2 Desi Cow Ghee",
+                description: "Pure A2 Desi Gir Cow Ghee",
                 order_id: rzpOrderId,
                 handler: async (payment) => {
                     setIsProcessing(true);

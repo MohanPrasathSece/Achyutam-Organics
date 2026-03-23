@@ -9,7 +9,7 @@ const SchemaMarkup = () => {
         "name": "Achyutam Organics",
         "url": siteUrl,
         "logo": `${siteUrl}/favicon.png`,
-        "description": "Pure Desi Cow Ghee & Organic Dairy products handcrafted using traditional Vedic Bilona methods.",
+        "description": "Pure Desi Gir Cow Ghee & Organic Dairy products handcrafted using traditional Vedic Bilona methods.",
         "sameAs": [
             "https://www.instagram.com/achyutam_organics",
             "https://twitter.com/achyutam_org",
@@ -59,7 +59,7 @@ const SchemaMarkup = () => {
     const productSchema = {
         "@context": "https://schema.org",
         "@type": "Product",
-        "name": "Pure Desi Cow Ghee",
+        "name": "Pure Desi Gir Cow Ghee",
         "description": "100% pure A2 milk ghee from indigenous Gir cows, handcrafted using traditional Vedic Bilona methods.",
         "brand": {
             "@type": "Brand",

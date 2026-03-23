@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react';
 // Import farm images from assets
 import farm1 from '@/assets/farm imags/farm.png';
 import farm2 from '@/assets/farm imags/farm2.png';
-import cow from '@/assets/farm imags/cow.png';
+import cowImage from '@/assets/farm imags/cow.png';
 
 // Farm images array
 const farmImages = [
   { src: farm1, alt: 'Our Beautiful Farm Landscape' },
   { src: farm2, alt: 'Sustainable Farming Practices' },
-  { src: cow, alt: 'Our Healthy Gir Cows' },
+  { src: cowImage, alt: 'Our Healthy Gir Cows' },
 ];
 
 const FarmSection = () => {

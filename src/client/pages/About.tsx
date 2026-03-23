@@ -64,7 +64,7 @@ const About = () => {
               <div className="w-24 h-1 bg-accent mx-auto rounded-full mb-8" />
             </div>
             <p className="text-lg text-foreground/90 leading-relaxed text-center">
-              Achyutam Organics is a small organic dairy brand based in Katni, Madhya Pradesh. We focus on producing traditional Indian dairy products, especially Desi Cow Ghee made using natural and ancient methods.
+              Achyutam Organics is a small organic dairy brand based in Katni, Madhya Pradesh. We focus on producing traditional Indian dairy products, especially Desi Gir Cow Ghee made using natural and ancient methods.
             </p>
             <p className="text-lg text-foreground/90 leading-relaxed text-center">
               Our farm-to-home concept ensures that every product reaching your table is fresh, pure, and full of natural nutrition. We believe in the healing power of traditional food, prepared the way nature intended.
@@ -139,10 +139,10 @@ const About = () => {
               </h2>
               <div className="w-24 h-1 bg-accent rounded-full mb-8" />
               <p className="text-lg text-foreground/90 leading-relaxed mb-6">
-                To bring back the purity of traditional dairy products to modern homes, specializing in indigenous Gir cows and using ancient wisdom and sustainable practices that honor both nature and health.
+                To bring back the purity of traditional dairy products to modern homes, specializing in indigenous Gir Gir cows and using ancient wisdom and sustainable practices that honor both nature and health.
               </p>
               <p className="text-lg text-foreground/90 leading-relaxed mb-6">
-                We believe that everyone deserves access to pure, unadulterated dairy products from our single-breed Gir cow farm that nourish the body and soul.
+                We believe that everyone deserves access to pure, unadulterated dairy products from our single-breed Gir Gir cow farm that nourish the body and soul.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
@@ -194,7 +194,7 @@ const About = () => {
                 Sourcing
               </h3>
               <p className="text-muted-foreground">
-                We source milk exclusively from our own farm where we follow organic practices with our indigenous Gir cows.
+                We source milk exclusively from our own farm where we follow organic practices with our indigenous Gir Gir cows.
               </p>
             </div>
             <div className="text-center animate-fade-in" style={{ animationDelay: "200ms" }}>

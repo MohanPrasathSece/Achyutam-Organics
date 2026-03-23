@@ -17,12 +17,12 @@ const ProductOptions = () => {
 
   const products = {
     ghee: [
-      { id: 101, name: "Pure Desi Cow Ghee - 250gm", price: "₹550", image: ghee250 },
-      { id: 102, name: "Pure Desi Cow Ghee - 500ml", price: "₹1050", image: ghee500 },
-      { id: 103, name: "Pure Desi Cow Ghee - 1kg", price: "₹2100", image: ghee1kg },
+      { id: 101, name: "Pure Desi Gir Cow Ghee - 250gm", price: "₹550", image: ghee250 },
+      { id: 102, name: "Pure Desi Gir Cow Ghee - 500ml", price: "₹1050", image: ghee500 },
+      { id: 103, name: "Pure Desi Gir Cow Ghee - 1kg", price: "₹2100", image: ghee1kg },
     ],
     milk: [
-      { id: 104, name: "Fresh Cow Milk - Daily Delivery", price: "₹80", image: freshMilk },
+      { id: 104, name: "Fresh Gir Cow Milk - Daily Delivery", price: "₹80", image: freshMilk },
     ]
   };
 
@@ -52,7 +52,7 @@ const ProductOptions = () => {
     <div className="min-h-screen bg-gray-50">
       <SEO
         title={`${category === 'ghee' ? 'Ghee' : 'Milk'} Options | Achyutam Organics`}
-        description={`Choose from our range of ${category === 'ghee' ? 'premium desi cow ghee' : 'fresh cow milk'} products.`}
+        description={`Choose from our range of ${category === 'ghee' ? 'premium desi Gir cow ghee' : 'fresh Gir cow milk'} products.`}
         canonicalUrl={`/products/${category}`}
       />
 

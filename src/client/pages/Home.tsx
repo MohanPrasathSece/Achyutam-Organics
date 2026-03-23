@@ -43,59 +43,59 @@ type FeaturedProduct = {
 const products: FeaturedProduct[] = [
   { 
     id: 101, 
-    name: "Pure Desi Cow Ghee - 250gm", 
+    name: "Pure Desi Gir Cow Ghee - 250gm", 
     price: "₹550 per litre", 
     image: ghee250, 
     category: "Ghee", 
     deliveryInfo: "All India Delivery",
-    description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+    description: "Premium quality desi Gir cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
     weight: 250,
     unit: "gm",
     shelfLife: "12 months from manufacturing date",
     storage: "Store in a cool, dry place away from direct sunlight.",
-    ingredients: ["Pure Cow Milk", "Traditional Bilona Method"]
+    ingredients: ["Pure Gir Cow Milk", "Traditional Bilona Method"]
   },
   { 
     id: 102, 
-    name: "Pure Desi Cow Ghee - 500ml", 
+    name: "Pure Desi Gir Cow Ghee - 500ml", 
     price: "₹1050 per litre", 
     image: ghee500, 
     category: "Ghee", 
     deliveryInfo: "All India Delivery",
-    description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+    description: "Premium quality desi Gir cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
     weight: 500,
     unit: "ml",
     shelfLife: "12 months from manufacturing date",
     storage: "Store in a cool, dry place away from direct sunlight.",
-    ingredients: ["Pure Cow Milk", "Traditional Bilona Method"]
+    ingredients: ["Pure Gir Cow Milk", "Traditional Bilona Method"]
   },
   { 
     id: 103, 
-    name: "Pure Desi Cow Ghee - 1kg", 
+    name: "Pure Desi Gir Cow Ghee - 1kg", 
     price: "₹2100 per litre", 
     image: ghee1kg, 
     category: "Ghee", 
     deliveryInfo: "All India Delivery",
-    description: "Premium quality desi cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
+    description: "Premium quality desi Gir cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
     weight: 1000,
     unit: "gm",
     shelfLife: "12 months from manufacturing date",
     storage: "Store in a cool, dry place away from direct sunlight.",
-    ingredients: ["Pure Cow Milk", "Traditional Bilona Method"]
+    ingredients: ["Pure Gir Cow Milk", "Traditional Bilona Method"]
   },
   { 
     id: 104, 
-    name: "Fresh Cow Milk - Daily Delivery", 
+    name: "Fresh Gir Cow Milk - Daily Delivery", 
     price: "₹80 per litre", 
     image: freshMilk, 
     category: "Milk", 
     deliveryInfo: "Katni Area Only",
-    description: "Pure and fresh cow milk delivered daily to your doorstep. From healthy grass-fed cows.",
+    description: "Pure and fresh Gir cow milk delivered daily to your doorstep. From healthy grass-fed Gir cows.",
     weight: 1000,
     unit: "ml",
     shelfLife: "2 days when refrigerated",
     storage: "Refrigerate immediately, consume within 2 days",
-    ingredients: ["Fresh Cow Milk", "Natural Vitamins"]
+    ingredients: ["Fresh Gir Cow Milk", "Natural Vitamins"]
   },
 ];
 
@@ -196,7 +196,7 @@ const Home = () => {
         "@type": "Product",
         "name": product.name,
         "image": `https://achyutamorganics.com${product.image}`,
-        "description": `Pure traditional Bilona method Indian Desi Cow Ghee. Rich in aroma and nutrition.`,
+        "description": `Pure traditional Bilona method Indian Desi Gir Cow Ghee. Rich in aroma and nutrition.`,
         "offers": {
           "@type": "Offer",
           "price": parsePrice(product.price),
@@ -234,10 +234,10 @@ const Home = () => {
       },
       {
         "@type": "Question",
-        "name": "Is Achyutam Organics ghee made from A2 cow milk?",
+        "name": "Is Achyutam Organics ghee made from A2 Gir cow milk?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, our Desi Cow Ghee is made from the pure A2 milk of indigenous, grass-fed Indian cows, ensuring maximum health benefits."
+          "text": "Yes, our Desi Gir Cow Ghee is made from the pure A2 milk of indigenous, grass-fed Indian Gir cows, ensuring maximum health benefits."
         }
       },
       {
@@ -254,8 +254,8 @@ const Home = () => {
   return (
     <main className="min-h-screen">
       <SEO
-        title="Achyutam Organics | Pure Desi Cow Ghee & Organic Dairy"
-        description="Experience the purity of traditional Bilona method Desi Cow Ghee from Achyutam Organics. Farm-fresh, 100% natural, and highly nutritious."
+        title="Achyutam Organics | Pure Desi Gir Cow Ghee & Organic Dairy"
+        description="Experience the purity of traditional Bilona method Desi Gir Cow Ghee from Achyutam Organics. Farm-fresh, 100% natural, and highly nutritious."
         canonicalUrl="/"
         schemas={[featuredProductsSchema, breadcrumbSchema, faqSchema]}
         preloadImage={hero1}
@@ -283,9 +283,9 @@ const Home = () => {
         </div>
 
         <div className="relative z-10 text-left px-6 md:px-12 animate-fade-in-slow max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-8">
-            <div className="w-4 h-4 rounded-full bg-accent animate-pulse" />
-            <p className="text-xs md:text-sm tracking-[0.2em] text-accent uppercase">The Gold Standard of Organic Ghee</p>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600/90 border border-blue-300/40 mb-8 shadow-lg backdrop-blur-sm">
+            <div className="w-4 h-4 rounded-full bg-blue-200 animate-pulse" />
+            <p className="text-xs md:text-sm tracking-[0.2em] text-white uppercase font-semibold">The Gold Standard of Organic Ghee</p>
           </div>
 
           <h1 className="font-playfair text-4xl sm:text-6xl md:text-7xl mb-8 text-foreground tracking-tighter leading-[0.95]">
@@ -294,7 +294,7 @@ const Home = () => {
           </h1>
 
           <p className="text-sm md:text-lg text-foreground/80 max-w-2xl mb-12 leading-relaxed">
-            Pure Desi Cow Ghee from indigenous Gir cows delivered all over India. Fresh cow milk available daily in Katni only. Experience the taste of tradition from our single-breed specialty farm.
+            Pure Desi Gir Cow Ghee from indigenous Gir cows delivered all over India. Fresh Gir cow milk available daily in Katni only. Experience the taste of tradition from our single-breed specialty farm.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-center sm:items-start">
@@ -342,13 +342,13 @@ const Home = () => {
             <div className="relative overflow-hidden rounded-2xl shadow-xl group">
               <img 
                 src={freshMilk} 
-                alt="Fresh Cow Milk" 
+                alt="Fresh Gir Cow Milk" 
                 className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
                 <div className="text-white">
                   <h3 className="text-xl md:text-2xl font-playfair font-bold mb-2 text-white">Farm Fresh Milk</h3>
-                  <p className="text-white/90 text-sm md:text-base">Daily Delivery - ₹80 per litre</p>
+                  <p className="text-white/90 text-sm md:text-base">Daily Delivery - ₹80 per litre (only Katni)</p>
                 </div>
               </div>
             </div>
@@ -383,7 +383,7 @@ const Home = () => {
                   Achyutam Organics was born from a simple mission: to restore the purity of traditional Indian dairy. Our ghee isn't just a product—it's a tribute to the ancient Vedic techniques passed down through generations.
                 </p>
                 <p>
-                  From our grass-fed indigenous cows to the slow, hand-churned Bilona process in earthen pots, every drop of our golden ghee represents our commitment to natural nutrition and farm-fresh quality.
+                  From our grass-fed indigenous Gir cows to the slow, hand-churned Bilona process in earthen pots, every drop of our golden ghee represents our commitment to natural nutrition and farm-fresh quality.
                 </p>
               </div>
             </div>
@@ -404,7 +404,7 @@ const Home = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             {[
-              { icon: Sparkles, title: "A2 Cow Milk", desc: "Pure desi cow milk delivered daily in Katni. Farm-fresh goodness at your doorstep." },
+              { icon: Sparkles, title: "A2 Gir Cow Milk", desc: "Pure desi Gir cow milk delivered daily in Katni. Farm-fresh goodness at your doorstep." },
               { icon: ShieldCheck, title: "Traditional Bilona Ghee", desc: "Hand-churned and slow-cooked in earthen pots. Available all over India." },
               { icon: Leaf, title: "Farm to Home", desc: "Direct delivery from our Katni farm - Fresh milk locally, Ghee nationwide." }
             ].map((item, idx) => (
