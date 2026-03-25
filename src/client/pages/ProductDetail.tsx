@@ -437,8 +437,8 @@ const ProductDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {/* Only Milk Product */}
           <div className="bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/product/104')}>
-            <img src={freshMilk} alt="Fresh Cow Milk" className="w-32 h-32 mx-auto object-contain mb-4 rounded-lg" />
-            <h3 className="font-lato font-semibold mb-2">Fresh Cow Milk - Daily Delivery</h3>
+            <img src={freshMilk} alt="Fresh Gir Cow Milk" className="w-32 h-32 mx-auto object-contain mb-4 rounded-lg" />
+            <h3 className="font-lato font-semibold mb-2">Fresh Gir Cow Milk - Daily Delivery</h3>
             <p className="text-accent font-bold mb-2">₹80 per litre</p>
             <p className="text-sm text-gray-600">Farm Fresh Daily</p>
           </div>
