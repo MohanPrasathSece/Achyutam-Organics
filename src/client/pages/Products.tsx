@@ -59,6 +59,7 @@ const Products = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const useMockData = false; // Always use database products
         if (useMockData) {
           // Use mock data when Supabase is not configured
           setDbProducts(MOCK_PRODUCTS);
@@ -77,15 +78,36 @@ const Products = () => {
         if (categoriesRes.error) throw categoriesRes.error;
 
         // Map Supabase rows to local Product shape
-        const mappedProducts: Product[] = (productsRes.data || []).map((p: any) => ({
-          id: p.id,
-          name: p.name,
-          price: p.price,
-          category: p.categories?.name || "Uncategorized",
-          image: Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : ghee250gm,
-          featured: p.featured || false,
-          stock_status: p.status === "active",
-        }));
+        const mappedProducts: Product[] = (productsRes.data || []).map((p: any) => {
+          // Handle image paths from database
+          let imageSrc = ghee250gm; // default fallback
+          if (p.images && p.images.length > 0) {
+            const imagePath = p.images[0];
+            
+            // Check if it's a local uploaded image (starts with /product-images/)
+            if (imagePath.startsWith('/product-images/')) {
+              // Use server URL for uploaded images
+              const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+              imageSrc = `${apiUrl}${imagePath}`;
+            } else {
+              // Convert database path to actual import for assets folder images
+              if (imagePath.includes('ghee_250gm.jpeg')) imageSrc = ghee250gm;
+              else if (imagePath.includes('ghee_500ml.jpeg')) imageSrc = ghee500ml;
+              else if (imagePath.includes('ghee_1kg.jpeg')) imageSrc = ghee1kg;
+              else if (imagePath.includes('fresh-milk.jpg')) imageSrc = freshMilk;
+            }
+          }
+
+          return {
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            category: p.categories?.name || "Uncategorized",
+            image: imageSrc,
+            featured: p.featured || false,
+            stock_status: p.status === "active",
+          };
+        });
 
         setDbProducts(mappedProducts);
         setDbCategories(["All", ...(categoriesRes.data?.map((c: any) => c.name) || [])]);

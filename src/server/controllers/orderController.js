@@ -117,47 +117,25 @@ export const createOrder = async (req, res) => {
       notes: {
         customerEmail: customer.email,
         customerName: customer.name,
+        // Store order data in Razorpay notes for post-payment creation
+        orderData: JSON.stringify({
+          customer,
+          shippingAddress,
+          items,
+          subtotal: amount,
+          total_price: amount,
+          notes: finalNotes || null,
+        })
       },
     });
 
-    if (!supabase) {
-      return res.status(500).json({ error: "Supabase is not configured." });
-    }
-
-    const { data: supaOrder, error: supaError } = await supabase.from("orders").insert([{
-      razorpay_order_id: razorpayOrder.id,
-      subtotal: amount,
-      total_price: amount,
-      currency: razorpayOrder.currency,
-      status: "pending",
-      customer_name: customer.name,
-      email: customer.email,
-      phone: customer.phone,
-      shipping_address: shippingAddress,
-      items: items,
-      notes: finalNotes || null,
-    }]).select().single();
-
-    if (supaError) {
-      console.error("Supabase order creation failed:", supaError);
-      return res.status(500).json({
-        error: "Database error",
-        details: supaError.message,
-        hint: "Make sure you have run the ALTER TABLE SQL commands in Supabase Editor."
-      });
-    }
-
     return res.json({
       success: true,
-      message: "Order created",
+      message: "Payment initiated",
       orderId: razorpayOrder.id,
       amount: amountInPaise,
       currency: razorpayOrder.currency,
       razorpayKey: razorpayClient.key_id,
-      order: {
-        id: supaOrder.id,
-        status: supaOrder.status,
-      },
     });
   } catch (error) {
     console.error("Failed to create order:", error);
@@ -195,30 +173,43 @@ export const verifyPayment = async (req, res) => {
     const isValid = expectedSignature === razorpaySignature;
 
     if (!isValid) {
-      console.warn(`❌ SECURITY ALERT: Invalid payment signature for Order ${order.id}. This could be a fraud attempt.`);
-      await supabase.from("orders").update({ status: "failed" }).eq("id", order.id);
+      console.warn(`❌ SECURITY ALERT: Invalid payment signature for Razorpay Order ${razorpayOrderId}. This could be a fraud attempt.`);
       return res.status(400).json({ error: "Invalid payment signature." });
     }
 
-    // Success
-    const { error: updateError } = await supabase
-      .from("orders")
-      .update({
-        status: "confirmed",
-        razorpay_payment_id: razorpayPaymentId,
-        razorpay_signature: razorpaySignature,
-        updated_at: new Date().toISOString()
-      })
-      .eq("id", order.id);
+    // Payment successful - now create the order in database
+    const razorpay = getRazorpayClient();
+    const razorpayOrderDetails = await razorpay.orders.fetch(razorpayOrderId);
+    
+    // Extract order data from Razorpay notes
+    const orderData = JSON.parse(razorpayOrderDetails.notes.orderData || '{}');
+    const { customer, shippingAddress, items, subtotal, total_price, notes } = orderData;
 
-    if (updateError) throw updateError;
+    // Create order in database only after successful payment
+    const { data: newOrder, error: createError } = await supabase.from("orders").insert([{
+      razorpay_order_id: razorpayOrderId,
+      razorpay_payment_id: razorpayPaymentId,
+      razorpay_signature: razorpaySignature,
+      subtotal: subtotal,
+      total_price: total_price,
+      currency: razorpayOrderDetails.currency,
+      status: "confirmed",
+      customer_name: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      shipping_address: shippingAddress,
+      items: items,
+      notes: notes || null,
+    }]).select().single();
+
+    if (createError) {
+      console.error("Failed to create order after payment:", createError);
+      return res.status(500).json({ error: "Payment successful but failed to save order" });
+    }
 
     try {
-      // Fetch updated order for email
-      const { data: updatedOrder } = await supabase.from("orders").select("*").eq("id", order.id).single();
-
-      // STOCK MANAGEMENT LOGIC
-      // items are already in object format from Supabase JSONB
+      // Use the newly created order
+      const updatedOrder = newOrder;
       const items = updatedOrder.items;
 
       // We process stock reduction sequentially to avoid race conditions as much as possible without RPC
@@ -281,10 +272,42 @@ export const verifyPayment = async (req, res) => {
       console.error("Failed to send post-payment emails or update stock", saveError);
     }
 
-    return res.json({ success: true, message: "Payment verified", orderId: order.razorpayOrderId });
+    return res.json({ success: true, message: "Payment verified and order created", orderId: newOrder.razorpay_order_id, databaseOrderId: newOrder.id });
   } catch (error) {
     console.error("Payment verification failed", error);
     return res.status(400).json({ error: error.message || "Unable to verify payment" });
+  }
+};
+
+// Clean up abandoned Razorpay orders (older than 1 hour)
+export const cleanupAbandonedOrders = async () => {
+  try {
+    const razorpay = getRazorpayClient();
+    if (!razorpay) return;
+
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    
+    // Fetch all orders from the last hour
+    const orders = await razorpay.orders.all({
+      from: oneHourAgo.toISOString(),
+      to: new Date().toISOString()
+    });
+
+    for (const order of orders) {
+      // Check if order exists in our database
+      const { data: existingOrder } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("razorpay_order_id", order.id)
+        .single();
+
+      if (!existingOrder && order.status !== 'paid') {
+        console.log(`Cleaning up abandoned Razorpay order: ${order.id}`);
+        // Optionally: Add to a failed_orders table for analytics
+      }
+    }
+  } catch (error) {
+    console.error("Failed to cleanup abandoned orders:", error);
   }
 };
 

@@ -1,5 +1,6 @@
 import { supabase } from "../lib/supabase.js";
 import { getTransporter } from "./email.js";
+import { cleanupAbandonedOrders } from "../controllers/orderController.js";
 
 /**
  * Maintenance Task:
@@ -92,7 +93,13 @@ export const runOrderCleanup = async () => {
 export const initMaintenanceScheduler = () => {
     console.log("[Maintenance] Order cleanup scheduler initialized (24h checks).");
 
-    // Check every day
+    // Check every hour for abandoned orders
+    const abandonedCheckInterval = 60 * 60 * 1000;
+    setInterval(() => {
+        cleanupAbandonedOrders();
+    }, abandonedCheckInterval);
+
+    // Check every day for monthly cleanup
     const checkInterval = 24 * 60 * 60 * 1000;
 
     setInterval(() => {

@@ -99,6 +99,10 @@ export const createApp = () => {
   app.use("/api/admin", adminRoutes);
   app.use("/api/public", publicRoutes);
 
+  // Serve product images
+  const publicPath = path.resolve(__dirname, "../../public");
+  app.use("/product-images", express.static(path.join(publicPath, "product-images")));
+
   // Serve static files from the React app
   const distPath = path.resolve(__dirname, "../../dist");
   app.use(express.static(distPath, {

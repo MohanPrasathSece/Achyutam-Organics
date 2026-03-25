@@ -50,6 +50,8 @@ const ProductManagement = () => {
         featured: false,
     });
 
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
     const fetchProducts = async () => {
         try {
             const { data: productsData } = await supabase
@@ -204,25 +206,36 @@ const ProductManagement = () => {
         e.preventDefault();
         setLoading(true);
 
-        const payload: any = {
-            name: formData.name,
-            description: formData.description,
-            price: formData.price,
-            category_id: formData.category_id || null,
-            status: formData.status,
-            images: formData.images,
-            organic: formData.organic,
-            bestseller: formData.bestseller,
-            featured: formData.featured,
-        };
-
-        // Only include stock_quantity if it's non-zero or we want to track it
-        if (formData.stock_quantity !== undefined) {
-            payload.stock_quantity = formData.stock_quantity;
-        }
-
         try {
+            const formDataObj = new FormData();
+            
+            // Add product data as JSON
+            const payload = {
+                name: formData.name,
+                description: formData.description,
+                price: formData.price,
+                category_id: formData.category_id || null,
+                status: formData.status,
+                images: formData.images,
+                organic: formData.organic,
+                bestseller: formData.bestseller,
+                featured: formData.featured,
+                stock_quantity: formData.stock_quantity || 0,
+            };
+            
+            formDataObj.append('productData', JSON.stringify(payload));
+            
+            // Add image files
+            if (selectedFiles.length > 0) {
+                selectedFiles.forEach(file => {
+                    formDataObj.append('images', file);
+                });
+            }
+
+            const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+            
             if (formData.id) {
+                // Update existing product (no image upload for updates in this version)
                 const { error } = await supabase
                     .from("products")
                     .update(payload)
@@ -230,10 +243,23 @@ const ProductManagement = () => {
                 if (error) throw error;
                 toast({ title: "Product Updated" });
             } else {
-                const { error } = await supabase.from("products").insert([payload]);
-                if (error) throw error;
+                // Create new product with images
+                const response = await fetch(`${apiUrl}/api/admin/products`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
+                    },
+                    body: formDataObj,
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to create product');
+                }
+                
                 toast({ title: "Product Created" });
             }
+            
             setIsDialogOpen(false);
             resetForm();
             fetchProducts();
@@ -270,6 +296,12 @@ const ProductManagement = () => {
             bestseller: false,
             featured: false,
         });
+        setSelectedFiles([]);
+    };
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        setSelectedFiles(files);
     };
 
     const openEdit = (product: Product) => {
@@ -349,6 +381,21 @@ const ProductManagement = () => {
                             <div className="space-y-2">
                                 <Label>Description</Label>
                                 <Textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required className="rounded-xl border-slate-200" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Product Images</Label>
+                                <Input 
+                                    type="file" 
+                                    multiple 
+                                    accept="image/*"
+                                    onChange={handleFileSelect}
+                                    className="rounded-xl border-slate-200" 
+                                />
+                                {selectedFiles.length > 0 && (
+                                    <div className="text-sm text-slate-600">
+                                        {selectedFiles.length} file(s) selected
+                                    </div>
+                                )}
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="space-y-2">
