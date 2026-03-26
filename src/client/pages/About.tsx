@@ -46,7 +46,7 @@ const About = () => {
               <br />
               <span className="text-accent">From Farm to Table</span>
             </h1>
-            <p className="text-base text-white/90 font-lato max-w-3xl mx-auto">
+            <p className="text-base lg:text-lg text-white/90 font-lato max-w-3xl mx-auto">
               Discover the story behind Achyutam Organics and our commitment to bringing you the purest traditional dairy products
             </p>
           </div>
@@ -63,10 +63,10 @@ const About = () => {
               </h2>
               <div className="w-24 h-1 bg-accent mx-auto rounded-full mb-8" />
             </div>
-            <p className="text-lg text-foreground/90 leading-relaxed text-center">
+            <p className="text-base lg:text-lg text-foreground/90 leading-relaxed text-center">
               Achyutam Organics is a small organic dairy brand based in Katni, Madhya Pradesh. We focus on producing traditional Indian dairy products, especially Desi Gir Cow Ghee made using natural and ancient methods.
             </p>
-            <p className="text-lg text-foreground/90 leading-relaxed text-center">
+            <p className="text-base lg:text-lg text-foreground/90 leading-relaxed text-center">
               Our farm-to-home concept ensures that every product reaching your table is fresh, pure, and full of natural nutrition. We believe in the healing power of traditional food, prepared the way nature intended.
             </p>
           </div>
@@ -88,7 +88,7 @@ const About = () => {
               <h3 className="font-playfair text-xl mb-3">
                 Quality First
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-base lg:text-lg text-muted-foreground">
                 Every product is carefully crafted to maintain the highest standards of purity and nutrition.
               </p>
             </div>
@@ -99,7 +99,7 @@ const About = () => {
               <h3 className="font-playfair text-xl mb-3">
                 Natural & Pure
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-base lg:text-lg text-muted-foreground">
                 We use only natural ingredients and traditional methods without any artificial additives.
               </p>
             </div>
@@ -110,7 +110,7 @@ const About = () => {
               <h3 className="font-playfair text-xl mb-3">
                 Trusted by Thousands
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-base lg:text-lg text-muted-foreground">
                 Our growing community of happy customers trusts us for their daily dairy needs.
               </p>
             </div>
@@ -121,7 +121,7 @@ const About = () => {
               <h3 className="font-playfair text-xl mb-3">
                 Community First
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-base lg:text-lg text-muted-foreground">
                 We prioritize our customers and community in everything we do.
               </p>
             </div>
@@ -138,32 +138,32 @@ const About = () => {
                 Our Mission
               </h2>
               <div className="w-24 h-1 bg-accent rounded-full mb-8" />
-              <p className="text-lg text-foreground/90 leading-relaxed mb-6">
+              <p className="text-base lg:text-lg text-foreground/90 leading-relaxed mb-6">
                 To bring back the purity of traditional dairy products to modern homes, specializing in indigenous Gir cows and using ancient wisdom and sustainable practices that honor both nature and health.
               </p>
-              <p className="text-base text-foreground/90 leading-relaxed mb-6">
+              <p className="text-base lg:text-lg text-foreground/90 leading-relaxed mb-6">
                 We believe that everyone deserves access to pure, unadulterated dairy products from our single-breed Gir Gir cow farm that nourish the body and soul.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-accent rounded-full"></div>
-                  <span className="text-muted-foreground">100% Organic and Natural</span>
+                  <span className="text-base lg:text-lg text-muted-foreground">100% Organic and Natural</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-accent rounded-full"></div>
-                  <span className="text-muted-foreground">Traditional Bilona Method</span>
+                  <span className="text-base lg:text-lg text-muted-foreground">Traditional Bilona Method</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-accent rounded-full"></div>
-                  <span className="text-muted-foreground">Indigenous Gir Cows Only</span>
+                  <span className="text-base lg:text-lg text-muted-foreground">Indigenous Gir Cows Only</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-accent rounded-full"></div>
-                  <span className="text-muted-foreground">Single Breed Specialty Farm</span>
+                  <span className="text-base lg:text-lg text-muted-foreground">Single Breed Specialty Farm</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-accent rounded-full"></div>
-                  <span className="text-muted-foreground">Pure A2 Milk Production</span>
+                  <span className="text-base lg:text-lg text-muted-foreground">Pure A2 Milk Production</span>
                 </div>
               </div>
             </div>
@@ -171,7 +171,7 @@ const About = () => {
               <div className="bg-background rounded-2xl p-8 text-center shadow-soft border border-border/40">
                 <div className="text-6xl font-bold text-accent mb-4">5000+</div>
                 <div className="text-lg font-playfair mb-2 text-foreground font-semibold">Happy Families</div>
-                <div className="text-muted-foreground">Trusting us daily for their dairy needs</div>
+                <div className="text-base lg:text-lg text-muted-foreground">Trusting us daily for their dairy needs</div>
               </div>
             </div>
           </div>
@@ -193,7 +193,7 @@ const About = () => {
               <h3 className="font-playfair text-xl font-semibold mb-3">
                 Sourcing
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-base lg:text-lg text-muted-foreground">
                 We source milk exclusively from our own farm where we follow organic practices with our indigenous Gir Gir cows.
               </p>
             </div>
@@ -204,7 +204,7 @@ const About = () => {
               <h3 className="font-playfair text-xl font-semibold mb-3">
                 Processing
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-base lg:text-lg text-muted-foreground">
                 Using traditional Bilona method, we hand-churn and slow-cook to preserve nutrients.
               </p>
             </div>
@@ -215,7 +215,7 @@ const About = () => {
               <h3 className="font-playfair text-xl font-semibold mb-3">
                 Delivery
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-base lg:text-lg text-muted-foreground">
                 Fresh products are carefully packaged and delivered directly to your doorstep.
               </p>
             </div>
@@ -229,14 +229,14 @@ const About = () => {
           <h2 className="font-playfair text-3xl md:text-4xl mb-6">
             Join Our Community
           </h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="text-base lg:text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
             Experience the difference of pure, traditional dairy products. Start your journey to healthier living today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/products" className="rounded-full px-8 py-4 text-base font-semibold bg-primary text-white hover:shadow-glow hover:scale-[1.02] transition-transform text-center">
+            <a href="/products" className="rounded-full px-8 py-4 text-base lg:text-lg font-semibold bg-primary text-white hover:shadow-glow hover:scale-[1.02] transition-transform text-center">
               Shop Products
             </a>
-            <a href="/contact" className="rounded-full px-8 py-4 text-base font-semibold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300 text-center">
+            <a href="/contact" className="rounded-full px-8 py-4 text-base lg:text-lg font-semibold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300 text-center">
               Contact Us
             </a>
           </div>

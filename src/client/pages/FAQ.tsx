@@ -69,7 +69,7 @@ const FAQ = () => {
                                     onClick={() => toggleFAQ(i)}
                                 >
                                     <div className="flex items-center justify-between">
-                                        <span className="font-playfair text-base text-foreground font-semibold">{faq.q}</span>
+                                        <span className="font-lato text-base text-foreground font-semibold">{faq.q}</span>
                                         <ChevronDown className={`h-5 w-5 shrink-0 text-accent transition-transform duration-300 ${openIndex === i ? 'rotate-180' : ''}`} />
                                     </div>
                                 </button>
