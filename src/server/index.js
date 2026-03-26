@@ -5,7 +5,7 @@ import { initMaintenanceScheduler } from "./utils/maintenance.js";
 
 dotenv.config();
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 4001;
 
 const start = async () => {
   try {

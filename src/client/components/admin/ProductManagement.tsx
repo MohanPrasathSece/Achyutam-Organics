@@ -232,7 +232,7 @@ const ProductManagement = () => {
                 });
             }
 
-            const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+            const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4001';
             
             if (formData.id) {
                 // Update existing product (no image upload for updates in this version)

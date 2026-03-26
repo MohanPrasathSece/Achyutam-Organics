@@ -432,7 +432,22 @@ const OrderManagement = () => {
                                                 value={selectedOrder.tracking_number || ""}
                                                 onChange={(e) => setSelectedOrder({ ...selectedOrder, tracking_number: e.target.value })}
                                                 onBlur={async (e) => {
-                                                    await supabase.from("orders").update({ tracking_number: e.target.value }).eq("id", selectedOrder.id);
+                                                    try {
+                                                        const session = await supabase.auth.getSession();
+                                                        await fetch("/api/orders/update-tracking", {
+                                                            method: "POST",
+                                                            headers: {
+                                                                "Content-Type": "application/json",
+                                                                "Authorization": `Bearer ${session.data.session?.access_token}`
+                                                            },
+                                                            body: JSON.stringify({
+                                                                orderId: selectedOrder.id,
+                                                                trackingNumber: e.target.value
+                                                            })
+                                                        });
+                                                    } catch (error) {
+                                                        console.error("Failed to update tracking number:", error);
+                                                    }
                                                 }}
                                                 className="md:text-right h-10 rounded-xl border-slate-200 focus:ring-emerald-500"
                                             />
@@ -445,7 +460,22 @@ const OrderManagement = () => {
                                                     value={selectedOrder.tracking_url || ""}
                                                     onChange={(e) => setSelectedOrder({ ...selectedOrder, tracking_url: e.target.value })}
                                                     onBlur={async (e) => {
-                                                        await supabase.from("orders").update({ tracking_url: e.target.value }).eq("id", selectedOrder.id);
+                                                        try {
+                                                            const session = await supabase.auth.getSession();
+                                                            await fetch("/api/orders/update-tracking", {
+                                                                method: "POST",
+                                                                headers: {
+                                                                    "Content-Type": "application/json",
+                                                                    "Authorization": `Bearer ${session.data.session?.access_token}`
+                                                                },
+                                                                body: JSON.stringify({
+                                                                    orderId: selectedOrder.id,
+                                                                    trackingUrl: e.target.value
+                                                                })
+                                                            });
+                                                        } catch (error) {
+                                                            console.error("Failed to update tracking URL:", error);
+                                                        }
                                                     }}
                                                     className="md:text-right h-10 rounded-xl border-slate-200 focus:ring-emerald-500 flex-1"
                                                 />

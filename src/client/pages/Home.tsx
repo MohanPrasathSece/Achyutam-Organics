@@ -59,7 +59,7 @@ const getDatabaseProducts = async (): Promise<FeaturedProduct[]> => {
         // Check if it's a local uploaded image (starts with /product-images/)
         if (imagePath.startsWith('/product-images/')) {
           // Use server URL for uploaded images
-          const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+          const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4001';
           imageSrc = `${apiUrl}${imagePath}`;
         } else {
           // Convert database path to actual import for assets folder images

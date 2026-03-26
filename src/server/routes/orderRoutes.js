@@ -1,5 +1,5 @@
 import express from "express";
-import { createOrder, createCODOrder, verifyPayment, updateOrderStatus } from "../controllers/orderController.js";
+import { createOrder, createCODOrder, verifyPayment, updateOrderStatus, updateTracking } from "../controllers/orderController.js";
 import { runOrderCleanup } from "../utils/maintenance.js";
 import { adminAuth } from "../middleware/auth.js";
 
@@ -11,6 +11,7 @@ router.post("/verify", verifyPayment); // Verification
 
 // Protected Admin Routes
 router.post("/update-status", adminAuth, updateOrderStatus);
+router.post("/update-tracking", adminAuth, updateTracking);
 router.post("/cleanup", adminAuth, async (req, res) => {
     try {
         await runOrderCleanup();

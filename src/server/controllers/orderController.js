@@ -533,7 +533,54 @@ export const updateOrderStatus = async (req, res) => {
     return res.json({ success: true, message: "Status updated successfully" });
   } catch (error) {
     console.error("Update status failed", error);
-    return res.status(500).json({ error: "Interal server error" });
+    return res.status(500).json({ error: "Failed to update order status" });
   }
 };
 
+export const updateTracking = async (req, res) => {
+  try {
+    const { orderId, trackingNumber, trackingUrl } = req.body;
+
+    if (!supabase) {
+      return res.status(503).json({ error: "Supabase service is not available. Please check environment variables." });
+    }
+
+    // Update tracking information in Supabase
+    const updateData = { updated_at: new Date().toISOString() };
+    if (trackingNumber !== undefined) updateData.tracking_number = trackingNumber;
+    if (trackingUrl !== undefined) updateData.tracking_url = trackingUrl;
+
+    const { error: updateError } = await supabase
+      .from("orders")
+      .update(updateData)
+      .eq("id", orderId);
+
+    if (updateError) throw updateError;
+
+    return res.json({ success: true, message: "Tracking updated successfully" });
+  } catch (error) {
+    console.error("Update tracking failed", error);
+    return res.status(500).json({ error: "Failed to update tracking information" });
+  }
+};
+
+export const getOrders = async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({ error: "Supabase service is not available. Please check environment variables." });
+    }
+
+    // Fetch all orders from Supabase
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    return res.json({ success: true, orders: data || [] });
+  } catch (error) {
+    console.error("Fetch orders failed", error);
+    return res.status(500).json({ error: "Failed to fetch orders" });
+  }
+};
