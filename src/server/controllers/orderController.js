@@ -117,7 +117,7 @@ export const createOrder = async (req, res) => {
       notes: {
         customerEmail: customer.email,
         customerName: customer.name,
-        // Store order data in Razorpay notes for post-payment creation
+        // Fallback: keeping orderData in notes just in case
         orderData: JSON.stringify({
           customer,
           shippingAddress,
@@ -125,9 +125,29 @@ export const createOrder = async (req, res) => {
           subtotal: amount,
           total_price: amount,
           notes: finalNotes || null,
-        })
+        }).substring(0, 255) // Still trying to keep it within limits as fallback
       },
     });
+
+    // Create a pending record in Supabase to avoid Razorpay notes size limits
+    const { error: pendingError } = await supabase.from("orders").insert([{
+      razorpay_order_id: razorpayOrder.id,
+      status: "pending",
+      subtotal: amount,
+      total_price: amount,
+      currency: razorpayOrder.currency,
+      customer_name: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      shipping_address: shippingAddress,
+      items: items,
+      notes: finalNotes || null,
+    }]).select().single();
+
+    if (pendingError) {
+      console.error("Failed to create pending order record:", pendingError);
+    }
+
 
     return res.json({
       success: true,
@@ -155,57 +175,96 @@ export const verifyPayment = async (req, res) => {
       return res.status(500).json({ error: "Supabase status: unavailable" });
     }
 
-    const { data: order, error: fetchError } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("razorpay_order_id", razorpayOrderId)
-      .single();
-
-    if (fetchError || !order) {
-      return res.status(404).json({ error: "Order not found." });
-    }
-
+    // 1. Signature Verification
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(`${razorpayOrderId}|${razorpayPaymentId}`)
       .digest("hex");
 
-    const isValid = expectedSignature === razorpaySignature;
-
-    if (!isValid) {
-      console.warn(`❌ SECURITY ALERT: Invalid payment signature for Razorpay Order ${razorpayOrderId}. This could be a fraud attempt.`);
+    if (expectedSignature !== razorpaySignature) {
+      console.warn(`❌ SECURITY ALERT: Invalid payment signature for Razorpay Order ${razorpayOrderId}.`);
       return res.status(400).json({ error: "Invalid payment signature." });
     }
 
-    // Payment successful - now create the order in database
-    const razorpay = getRazorpayClient();
-    const razorpayOrderDetails = await razorpay.orders.fetch(razorpayOrderId);
-    
-    // Extract order data from Razorpay notes
-    const orderData = JSON.parse(razorpayOrderDetails.notes.orderData || '{}');
-    const { customer, shippingAddress, items, subtotal, total_price, notes } = orderData;
+    // 2. Idempotency & Transition Check
+    const { data: existingOrder } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("razorpay_order_id", razorpayOrderId)
+      .maybeSingle();
 
-    // Create order in database only after successful payment
-    const { data: newOrder, error: createError } = await supabase.from("orders").insert([{
-      razorpay_order_id: razorpayOrderId,
-      razorpay_payment_id: razorpayPaymentId,
-      razorpay_signature: razorpaySignature,
-      subtotal: subtotal,
-      total_price: total_price,
-      currency: razorpayOrderDetails.currency,
-      status: "confirmed",
-      customer_name: customer.name,
-      email: customer.email,
-      phone: customer.phone,
-      shipping_address: shippingAddress,
-      items: items,
-      notes: notes || null,
-    }]).select().single();
+    let updatedOrder = null;
 
-    if (createError) {
-      console.error("Failed to create order after payment:", createError);
-      return res.status(500).json({ error: "Payment successful but failed to save order" });
+    if (existingOrder && existingOrder.status === "confirmed") {
+      console.log(`Order ${razorpayOrderId} already confirmed, returning success.`);
+      return res.json({ 
+        success: true, 
+        message: "Payment already verified", 
+        orderId: existingOrder.razorpay_order_id, 
+        databaseOrderId: existingOrder.id 
+      });
     }
+
+    if (existingOrder && existingOrder.status === "pending") {
+      // Transition from pending to confirmed
+      const { data: confirmedOrder, error: updateError } = await supabase
+        .from("orders")
+        .update({
+          status: "confirmed",
+          razorpay_payment_id: razorpayPaymentId,
+          razorpay_signature: razorpaySignature,
+          updated_at: new Date().toISOString()
+        })
+        .eq("razorpay_order_id", razorpayOrderId)
+        .select()
+        .single();
+
+      if (updateError) {
+        console.error("Failed to confirm pending order:", updateError);
+        return res.status(500).json({ error: "Failed to confirm payment status" });
+      }
+      updatedOrder = confirmedOrder;
+    } else {
+      // Fallback: If for some reason the pending order wasn't created, create it now
+      // This uses order data from Razorpay notes (if it fits) or defaults
+      const razorpay = getRazorpayClient();
+      const razorpayOrderDetails = await razorpay.orders.fetch(razorpayOrderId);
+      
+      let orderData = {};
+      try {
+        orderData = JSON.parse(razorpayOrderDetails.notes.orderData || '{}');
+      } catch (e) {
+        console.warn("Could not parse orderData from notes, using minimal info");
+      }
+
+      const { customer = {}, shippingAddress = {}, items = [], subtotal = 0, total_price = 0, notes = null } = orderData;
+
+      const { data: newOrder, error: createError } = await supabase.from("orders").insert([{
+        razorpay_order_id: razorpayOrderId,
+        razorpay_payment_id: razorpayPaymentId,
+        razorpay_signature: razorpaySignature,
+        subtotal: subtotal || (razorpayOrderDetails.amount / 100),
+        total_price: total_price || (razorpayOrderDetails.amount / 100),
+        currency: razorpayOrderDetails.currency,
+        status: "confirmed",
+        customer_name: customer.name || razorpayOrderDetails.notes.customerName,
+        email: customer.email || razorpayOrderDetails.notes.customerEmail,
+        phone: customer.phone || "N/A",
+        shipping_address: shippingAddress || {},
+        items: items || [],
+        notes: notes || null,
+      }]).select().single();
+
+      if (createError) {
+        console.error("Failed to create order after payment fallback:", createError);
+        return res.status(500).json({ error: "Payment successful but failed to save order" });
+      }
+      updatedOrder = newOrder;
+    }
+
+    // Use the confirmed order for stock and email
+    const newOrder = updatedOrder; 
+
 
     try {
       // Use the newly created order
