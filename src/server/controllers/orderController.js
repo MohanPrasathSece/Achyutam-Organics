@@ -142,6 +142,7 @@ export const createOrder = async (req, res) => {
       shipping_address: shippingAddress,
       items: items,
       notes: finalNotes || null,
+      payment_method: "Prepaid",
       order_number: Number(Date.now().toString().slice(-6) + Math.floor(100 + Math.random() * 900).toString()),
     }]).select().single();
 
@@ -297,6 +298,7 @@ export const verifyPayment = async (req, res) => {
         .from("orders")
         .update({
           status: "confirmed",
+          payment_method: "Prepaid",
           razorpay_payment_id: razorpayPaymentId,
           razorpay_signature: razorpaySignature,
           updated_at: new Date().toISOString()
@@ -333,6 +335,7 @@ export const verifyPayment = async (req, res) => {
         total_price: total_price || (razorpayOrderDetails.amount / 100),
         currency: razorpayOrderDetails.currency,
         status: "confirmed",
+        payment_method: "Prepaid",
         customer_name: customer.name || razorpayOrderDetails.notes.customerName,
         email: customer.email || razorpayOrderDetails.notes.customerEmail,
         phone: customer.phone || "N/A",
@@ -412,7 +415,7 @@ export const verifyPayment = async (req, res) => {
           razorpayPaymentId: updatedOrder.razorpay_payment_id || razorpayPaymentId,
           displayId: getDisplayId(updatedOrder),
           shippingAddress: updatedOrder.shipping_address,
-          payment_method: updatedOrder.payment_method || "Online"
+          payment_method: updatedOrder.payment_method || "Prepaid"
         }
       }).catch(e => console.error("Background Order Email Failed:", e));
 
@@ -577,6 +580,7 @@ export const getOrders = async (req, res) => {
     const { data, error } = await supabase
       .from("orders")
       .select("*")
+      .neq("status", "pending")
       .order("created_at", { ascending: false });
 
     if (error) throw error;

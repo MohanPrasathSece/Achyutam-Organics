@@ -114,7 +114,7 @@ export const sendOrderEmails = async ({ order }) => {
     <p><strong>Order ID:</strong> ${order.displayId || order.razorpayOrderId}</p>
     <p><strong>Razorpay Order:</strong> ${order.razorpayOrderId || "N/A (Cash on Delivery)"}</p>
     <p><strong>Payment ID:</strong> ${order.razorpayPaymentId || (order.payment_method === 'COD' ? "Cash on Delivery" : "Pending")}</p>
-    <p><strong>Payment Method:</strong> ${order.payment_method || (order.razorpayOrderId ? "Online" : "Unknown")}</p>
+    <p><strong>Payment Method:</strong> ${order.payment_method === 'COD' ? "Cash on Delivery" : "Prepaid"}</p>
     <h3 style="margin-top:24px;">Items</h3>
     ${orderTable}
     <p style="margin-top:24px;"><strong>Total:</strong> ₹${order.amount.toLocaleString("en-IN")}</p>

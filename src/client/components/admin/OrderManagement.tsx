@@ -58,6 +58,7 @@ const OrderManagement = () => {
             const { data } = await supabase
                 .from("orders")
                 .select("*")
+                .neq("status", "pending")
                 .order("created_at", { ascending: false });
             
             // Get demo orders from localStorage
@@ -189,7 +190,7 @@ const OrderManagement = () => {
             return;
         }
 
-        const headers = ["Order ID", "Customer", "Email", "Phone", "Status", "Products", "Gifting", "Gift Price", "Total", "Date", "Time", "Address"];
+        const headers = ["Order ID", "Customer", "Email", "Phone", "Status", "Payment", "Products", "Gifting", "Gift Price", "Total", "Date", "Time", "Address"];
         const rows = filteredOrders.map(o => {
             const items = parseItems(o);
             const productsStr = items.map((p: any) => `${p.name} (x${p.quantity})`).join(" | ");
@@ -200,6 +201,7 @@ const OrderManagement = () => {
                 o.email,
                 o.phone,
                 o.status,
+                o.payment_method === 'COD' ? "Cash on Delivery" : "Prepaid",
                 `"${productsStr}"`,
                 `"${o.gift_option_name || 'None'}"`,
                 o.gift_option_price || 0,
@@ -338,6 +340,7 @@ const OrderManagement = () => {
                                 <th className="px-4 md:px-6 py-4">Order ID</th>
                                 <th className="px-4 md:px-6 py-4">Customer</th>
                                 <th className="px-4 md:px-6 py-4">Status</th>
+                                <th className="px-4 md:px-6 py-4">Payment</th>
                                 <th className="px-4 md:px-6 py-4">Total</th>
                                 <th className="px-4 md:px-6 py-4">Date & Time</th>
                                 <th className="px-4 md:px-6 py-4 text-right">Actions</th>
@@ -358,6 +361,18 @@ const OrderManagement = () => {
                                         <div className="flex items-center gap-2">
                                             {statusIcons[order.status]}
                                             <span className="text-sm font-medium text-slate-700">{order.status}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-4 md:px-6 py-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className={cn(
+                                                "px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
+                                                order.payment_method === 'COD' 
+                                                    ? "bg-amber-100 text-amber-700" 
+                                                    : "bg-emerald-100 text-emerald-700"
+                                            )}>
+                                                {order.payment_method === 'COD' ? "Cash on Delivery" : "Prepaid"}
+                                            </span>
                                         </div>
                                     </td>
                                     <td className="px-4 md:px-6 py-4 font-bold text-slate-800">₹{(order.total_price || order.totalAmount || 0).toLocaleString()}</td>
@@ -387,9 +402,19 @@ const OrderManagement = () => {
                             <DialogHeader>
                                 <div className="flex flex-col md:flex-row justify-between items-start gap-4 md:gap-0 pr-8">
                                     <DialogTitle className="text-xl md:text-2xl">Order #{getDisplayId(selectedOrder)}</DialogTitle>
-                                    <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full self-start md:self-auto">
-                                        {statusIcons[selectedOrder.status]}
-                                        <span className="text-sm font-bold">{selectedOrder.status}</span>
+                                    <div className="flex items-center gap-2 self-start md:self-auto uppercase">
+                                        <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full">
+                                            {statusIcons[selectedOrder.status]}
+                                            <span className="text-sm font-bold">{selectedOrder.status}</span>
+                                        </div>
+                                        <div className={cn(
+                                            "flex items-center gap-2 px-3 py-1 rounded-full",
+                                            selectedOrder.payment_method === 'COD' 
+                                                ? "bg-amber-100 text-amber-700 font-bold text-sm" 
+                                                : "bg-emerald-100 text-emerald-700 font-bold text-sm"
+                                        )}>
+                                            {selectedOrder.payment_method === 'COD' ? "Cash on Delivery" : "Prepaid"}
+                                        </div>
                                     </div>
                                 </div>
                             </DialogHeader>
