@@ -67,9 +67,9 @@ Please confirm my order and share delivery schedule. Thank you!`.trim();
                     {items.map((item, index) => (
                       <div
                         key={`${item.id}-${index}`}
-                        className="flex flex-row items-center gap-3 md:gap-4 p-3 md:p-4 rounded-xl md:rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300"
+                        className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300"
                       >
-                        <div className="w-16 sm:w-20 md:w-24 shrink-0 aspect-square overflow-hidden rounded-lg md:rounded-xl bg-slate-50 border border-slate-100">
+                        <div className="w-full sm:w-20 md:w-24 shrink-0 aspect-square overflow-hidden rounded-xl bg-slate-50 border border-slate-100">
                           <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
                         </div>
                         <div className="flex-1 space-y-1">
@@ -122,10 +122,10 @@ Please confirm my order and share delivery schedule. Thank you!`.trim();
                     </div>
                   </>
                 ) : (
-                  <div className="flex items-center justify-center min-h-[60vh]">
-                    <div className="p-16 rounded-3xl bg-white border border-slate-100 text-center space-y-8 shadow-sm max-w-md w-full font-lato">
-                      <div className="mx-auto w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center">
-                        <ShoppingBag className="w-12 h-12 text-slate-300" />
+                  <div className="flex items-center justify-center min-h-[50vh]">
+                    <div className="p-8 sm:p-16 rounded-3xl bg-white border border-slate-100 text-center space-y-8 shadow-sm max-w-md w-full font-lato">
+                      <div className="mx-auto w-20 h-20 sm:w-24 sm:h-24 bg-slate-50 rounded-full flex items-center justify-center">
+                        <ShoppingBag className="w-10 h-10 sm:w-12 sm:h-12 text-slate-300" />
                       </div>
                       <div>
                         <h2 className="font-playfair text-3xl mb-2">Your cart is empty</h2>
@@ -140,7 +140,7 @@ Please confirm my order and share delivery schedule. Thank you!`.trim();
               </div>
 
               {hasItems && (
-                <aside className="p-5 md:p-8 rounded-2xl md:rounded-3xl bg-white border border-slate-100 shadow-xl space-y-6 md:space-y-8 animate-fade-in h-fit sticky top-24 font-lato">
+                <aside className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-100 shadow-xl space-y-6 md:space-y-8 animate-fade-in h-fit sticky top-24 font-lato w-full">
                   <div>
                     <h2 className="font-playfair text-2xl mb-2 font-bold">Summary</h2>
                     <p className="text-sm text-slate-500 font-medium leading-relaxed">
