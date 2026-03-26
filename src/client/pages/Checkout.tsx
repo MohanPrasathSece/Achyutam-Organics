@@ -17,7 +17,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { CheckCircle2, ArrowRight, Phone, MapPin, Package } from "lucide-react";
+import { CheckCircle2, ArrowRight, Phone, MapPin, Package, Truck } from "lucide-react";
 
 const checkoutSchema = z.object({
     name: z.string().trim().min(1, "Name is required").max(100),
@@ -49,22 +49,9 @@ const Checkout = () => {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [orderDetails, setOrderDetails] = useState<any>(null);
 
-    if (items.length === 0 && !submitted) {
+    if (items.length === 0 && !showSuccessModal) {
         navigate("/cart");
         return null;
-    }
-
-    if (submitted) {
-        return (
-            <div className="container flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">
-                <span className="text-5xl text-emerald-600">✓</span>
-                <h1 className="mt-4 text-3xl font-playfair">Order Confirmed!</h1>
-                <p className="mt-4 text-muted-foreground max-w-md font-lato">Thank you for your order. We've received your payment and our farm team will contact you soon with delivery details.</p>
-                <Button onClick={() => { navigate("/"); window.scrollTo({ top: 0 }); }} className="mt-8 rounded-full bg-primary px-8 py-6 shadow-lg">
-                    Back to Home
-                </Button>
-            </div>
-        );
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,63 +85,76 @@ const Checkout = () => {
         }
 
         if (form.payment === "cod") {
-            // Create demo order for Cash on Delivery
             setIsProcessing(true);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+            const apiUrl = getApiUrl();
+
             try {
-                // Create demo order
-                const demoOrder = {
-                    id: `ORD-${Date.now()}`,
-                    customer: {
-                        name: form.name,
-                        email: form.email,
-                        phone: form.phone,
-                    },
-                    shippingAddress: {
-                        line1: form.street,
-                        city: form.city,
-                        state: form.state,
-                        postalCode: form.pincode,
-                        country: "India",
-                    },
-                    items: items.map(item => ({
-                        id: item.id,
-                        name: item.name,
-                        price: item.price,
-                        quantity: item.quantity,
-                    })),
+                const response = await fetch(`${apiUrl}/api/orders/create-cod`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    signal: controller.signal,
+                    body: JSON.stringify({
+                        customer: {
+                            name: form.name,
+                            email: form.email,
+                            phone: form.phone,
+                        },
+                        shippingAddress: {
+                            line1: form.street,
+                            city: form.city,
+                            state: form.state,
+                            postalCode: form.pincode,
+                            country: "India",
+                        },
+                        items: items.map(item => ({
+                            id: item.id,
+                            name: item.name,
+                            price: item.price,
+                            quantity: item.quantity,
+                        })),
+                    }),
+                });
+
+                clearTimeout(timeoutId);
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || "Failed to place order");
+                }
+
+                setOrderDetails({
+                    id: data.orderNumber || data.orderId,
                     totalAmount: subtotal,
-                    paymentMethod: "COD",
-                    status: "pending",
-                    createdAt: new Date().toISOString(),
-                };
-
-                // Store demo order in localStorage for admin to see
-                const existingOrders = JSON.parse(localStorage.getItem('demoOrders') || '[]');
-                existingOrders.push(demoOrder);
-                localStorage.setItem('demoOrders', JSON.stringify(existingOrders));
-
-                // Show success message
-                toast.success("Order placed successfully! Your order ID is " + demoOrder.id);
-                setOrderDetails(demoOrder);
-                setShowSuccessModal(true);
-                clearCart();
-                setSubmitted(true);
+                    paymentMethod: "Cash on Delivery",
+                    shippingAddress: { city: form.city }
+                });
                 
-            } catch (error) {
-                toast.error("Failed to place order. Please try again.");
+                setShowSuccessModal(true);
+            } catch (error: any) {
+                if (error.name === 'AbortError') {
+                    toast.error("Request timed out. Please check your connection.");
+                } else {
+                    toast.error(error.message || "Something went wrong. Please try again.");
+                }
             } finally {
                 setIsProcessing(false);
             }
             return;
         }
 
+
         try {
             setIsProcessing(true);
             const apiUrl = getApiUrl();
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
             const response = await fetch(`${apiUrl}/api/orders/create`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                signal: controller.signal,
                 body: JSON.stringify({
                     customer: {
                         name: form.name,
@@ -177,6 +177,8 @@ const Checkout = () => {
                 }),
             });
 
+            clearTimeout(timeoutId);
+
             const data = await response.json();
             if (!response.ok) {
                 throw new Error(data.error || "Failed to create order");
@@ -194,9 +196,13 @@ const Checkout = () => {
                 handler: async (payment) => {
                     setIsProcessing(true);
                     try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
                         const verifyRes = await fetch(`${apiUrl}/api/orders/verify`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
+                            signal: controller.signal,
                             body: JSON.stringify({
                                 razorpayOrderId: payment.razorpay_order_id,
                                 razorpayPaymentId: payment.razorpay_payment_id,
@@ -204,14 +210,21 @@ const Checkout = () => {
                             }),
                         });
 
+                        clearTimeout(timeoutId);
+
                         const verifyData = await verifyRes.json();
                         if (!verifyRes.ok) {
                             throw new Error(verifyData.error || "Payment verification failed");
                         }
 
-                        toast.success("Payment successful! Order placed.");
-                        clearCart();
-                        setSubmitted(true);
+                        setOrderDetails({
+                            id: verifyData.orderNumber || verifyData.orderId || "ONLINE",
+                            totalAmount: subtotal,
+                            paymentMethod: "Online Payment",
+                            shippingAddress: { city: form.city }
+                        });
+                        
+                        setShowSuccessModal(true);
                     } catch (err: any) {
                         toast.error(err.message || "Unable to verify payment");
                     } finally {
@@ -236,7 +249,7 @@ const Checkout = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8 px-4">
+        <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
             <SEO
                 title="Checkout | Achyutam Organics"
                 description="Complete your order for pure organic ghee and dairy products."
@@ -244,91 +257,102 @@ const Checkout = () => {
             />
 
             <div className="container mx-auto max-w-6xl">
-                <div className="mb-8 text-center">
-                    <h1 className="text-3xl md:text-4xl font-playfair font-bold text-slate-800 mb-2">Checkout</h1>
-                    <p className="text-muted-foreground">Complete your order details below</p>
+                <div className="mb-8 text-center animate-fade-in">
+                    <h1 className="text-3xl md:text-5xl font-playfair font-bold text-slate-800 mb-2">Checkout</h1>
+                    <p className="text-muted-foreground font-lato">Complete your order details below to receive your farm-fresh goodies.</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="grid gap-6 lg:gap-10 lg:grid-cols-3">
-                    <div className="space-y-4 md:space-y-6 lg:col-span-2">
-                        <div className="bg-white rounded-xl md:rounded-3xl p-4 md:p-8 shadow-sm border border-slate-100">
-                            <h2 className="text-lg md:text-2xl font-playfair mb-4 md:mb-6 underline decoration-accent/30 underline-offset-8">Customer Details</h2>
-                            <div className="grid gap-4 md:gap-6 sm:grid-cols-2">
-                                <div className="space-y-1.5 md:space-y-2">
-                                    <Label htmlFor="name" className="text-xs md:text-sm uppercase tracking-wider text-muted-foreground">Full Name</Label>
-                                    <Input id="name" name="name" value={form.name} onChange={handleChange} placeholder="Your full name" disabled={isProcessing} className={errors.name ? "border-destructive" : ""} />
-                                    {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
-                                </div>
-                                <div className="space-y-1.5 md:space-y-2">
-                                    <Label htmlFor="phone" className="text-xs md:text-sm font-semibold uppercase tracking-wider text-muted-foreground">Phone Number</Label>
-                                    <Input id="phone" name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="10-digit mobile number" disabled={isProcessing} className={errors.phone ? "border-destructive" : ""} />
-                                    {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
-                                </div>
-                                <div className="space-y-1.5 md:space-y-2 sm:col-span-2">
-                                    <Label htmlFor="email" className="text-xs md:text-sm font-semibold uppercase tracking-wider text-muted-foreground">Email Address</Label>
-                                    <Input id="email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="your@email.com" disabled={isProcessing} className={errors.email ? "border-destructive" : ""} />
-                                    {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
-                                </div>
+                    <div className="space-y-6 lg:col-span-2">
+                        <div className="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-slate-100 animate-slide-up">
+                            {/* Combined Form */}
+                            <div className="space-y-10">
+                                <section>
+                                    <h2 className="text-xl md:text-2xl font-playfair mb-6 flex items-center gap-3">
+                                        <Truck className="w-6 h-6 text-primary" />
+                                        Shipping & Contact Details
+                                    </h2>
+                                    <div className="grid gap-x-6 gap-y-5 md:grid-cols-2 font-lato">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-slate-400">Full Name</Label>
+                                            <Input id="name" name="name" value={form.name} onChange={handleChange} placeholder="Your full name" disabled={isProcessing} className={`rounded-xl border-slate-200 focus:ring-primary ${errors.name ? "border-destructive" : ""}`} />
+                                            {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="phone" className="text-xs font-bold uppercase tracking-widest text-slate-400">Phone Number</Label>
+                                            <Input id="phone" name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="10-digit mobile number" disabled={isProcessing} className={`rounded-xl border-slate-200 focus:ring-primary ${errors.phone ? "border-destructive" : ""}`} />
+                                            {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
+                                        </div>
+                                        <div className="space-y-2 md:col-span-2">
+                                            <Label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-slate-400">Email Address</Label>
+                                            <Input id="email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="your@email.com" disabled={isProcessing} className={`rounded-xl border-slate-200 focus:ring-primary ${errors.email ? "border-destructive" : ""}`} />
+                                            {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+                                        </div>
+                                        <div className="md:col-span-2 space-y-2">
+                                            <Label htmlFor="street" className="text-xs font-bold uppercase tracking-widest text-slate-400">Street Address</Label>
+                                            <Input id="street" name="street" value={form.street} onChange={handleChange} placeholder="House no, Building, Street, Area" disabled={isProcessing} className={`rounded-xl border-slate-200 focus:ring-primary ${errors.street ? "border-destructive" : ""}`} />
+                                            {errors.street && <p className="text-xs text-destructive">{errors.street}</p>}
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="city" className="text-xs font-bold uppercase tracking-widest text-slate-400">City</Label>
+                                            <Input id="city" name="city" value={form.city} onChange={handleChange} placeholder="Your City" disabled={isProcessing} className={`rounded-xl border-slate-200 focus:ring-primary ${errors.city ? "border-destructive" : ""}`} />
+                                            {errors.city && <p className="text-xs text-destructive">{errors.city}</p>}
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="state" className="text-xs font-bold uppercase tracking-widest text-slate-400">State</Label>
+                                            <Input id="state" name="state" value={form.state} onChange={handleChange} placeholder="Your State" disabled={isProcessing} className={`rounded-xl border-slate-200 focus:ring-primary ${errors.state ? "border-destructive" : ""}`} />
+                                            {errors.state && <p className="text-xs text-destructive">{errors.state}</p>}
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="pincode" className="text-xs font-bold uppercase tracking-widest text-slate-400">Pincode</Label>
+                                            <Input id="pincode" name="pincode" value={form.pincode} onChange={handleChange} placeholder="6-digit pincode" disabled={isProcessing} className={`rounded-xl border-slate-200 focus:ring-primary ${errors.pincode ? "border-destructive" : ""}`} />
+                                            {errors.pincode && <p className="text-xs text-destructive">{errors.pincode}</p>}
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Location Validation Message */}
+                                    {form.city && form.state && form.pincode && (
+                                        <div className="mt-6 font-lato animate-fade-in">
+                                            {(() => {
+                                                const location = validateDeliveryLocation(form.city, form.state, form.pincode);
+                                                const hasMilk = hasMilkProducts(items);
+                                                
+                                                if (hasMilk && location.isKatni) {
+                                                    return (
+                                                        <div className="text-sm text-emerald-700 bg-emerald-50 p-4 rounded-2xl border border-emerald-100 flex items-start gap-3">
+                                                            <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">✓</div>
+                                                            <div>
+                                                                <p className="font-bold">Fresh Milk Delivery Available</p>
+                                                                <p className="opacity-80 text-xs">We deliver farm-fresh milk directly to Katni addresses.</p>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                } else if (hasMilk && !location.isKatni) {
+                                                    return (
+                                                        <div className="text-sm text-red-700 bg-red-50 p-4 rounded-2xl border border-red-100 flex items-start gap-3">
+                                                            <div className="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">✕</div>
+                                                            <div>
+                                                                <p className="font-bold">Milk Delivery Not Available</p>
+                                                                <p className="opacity-80 text-xs">Farm-fresh milk is currently only delivered in Katni. Please remove milk products to continue.</p>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                } else {
+                                                    return (
+                                                        <div className="text-sm text-primary/70 bg-primary/5 p-4 rounded-2xl border border-primary/10 flex items-start gap-3">
+                                                            <div className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-[10px]">ℹ</div>
+                                                            <div>
+                                                                <p className="font-bold">Shipping Information</p>
+                                                                <p className="opacity-80 text-xs">Our Ghee and organic products can be shipped anywhere in India.</p>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+                                            })()}
+                                        </div>
+                                    )}
+                                </section>
                             </div>
-                        </div>
-
-                        <div className="bg-white rounded-xl md:rounded-3xl p-4 md:p-8 shadow-sm border border-slate-100">
-                            <h2 className="text-lg md:text-2xl font-playfair mb-4 md:mb-6 underline decoration-accent/30 underline-offset-8">Delivery Address</h2>
-                            <div className="grid gap-4 md:gap-6 sm:grid-cols-2">
-                                <div className="space-y-1.5 md:space-y-2 sm:col-span-2">
-                                    <Label htmlFor="street" className="text-xs md:text-sm font-semibold uppercase tracking-wider text-muted-foreground">Street Address</Label>
-                                    <Input id="street" name="street" value={form.street} onChange={handleChange} placeholder="Building, Street, Area" disabled={isProcessing} className={errors.street ? "border-destructive" : ""} />
-                                    {errors.street && <p className="text-xs text-destructive">{errors.street}</p>}
-                                </div>
-                                <div className="space-y-1.5 md:space-y-2">
-                                    <Label htmlFor="city" className="text-xs md:text-sm font-semibold uppercase tracking-wider text-muted-foreground">City</Label>
-                                    <Input id="city" name="city" value={form.city} onChange={handleChange} placeholder="City" disabled={isProcessing} className={errors.city ? "border-destructive" : ""} />
-                                    {errors.city && <p className="text-xs text-destructive">{errors.city}</p>}
-                                </div>
-                                <div className="space-y-1.5 md:space-y-2">
-                                    <Label htmlFor="state" className="text-xs md:text-sm font-semibold uppercase tracking-wider text-muted-foreground">State</Label>
-                                    <Input id="state" name="state" value={form.state} onChange={handleChange} placeholder="State" disabled={isProcessing} className={errors.state ? "border-destructive" : ""} />
-                                    {errors.state && <p className="text-xs text-destructive">{errors.state}</p>}
-                                </div>
-                                <div className="space-y-1.5 md:space-y-2">
-                                    <Label htmlFor="pincode" className="text-xs md:text-sm font-semibold uppercase tracking-wider text-muted-foreground">Pincode</Label>
-                                    <Input id="pincode" name="pincode" value={form.pincode} onChange={handleChange} placeholder="6-digit pincode" disabled={isProcessing} className={errors.pincode ? "border-destructive" : ""} />
-                                    {errors.pincode && <p className="text-xs text-destructive">{errors.pincode}</p>}
-                                </div>
-                            </div>
-                            
-                            {/* Location Validation Message */}
-                            {form.city && form.state && form.pincode && (
-                                <div className="mt-4 p-4 rounded-lg border">
-                                    {(() => {
-                                        const location = validateDeliveryLocation(form.city, form.state, form.pincode);
-                                        const hasMilk = hasMilkProducts(items);
-                                        
-                                        if (hasMilk && location.isKatni) {
-                                            return (
-                                                <div className="text-sm text-green-700 bg-green-50 p-3 rounded">
-                                                    <p className="font-medium">✅ Location Validated</p>
-                                                    <p>Fresh milk delivery available in your area (Katni)</p>
-                                                </div>
-                                            );
-                                        } else if (hasMilk && !location.isKatni) {
-                                            return (
-                                                <div className="text-sm text-red-700 bg-red-50 p-3 rounded">
-                                                    <p className="font-medium">❌ Location Not Supported</p>
-                                                    <p>Fresh milk delivery is only available in Katni, Madhya Pradesh</p>
-                                                </div>
-                                            );
-                                        } else {
-                                            return (
-                                                <div className="text-sm text-accent bg-accent/5 p-3 rounded">
-                                                    <p className="font-medium">📍 Delivery Information</p>
-                                                    <p>Ghee products can be delivered all over India</p>
-                                                </div>
-                                            );
-                                        }
-                                    })()}
-                                </div>
-                            )}
                         </div>
 
                         <div className="bg-white rounded-xl md:rounded-3xl p-4 md:p-8 shadow-sm border border-slate-100">
@@ -403,61 +427,50 @@ const Checkout = () => {
 
             {/* Success Modal */}
             <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-                <DialogContent className="max-w-md w-full bg-white rounded-2xl p-6 text-center">
-                    <DialogHeader>
-                        <DialogTitle className="text-center">
-                            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <CheckCircle2 className="w-8 h-8 text-emerald-600" />
-                            </div>
-                            <h2 className="text-2xl font-bold text-gray-900">Order Confirmed!</h2>
-                        </DialogTitle>
-                    </DialogHeader>
-                    
-                    {orderDetails && (
-                        <div className="space-y-4">
-                            <div className="bg-emerald-50 rounded-lg p-4">
-                                <p className="text-sm text-gray-600 mb-1">Order ID</p>
-                                <p className="font-bold text-emerald-700">{orderDetails.id}</p>
-                            </div>
-                            
-                            <div className="bg-gray-50 rounded-lg p-4">
-                                <p className="text-sm text-gray-600 mb-1">Total Amount</p>
-                                <p className="font-bold text-gray-900">₹{orderDetails.totalAmount}</p>
-                            </div>
-                            
-                            <div className="bg-blue-50 rounded-lg p-4">
-                                <p className="text-sm text-gray-600 mb-1">Payment Method</p>
-                                <p className="font-bold text-blue-700">{orderDetails.paymentMethod}</p>
-                            </div>
-                            
-                            <div className="border-t pt-4">
-                                <div className="flex items-center gap-2 text-gray-600 mb-2">
-                                    <Phone className="w-4 h-4" />
-                                    <span className="text-sm">We'll call you to confirm delivery details</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-gray-600">
-                                    <MapPin className="w-4 h-4" />
-                                    <span className="text-sm">Delivery to {orderDetails.shippingAddress.city}</span>
-                                </div>
-                            </div>
-                            
-                            <div className="mt-6 space-y-2">
-                                <Button 
-                                    onClick={() => { setShowSuccessModal(false); navigate("/"); }} 
-                                    className="w-full rounded-full bg-emerald-600 text-white hover:bg-emerald-700"
-                                >
-                                    Continue Shopping
-                                </Button>
-                                <Button 
-                                    variant="outline"
-                                    onClick={() => setShowSuccessModal(false)}
-                                    className="w-full rounded-full"
-                                >
-                                    View Order Details
-                                </Button>
-                            </div>
+                <DialogContent className="max-w-md w-[95%] bg-white rounded-3xl p-0 overflow-hidden border-none shadow-2xl fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[100]">
+                    <div className="relative p-8 text-center bg-white">
+                        <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-subtle">
+                            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
                         </div>
-                    )}
+                        
+                        <h2 className="text-3xl font-playfair font-bold text-gray-900 mb-2">Order Confirmed!</h2>
+                        <p className="text-gray-500 font-lato mb-8">Thank you for choosing Achyutam Organics. Your order has been placed successfully.</p>
+                        
+                        {orderDetails && (
+                            <div className="space-y-3 mb-8 text-left">
+                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                    <span className="text-sm font-medium text-slate-500 font-lato uppercase tracking-wider">Order Number</span>
+                                    <span className="font-bold text-primary font-mono">{orderDetails.id}</span>
+                                </div>
+                                
+                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                    <span className="text-sm font-medium text-slate-500 font-lato uppercase tracking-wider">Total amount</span>
+                                    <span className="font-bold text-slate-900">₹{orderDetails.totalAmount}</span>
+                                </div>
+
+                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                    <span className="text-sm font-medium text-slate-500 font-lato uppercase tracking-wider">Payment</span>
+                                    <span className="font-bold text-emerald-700">{orderDetails.paymentMethod}</span>
+                                </div>
+                            </div>
+                        )}
+                        
+                        <div className="space-y-3">
+                            <Button 
+                                onClick={() => { clearCart(); setShowSuccessModal(false); navigate("/"); }} 
+                                className="w-full rounded-full bg-primary text-white hover:bg-primary/90 py-6 text-lg font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+                            >
+                                Continue Shopping
+                            </Button>
+                            <Button 
+                                variant="ghost"
+                                onClick={() => { clearCart(); setShowSuccessModal(false); navigate("/products"); }}
+                                className="w-full rounded-full text-slate-500 hover:text-primary py-4 font-medium"
+                            >
+                                Explore more products
+                            </Button>
+                        </div>
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>
@@ -465,3 +478,4 @@ const Checkout = () => {
 };
 
 export default Checkout;
+

@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin, Clock, MessageCircle } from "lucide-react";
 import heroGhee from "@/assets/ghee-jar.jpg";
 
+import { getApiUrl } from "@/lib/config";
+
 const Contact = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -15,15 +17,42 @@ const Contact = () => {
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Message sent!",
-      description: "Thank you for reaching out. We'll get back to you soon.",
-    });
-    setFormData({ name: "", email: "", message: "" });
+    setIsSubmitting(true);
+    
+    try {
+      const apiUrl = getApiUrl();
+      const response = await fetch(`${apiUrl}/api/public/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send message");
+      }
+
+      toast({
+        title: "Message sent!",
+        description: "Thank you for reaching out. We'll get back to you soon.",
+      });
+      setFormData({ name: "", email: "", message: "" });
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.message || "Something went wrong. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
 
   const handleWhatsApp = () => {
     const message = encodeURIComponent(
@@ -177,10 +206,12 @@ const Contact = () => {
                 <Button
                   type="submit"
                   size="sm"
-                  className="w-full rounded-full px-6 py-3 md:px-8 md:py-4 text-xs md:text-sm font-semibold bg-accent text-accent-foreground hover:shadow-glow hover:scale-[1.02] transition-transform"
+                  disabled={isSubmitting}
+                  className="w-full rounded-full px-6 py-3 md:px-8 md:py-4 text-xs md:text-sm font-semibold bg-accent text-accent-foreground hover:shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50"
                 >
-                  Send Message
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
+
               </form>
             </div>
 

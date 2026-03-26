@@ -39,13 +39,23 @@ export const sendMail = async ({ to, subject, html }) => {
     return;
   }
 
-  await mailer.sendMail({
-    from: (process.env.EMAIL_FROM || process.env.SMTP_USER),
-    to,
-    subject,
-    html,
-  });
+  const from = (process.env.EMAIL_FROM || process.env.SMTP_USER);
+  console.log(`📧 Sending Email: "${subject}" | TO: ${to} | FROM: ${from}`);
+
+  try {
+    const info = await mailer.sendMail({
+      from,
+      to,
+      subject,
+      html,
+    });
+    console.log(`✅ Email Sent Successfully: ${info.messageId}`);
+  } catch (error) {
+    console.error(`❌ Email Delivery Failed: ${error.message}`);
+    throw error;
+  }
 };
+
 
 export const sendOrderEmails = async ({ order }) => {
   const formattedItems = order.items
@@ -91,9 +101,10 @@ export const sendOrderEmails = async ({ order }) => {
     <p><strong>Customer:</strong> ${order.customer.name}</p>
     <p><strong>Email:</strong> ${order.customer.email}</p>
     <p><strong>Phone:</strong> ${order.customer.phone}</p>
-    <p><strong>Order ID:</strong> #${order.displayId || order.razorpayOrderId}</p>
-    <p><strong>Razorpay Order:</strong> ${order.razorpayOrderId}</p>
-    <p><strong>Payment ID:</strong> ${order.razorpayPaymentId || "Pending"}</p>
+    <p><strong>Order ID:</strong> ${order.displayId || order.razorpayOrderId}</p>
+    <p><strong>Razorpay Order:</strong> ${order.razorpayOrderId || "N/A (Cash on Delivery)"}</p>
+    <p><strong>Payment ID:</strong> ${order.razorpayPaymentId || (order.payment_method === 'COD' ? "Cash on Delivery" : "Pending")}</p>
+    <p><strong>Payment Method:</strong> ${order.payment_method || (order.razorpayOrderId ? "Online" : "Unknown")}</p>
     <h3 style="margin-top:24px;">Items</h3>
     ${orderTable}
     <p style="margin-top:24px;"><strong>Total:</strong> ₹${order.amount.toLocaleString("en-IN")}</p>
@@ -116,7 +127,7 @@ export const sendOrderEmails = async ({ order }) => {
   `;
 
   await Promise.all([
-    sendMail({ to: (process.env.OWNER_EMAIL || "admin@achyutamorganics.com"), subject: "New Achyutam Organics Order", html: ownerHtml }),
+    sendMail({ to: (process.env.OWNER_EMAIL || "saritaagarwal287@gmail.com"), subject: "New Achyutam Organics Order", html: ownerHtml }),
     sendMail({ to: order.customer.email, subject: "Your Achyutam Organics order is confirmed", html: customerHtml }),
   ]);
 };
@@ -189,7 +200,7 @@ export const sendLowStockEmail = async ({ productName, productId, remainingStock
   `;
 
   await sendMail({
-    to: (process.env.OWNER_EMAIL || "admin@achyutamorganics.com"),
+    to: (process.env.OWNER_EMAIL || "saritaagarwal287@gmail.com"),
     subject: `Running Low: ${productName}`,
     html
   });

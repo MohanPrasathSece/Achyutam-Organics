@@ -1,12 +1,13 @@
 import express from "express";
-import { createOrder, verifyPayment, updateOrderStatus } from "../controllers/orderController.js";
+import { createOrder, createCODOrder, verifyPayment, updateOrderStatus } from "../controllers/orderController.js";
 import { runOrderCleanup } from "../utils/maintenance.js";
 import { adminAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/create", createOrder); // Public
-router.post("/verify", verifyPayment); // Public
+router.post("/create", createOrder); // Online Payment
+router.post("/create-cod", createCODOrder); // Cash on Delivery
+router.post("/verify", verifyPayment); // Verification
 
 // Protected Admin Routes
 router.post("/update-status", adminAuth, updateOrderStatus);

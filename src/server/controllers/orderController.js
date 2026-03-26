@@ -1,7 +1,7 @@
 import crypto from "crypto";
 // MongoDB import removed - migrating to Supabase
 import { getRazorpayClient } from "../lib/razorpay.js";
-import { sendOrderEmails, sendStatusUpdateEmail, sendLowStockEmail } from "../utils/email.js";
+import { sendOrderEmails, sendStatusUpdateEmail, sendLowStockEmail, sendMail } from "../utils/email.js";
 import { supabase } from "../lib/supabase.js";
 
 const getDisplayId = (order) => {
@@ -24,24 +24,24 @@ const orderSchema = z.object({
     phone: z.string().min(10).max(15),
   }),
   shippingAddress: z.object({
-    line1: z.string().min(5),
+    line1: z.string().min(1),
     line2: z.string().optional(),
-    city: z.string().min(2),
-    state: z.string().min(2),
-    postalCode: z.string().min(5).max(10),
-    country: z.string().min(2),
+    city: z.string().min(1),
+    state: z.string().min(1),
+    postalCode: z.string().min(1).max(20),
+    country: z.string().min(1),
   }),
   items: z.array(z.object({
     id: z.union([z.string(), z.number()]),
     name: z.string(),
-    price: z.number().positive(),
-    quantity: z.number().int().positive(),
+    price: z.coerce.number().positive(),
+    quantity: z.coerce.number().int().positive(),
   })).min(1),
-  notes: z.string().max(500).optional(),
+  notes: z.string().max(500).optional().nullable(),
   isGift: z.boolean().optional(),
   giftOptionId: z.string().optional(),
   giftOptionName: z.string().optional(),
-  giftOptionPrice: z.number().optional(),
+  giftOptionPrice: z.coerce.number().optional().nullable(),
   giftCustomText: z.string().optional(),
 });
 
@@ -142,12 +142,12 @@ export const createOrder = async (req, res) => {
       shipping_address: shippingAddress,
       items: items,
       notes: finalNotes || null,
+      order_number: Number(Date.now().toString().slice(-6) + Math.floor(100 + Math.random() * 900).toString()),
     }]).select().single();
 
     if (pendingError) {
       console.error("Failed to create pending order record:", pendingError);
     }
-
 
     return res.json({
       success: true,
@@ -160,6 +160,92 @@ export const createOrder = async (req, res) => {
   } catch (error) {
     console.error("Failed to create order:", error);
     return res.status(400).json({ error: error.message || "Unable to create order" });
+  }
+};
+
+export const createCODOrder = async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(500).json({ error: "Database not configured" });
+    }
+
+    const validatedData = verifyRequiredFields(req.body);
+    const { customer, shippingAddress, items, notes, isGift, giftOptionName, giftOptionPrice, giftCustomText } = validatedData;
+    
+    // Append gift option to notes
+    let finalNotes = notes || "";
+    if (isGift && !giftOptionName) {
+      finalNotes = finalNotes ? `${finalNotes} | GIFT OPTION: YES` : "GIFT OPTION: YES";
+    } else if (giftOptionName) {
+      finalNotes = finalNotes ? `${finalNotes} | GIFT: ${giftOptionName} (₹${giftOptionPrice})` : `GIFT: ${giftOptionName} (₹${giftOptionPrice})`;
+      if (giftCustomText) {
+        finalNotes = `${finalNotes} | MSG: ${giftCustomText}`;
+      }
+    }
+
+    const { amount } = calculateAmounts(items, giftOptionPrice);
+    // Generate a purely numeric order number to avoid type errors in DB (integer column)
+    const orderNumber = Number(Date.now().toString().slice(-6) + Math.floor(100 + Math.random() * 900).toString());
+
+    // 1. Insert order into Supabase
+    const { data: newOrder, error: createError } = await supabase.from("orders").insert([{
+      order_number: orderNumber,
+      status: "confirmed", // COD is confirmed as it doesn't wait for online payment
+      payment_method: "COD",
+      subtotal: amount,
+      total_price: amount,
+      currency: "INR",
+      customer_name: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      shipping_address: shippingAddress,
+      items: items,
+      notes: finalNotes || null,
+    }]).select().single();
+
+    if (createError) {
+      console.error("Failed to create COD order:", createError);
+      throw new Error("Unable to save order to database");
+    }
+
+    // 2. Reduce Stock
+    try {
+      for (const item of items) {
+        if (!item.id) continue;
+        const { data: product } = await supabase.from("products").select("stock_quantity, name").eq("id", item.id).single();
+        if (product) {
+          const qtyBought = Number(item.quantity) || 0;
+          const newStock = Math.max(0, (Number(product.stock_quantity) || 0) - qtyBought);
+          await supabase.from("products").update({ stock_quantity: newStock, status: newStock === 0 ? "inactive" : "active" }).eq("id", item.id);
+          if (newStock < 5) sendLowStockEmail({ productName: product.name, productId: item.id, remainingStock: newStock }).catch(e => console.error("Low stock alert failed:", e));
+        }
+      }
+    } catch (stockError) {
+      console.error("Stock update failed for COD order:", stockError);
+    }
+
+    // 3. Send Confirmation Emails
+    sendOrderEmails({
+      order: {
+        ...newOrder,
+        customer: { name: newOrder.customer_name, email: newOrder.email, phone: newOrder.phone },
+        items: newOrder.items,
+        amount: newOrder.total_price,
+        displayId: orderNumber,
+        shippingAddress: newOrder.shipping_address,
+        payment_method: "COD"
+      }
+    }).catch(e => console.error("COD Order Email Failed:", e));
+
+    return res.json({
+      success: true,
+      message: "Order placed successfully",
+      orderId: orderNumber,
+      databaseOrderId: newOrder.id
+    });
+  } catch (error) {
+    console.error("Failed to create COD order:", error);
+    return res.status(400).json({ error: error.message || "Unable to place COD order" });
   }
 };
 
@@ -323,7 +409,10 @@ export const verifyPayment = async (req, res) => {
           items: updatedOrder.items,
           amount: updatedOrder.total_price,
           razorpayOrderId: updatedOrder.razorpay_order_id,
-          displayId: getDisplayId(updatedOrder)
+          razorpayPaymentId: updatedOrder.razorpay_payment_id || razorpayPaymentId,
+          displayId: getDisplayId(updatedOrder),
+          shippingAddress: updatedOrder.shipping_address,
+          payment_method: updatedOrder.payment_method || "Online"
         }
       }).catch(e => console.error("Background Order Email Failed:", e));
 
@@ -334,9 +423,33 @@ export const verifyPayment = async (req, res) => {
     return res.json({ success: true, message: "Payment verified and order created", orderId: newOrder.razorpay_order_id, databaseOrderId: newOrder.id });
   } catch (error) {
     console.error("Payment verification failed", error);
+    
+    // CRISIS EMAIL: If payment was verified but order creation/processing failed
+    // we must notify the owner immediately so they don't lose a paid order.
+    try {
+      const { razorpayOrderId, razorpayPaymentId } = req.body;
+      if (razorpayOrderId && razorpayPaymentId) {
+        sendMail({
+          to: process.env.OWNER_EMAIL || "saritaagarwal287@gmail.com",
+          subject: "🚨 URGENT: Payment Success but Order Processing Failed",
+          html: `
+            <h1>Urgent Action Required</h1>
+            <p>A payment was completed, but the server encountered an error during order creation.</p>
+            <p><strong>Razorpay Order ID:</strong> ${razorpayOrderId}</p>
+            <p><strong>Razorpay Payment ID:</strong> ${razorpayPaymentId}</p>
+            <p><strong>Error:</strong> ${error.message}</p>
+            <p>Please check the Razorpay dashboard and manually create this order if necessary.</p>
+          `
+        }).catch(e => console.error("Crisis mail failed:", e));
+      }
+    } catch (e) {
+      console.error("Failed to send crisis mail:", e);
+    }
+
     return res.status(400).json({ error: error.message || "Unable to verify payment" });
   }
 };
+
 
 // Clean up abandoned Razorpay orders (older than 1 hour)
 export const cleanupAbandonedOrders = async () => {

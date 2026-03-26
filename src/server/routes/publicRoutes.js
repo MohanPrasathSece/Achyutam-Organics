@@ -192,6 +192,8 @@ router.get("/orders/track/:orderNumber", async (req, res) => {
     }
 });
 
+import { sendMail } from "../utils/email.js";
+
 // Search products
 router.get("/search", async (req, res) => {
     try {
@@ -232,4 +234,48 @@ router.get("/search", async (req, res) => {
     }
 });
 
+// Contact form submission
+router.post("/contact", async (req, res) => {
+    try {
+        const { name, email, message } = req.body;
+
+        if (!name || !email || !message) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+
+        const ownerEmail = process.env.OWNER_EMAIL || "saritaagarwal287@gmail.com";
+        
+        const html = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                <div style="background-color: #065f46; padding: 24px; text-align: center; color: white;">
+                    <h2 style="margin: 0;">New Contact Inquiry</h2>
+                </div>
+                <div style="padding: 24px; color: #334155;">
+                    <p><strong>Name:</strong> ${name}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <div style="margin-top: 24px; padding: 16px; background-color: #f8fafc; border-radius: 8px; border-left: 4px solid #065f46;">
+                        <p style="margin: 0;"><strong>Message:</strong></p>
+                        <p style="margin-top: 8px; font-style: italic;">${message}</p>
+                    </div>
+                </div>
+                <div style="padding: 16px; text-align: center; background-color: #f1f5f9; font-size: 12px; color: #64748b;">
+                    Sent from Achyutam Organics Contact Form
+                </div>
+            </div>
+        `;
+
+        await sendMail({
+            to: ownerEmail,
+            subject: `New Message from ${name} (Contact Form)`,
+            html
+        });
+
+        res.json({ success: true, message: "Inquiry sent successfully" });
+    } catch (error) {
+        console.error("Contact form error:", error);
+        res.status(500).json({ error: "Failed to send message" });
+    }
+});
+
 export default router;
+
