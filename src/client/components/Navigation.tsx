@@ -91,7 +91,7 @@ const Navigation = () => {
               "flex items-center gap-3 px-5 py-3 rounded-full shadow-soft border border-blue-400/30 backdrop-blur-md",
               "transition-all duration-300 hover:shadow-glow hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-blue-500",
               "text-primary hover:text-primary/80",
-              "md:bg-blue-500 md:hover:bg-blue-600"
+              "md:bg-blue-500 md:text-white md:hover:bg-blue-600"
             )}
             onClick={() => {
               setIsMobileMenuOpen(false);
