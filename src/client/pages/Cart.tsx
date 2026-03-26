@@ -131,7 +131,7 @@ Please confirm my order and share delivery schedule. Thank you!`.trim();
                         <h2 className="font-playfair text-3xl mb-2">Your cart is empty</h2>
                         <p className="text-slate-500 font-medium">Bring home the purity of traditional Bilona Ghee.</p>
                       </div>
-                      <Button asChild className="rounded-full bg-primary text-white hover:bg-primary/90 shadow-xl shadow-primary/10 px-12 py-8 text-lg font-lato">
+                      <Button asChild className="rounded-full bg-primary text-white hover:bg-primary/90 shadow-xl shadow-primary/10 px-8 py-6 text-base font-lato">
                         <Link to="/products">Explore Our Products</Link>
                       </Button>
                     </div>

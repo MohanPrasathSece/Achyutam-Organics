@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/cart";
 import { useToast } from "@/hooks/use-toast";
 import { supabase, useMockData } from "@/lib/supabase";
-import { Search, SlidersHorizontal, ArrowDownWideNarrow, ArrowUpWideNarrow } from "lucide-react";
+import { Search, SlidersHorizontal, ArrowDownWideNarrow, ArrowUpWideNarrow, MessageCircle, HelpCircle } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -294,7 +294,7 @@ const Products = () => {
             <h1 className="font-playfair text-4xl md:text-6xl mb-4 text-white">
               Shop Organic
             </h1>
-            <p className="text-lg text-white/90 max-w-2xl mx-auto">
+            <p className="text-lg md:text-lg text-white/90 font-lato max-w-3xl mx-auto">
               Experience the purity of traditional Vedic methods from our indigenous Gir cows, delivered directly from our single-breed specialty farm to your home.
             </p>
           </div>
@@ -311,7 +311,7 @@ const Products = () => {
                 onClick={() => updateCategory("All")}
                 size="sm"
                 className={cn(
-                  "h-8 md:h-10 text-xs md:text-sm rounded-full whitespace-nowrap transition-all duration-300",
+                  "h-8 md:h-10 text-base rounded-full whitespace-nowrap transition-all duration-300",
                   selectedCategory === "All"
                     ? "bg-primary text-primary-foreground border-transparent shadow-soft"
                     : "bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
@@ -324,7 +324,7 @@ const Products = () => {
                 onClick={() => updateCategory("Ghee")}
                 size="sm"
                 className={cn(
-                  "h-8 md:h-10 text-xs md:text-sm rounded-full whitespace-nowrap transition-all duration-300",
+                  "h-8 md:h-10 text-base rounded-full whitespace-nowrap transition-all duration-300",
                   selectedCategory === "Ghee"
                     ? "bg-primary text-primary-foreground border-transparent shadow-soft"
                     : "bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
@@ -337,7 +337,7 @@ const Products = () => {
                 onClick={() => updateCategory("Milk")}
                 size="sm"
                 className={cn(
-                  "h-8 md:h-10 text-xs md:text-sm rounded-full whitespace-nowrap transition-all duration-300",
+                  "h-8 md:h-10 text-base rounded-full whitespace-nowrap transition-all duration-300",
                   selectedCategory === "Milk"
                     ? "bg-primary text-primary-foreground border-transparent shadow-soft"
                     : "bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
@@ -414,7 +414,7 @@ const Products = () => {
                     <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 h-7 text-sm border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
+                        className="flex-1 h-7 text-base border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
                         onClick={(e) => {
                           e.stopPropagation();
                           // Add to cart logic
@@ -458,7 +458,7 @@ const Products = () => {
                     <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 h-7 text-sm border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
+                        className="flex-1 h-7 text-base border-accent text-accent hover:bg-accent/5 hover:brightness-95 transition-all rounded-full font-semibold"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/product/${product.id}`);
@@ -474,9 +474,46 @@ const Products = () => {
           </div>
         </div>
       </section>
+        
+        {/* CTA Section */}
+        <section className="py-16 md:py-24 px-4 bg-gradient-to-br from-accent/5 to-white">
+          <div className="container mx-auto text-center">
+            <h2 className="font-playfair text-3xl md:text-4xl mb-6 text-foreground">
+              Need Help Finding the Perfect Product?
+            </h2>
+            <p className="text-base text-muted-foreground mb-4 max-w-2xl mx-auto">
+              Can't find exactly what you're looking for? Our team of dairy experts is ready to help you discover the perfect organic ghee and farm-fresh products tailored to your needs.
+            </p>
+            <p className="text-base text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Explore our full range of traditional Bilona ghee and pure A2 dairy products, all made with love and care from our indigenous Gir cows.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button
+                asChild
+                size="lg"
+                className="rounded-full px-8 py-4 bg-accent text-accent-foreground hover:bg-accent/80 hover:scale-105 transition-all shadow-xl hover:shadow-accent/20 font-semibold"
+              >
+                <Link to="/contact" className="flex items-center gap-2">
+                  <MessageCircle className="w-5 h-5" />
+                  Contact Our Team
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="rounded-full px-8 py-4 border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all font-semibold"
+              >
+                <Link to="/faq" className="flex items-center gap-2">
+                  <HelpCircle className="w-5 h-5" />
+                  Browse FAQ
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
     </main>
   );
 };
 
 export default Products;
-

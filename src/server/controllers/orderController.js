@@ -524,7 +524,10 @@ export const updateOrderStatus = async (req, res) => {
         status,
         orderId: getDisplayId(order),
         trackingNumber: trackingNumber || order.tracking_number,
-        trackingUrl: trackingId || order.tracking_url
+        trackingUrl: trackingId || order.tracking_url,
+        items: order.items,
+        address: order.shipping_address,
+        totalAmount: order.total_price
       }).catch(e => console.error("Background Status Email Failed:", e));
     } catch (emailErr) {
       console.error("Failed to send status email", emailErr);

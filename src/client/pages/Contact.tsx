@@ -141,7 +141,7 @@ const Contact = () => {
             <h1 className="font-playfair text-4xl md:text-6xl mb-4 text-white">
               We're Here to Help
             </h1>
-            <p className="text-lg text-white/90 max-w-2xl mx-auto">
+            <p className="text-base text-white/90 max-w-2xl mx-auto">
               Reach out with questions or orders.
             </p>
           </div>
@@ -160,7 +160,7 @@ const Contact = () => {
 
               <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-border/40 bg-card p-6 md:p-8 shadow-soft transition-smooth hover:shadow-glow">
                 <div>
-                  <Label htmlFor="name" className="block text-sm font-medium mb-2">
+                  <Label htmlFor="name" className="block text-base font-medium mb-2">
                     Name
                   </Label>
                   <Input
@@ -175,7 +175,7 @@ const Contact = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="email" className="block text-sm font-medium mb-2">
+                  <Label htmlFor="email" className="block text-base font-medium mb-2">
                     Email
                   </Label>
                   <Input
@@ -190,7 +190,7 @@ const Contact = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="message" className="block text-sm font-medium mb-2">
+                  <Label htmlFor="message" className="block text-base font-medium mb-2">
                     Message
                   </Label>
                   <Textarea
@@ -207,7 +207,7 @@ const Contact = () => {
                   type="submit"
                   size="sm"
                   disabled={isSubmitting}
-                  className="w-full rounded-full px-6 py-3 md:px-8 md:py-4 text-xs md:text-sm font-semibold bg-accent text-accent-foreground hover:shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50"
+                  className="w-full rounded-full px-6 py-3 md:px-8 md:py-4 text-base font-semibold bg-accent text-accent-foreground hover:shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50"
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
@@ -228,7 +228,7 @@ const Contact = () => {
                       <Phone className="w-6 h-6 text-accent" />
                     </div>
                     <div>
-                      <h3 className="text-lg mb-1">Phone</h3>
+                      <h3 className="text-base mb-1">Phone</h3>
                       <p className="text-muted-foreground">+91 94251 56801</p>
                     </div>
                   </div>
@@ -238,7 +238,7 @@ const Contact = () => {
                       <Mail className="w-6 h-6 text-accent" />
                     </div>
                     <div>
-                      <h3 className="text-lg mb-1">Email</h3>
+                      <p className="text-base mb-1">Email</p>
                       <p className="text-muted-foreground">saritaagarwal287@gmail.com</p>
                     </div>
                   </div>
@@ -248,7 +248,7 @@ const Contact = () => {
                       <MapPin className="w-6 h-6 text-accent" />
                     </div>
                     <div>
-                      <h3 className="text-lg mb-1">Address</h3>
+                      <p className="text-base mb-4">Need Help?</p>
                       <p className="text-muted-foreground">
                         Katni, Madhya Pradesh 483501<br />
                         India
@@ -276,7 +276,7 @@ const Contact = () => {
                     <Button
                       onClick={handleWhatsApp}
                       size="sm"
-                      className="flex-1 rounded-full px-4 py-2 md:px-6 md:py-3 text-xs md:text-sm font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
+                      className="flex-1 rounded-full px-4 py-2 md:px-6 md:py-3 text-base font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
                     >
                       <MessageCircle className="w-3 h-3 mr-2" />
                       WhatsApp
@@ -284,7 +284,7 @@ const Contact = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-1 rounded-full px-4 py-2 md:px-6 md:py-3 text-xs md:text-sm font-semibold border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-colors"
+                      className="flex-1 rounded-full px-4 py-2 md:px-6 md:py-3 text-base font-semibold border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-colors"
                     >
                       <Mail className="w-3 h-3 mr-2" />
                       Email

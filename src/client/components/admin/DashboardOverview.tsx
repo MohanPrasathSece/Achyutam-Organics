@@ -23,33 +23,81 @@ const DashboardOverview = () => {
 
     useEffect(() => {
         const fetchStats = async () => {
-            // In development, Supabase access fails with 401, so fall back to demo orders only (like OrderManagement)
-            const demoOrders = JSON.parse(localStorage.getItem('demoOrders') || '[]');
-            const formattedDemoOrders = demoOrders.map((order: any) => ({
-                ...order,
-                created_at: order.createdAt,
-                customer_name: order.customer.name,
-                customer_email: order.customer.email,
-                customer_phone: order.customer.phone,
-                total_price: order.totalAmount,
-                payment_method: order.paymentMethod,
-                status: order.status,
-                order_number: order.id,
-                shipping_address: order.shippingAddress,
-                isDemo: true // Mark as demo order
-            }));
+            try {
+                // Fetch real orders from Supabase
+                const { data: realOrders, error: ordersError } = await supabase
+                    .from("orders")
+                    .select("*")
+                    .order("created_at", { ascending: false });
 
-            const totalOrders = formattedDemoOrders.length;
-            const revenue = formattedDemoOrders.reduce((acc, order) => acc + (order.total_price || 0), 0);
+                if (ordersError) throw ordersError;
 
-            setStats({
-                products: 0, // Can't get product count without Supabase
-                orders: totalOrders,
-                lowStock: 0, // Can't get low stock without Supabase
-                revenue: revenue
-            });
-            setRecentOrders(formattedDemoOrders.slice(0, 5));
-            setRecentProducts([]); // Can't get products without Supabase
+                // Fetch real products from Supabase
+                const { data: realProducts, error: productsError } = await supabase
+                    .from("products")
+                    .select("*")
+                    .order("created_at", { ascending: false });
+
+                if (productsError) throw productsError;
+
+                // Get demo orders from localStorage (fallback/merge)
+                const demoOrders = JSON.parse(localStorage.getItem('demoOrders') || '[]');
+                const formattedDemoOrders = demoOrders.map((order: any) => ({
+                    ...order,
+                    created_at: order.createdAt,
+                    customer_name: order.customer.name,
+                    customer_email: order.customer.email,
+                    customer_phone: order.customer.phone,
+                    total_price: order.totalAmount,
+                    payment_method: order.paymentMethod,
+                    status: order.status,
+                    order_number: order.id,
+                    shipping_address: order.shippingAddress,
+                    isDemo: true
+                }));
+
+                const allOrders = [...(realOrders || []), ...formattedDemoOrders];
+                const totalOrders = allOrders.length;
+                const revenue = allOrders.reduce((acc, order) => acc + (order.total_price || 0), 0);
+                
+                // Count products with low stock (< 5)
+                const lowStockCount = (realProducts || []).filter(p => (Number(p.stock_quantity) || 0) < 5).length;
+
+                setStats({
+                    products: (realProducts || []).length,
+                    orders: totalOrders,
+                    lowStock: lowStockCount,
+                    revenue: revenue
+                });
+                setRecentOrders(allOrders.slice(0, 5));
+                setRecentProducts((realProducts || []).slice(0, 5));
+            } catch (error) {
+                console.error('Failed to fetch stats:', error);
+                // Fallback to demo orders only if Supabase fails (e.g. 401 in dev)
+                const demoOrders = JSON.parse(localStorage.getItem('demoOrders') || '[]');
+                const formattedDemoOrders = demoOrders.map((order: any) => ({
+                    ...order,
+                    created_at: order.createdAt,
+                    customer_name: order.customer.name,
+                    customer_email: order.customer.email,
+                    customer_phone: order.customer.phone,
+                    total_price: order.totalAmount,
+                    payment_method: order.paymentMethod,
+                    status: order.status,
+                    order_number: order.id,
+                    shipping_address: order.shippingAddress,
+                    isDemo: true
+                }));
+
+                setStats({
+                    products: 0,
+                    orders: formattedDemoOrders.length,
+                    lowStock: 0,
+                    revenue: formattedDemoOrders.reduce((acc, order) => acc + (order.total_price || 0), 0)
+                });
+                setRecentOrders(formattedDemoOrders.slice(0, 5));
+                setRecentProducts([]);
+            }
         };
 
         fetchStats();

@@ -27,15 +27,15 @@ const FarmSection = () => {
   }, []);
 
   return (
-    <section className="py-12 md:py-24 bg-gradient-to-br from-emerald-50 to-white">
-      <div className="container mx-auto px-4">
+    <section className="py-12 md:py-24 px-4 bg-gradient-to-br from-emerald-50 to-white">
+      <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Text Content */}
           <div className="animate-fade-in text-center lg:text-left">
             <h2 className="text-3xl md:text-4xl font-cormorant font-bold text-slate-800 mb-6">
               Visit Our Farm
             </h2>
-            <div className="space-y-4 text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0">
+            <div className="space-y-4 text-base lg:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0">
               <p>
                 Our farm specializes in indigenous Gir cows that provide the pure A2 milk used in our traditional ghee making process. We are proud to have only this single, exceptional breed.
               </p>

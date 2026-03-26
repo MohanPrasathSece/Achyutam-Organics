@@ -65,11 +65,11 @@ const FAQ = () => {
                         <AnimateOnScroll key={faq.q} delay={i * 80}>
                             <div className="bg-card rounded-xl shadow-soft hover:shadow-glow transition-smooth border border-border/40 overflow-hidden">
                                 <button
-                                    className="w-full text-left p-6 text-sm sm:text-base transition-colors hover:text-accent focus:outline-none focus:text-accent"
+                                    className="w-full text-left p-6 text-base transition-colors hover:text-accent focus:outline-none focus:text-accent"
                                     onClick={() => toggleFAQ(i)}
                                 >
                                     <div className="flex items-center justify-between">
-                                        <span className="font-playfair text-lg text-foreground font-semibold">{faq.q}</span>
+                                        <span className="font-playfair text-base text-foreground font-semibold">{faq.q}</span>
                                         <ChevronDown className={`h-5 w-5 shrink-0 text-accent transition-transform duration-300 ${openIndex === i ? 'rotate-180' : ''}`} />
                                     </div>
                                 </button>
@@ -84,9 +84,9 @@ const FAQ = () => {
                 <AnimateOnScroll delay={300}>
                     <div className="mt-16 text-center bg-background rounded-3xl p-10 border border-border/40 shadow-soft">
                         <h3 className="text-3xl font-playfair mb-4">Still have questions?</h3>
-                        <p className="text-muted-foreground mb-8">We're here to help you choose the best for your family.</p>
+                        <p className="text-base text-muted-foreground mb-4">We're here to help you choose the best for your family.</p>
                         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-                            <Button asChild size="sm" className="rounded-full px-6 py-3 md:px-8 md:py-4 text-xs md:text-sm font-semibold bg-primary text-white hover:shadow-glow hover:scale-[1.02] transition-transform">
+                            <Button asChild size="sm" className="rounded-full px-6 py-3 md:px-8 md:py-4 text-base font-semibold bg-primary text-white hover:shadow-glow hover:scale-[1.02] transition-transform text-center">
                               <Link to="/contact">Contact Us</Link>
                             </Button>
                             <Button asChild variant="outline" size="sm" className="rounded-full px-6 py-3 md:px-8 md:py-4 text-xs md:text-sm font-semibold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300">

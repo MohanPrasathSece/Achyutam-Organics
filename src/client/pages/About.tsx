@@ -46,7 +46,7 @@ const About = () => {
               <br />
               <span className="text-accent">From Farm to Table</span>
             </h1>
-            <p className="text-white/90 font-lato text-lg md:text-xl max-w-3xl mx-auto">
+            <p className="text-base text-white/90 font-lato max-w-3xl mx-auto">
               Discover the story behind Achyutam Organics and our commitment to bringing you the purest traditional dairy products
             </p>
           </div>
@@ -139,9 +139,9 @@ const About = () => {
               </h2>
               <div className="w-24 h-1 bg-accent rounded-full mb-8" />
               <p className="text-lg text-foreground/90 leading-relaxed mb-6">
-                To bring back the purity of traditional dairy products to modern homes, specializing in indigenous Gir Gir cows and using ancient wisdom and sustainable practices that honor both nature and health.
+                To bring back the purity of traditional dairy products to modern homes, specializing in indigenous Gir cows and using ancient wisdom and sustainable practices that honor both nature and health.
               </p>
-              <p className="text-lg text-foreground/90 leading-relaxed mb-6">
+              <p className="text-base text-foreground/90 leading-relaxed mb-6">
                 We believe that everyone deserves access to pure, unadulterated dairy products from our single-breed Gir Gir cow farm that nourish the body and soul.
               </p>
               <div className="space-y-4">
@@ -233,10 +233,10 @@ const About = () => {
             Experience the difference of pure, traditional dairy products. Start your journey to healthier living today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/products" className="rounded-full px-8 py-4 text-sm sm:text-base font-semibold bg-primary text-white hover:shadow-glow hover:scale-[1.02] transition-transform text-center">
+            <a href="/products" className="rounded-full px-8 py-4 text-base font-semibold bg-primary text-white hover:shadow-glow hover:scale-[1.02] transition-transform text-center">
               Shop Products
             </a>
-            <a href="/contact" className="rounded-full px-8 py-4 text-sm sm:text-base font-semibold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300 text-center">
+            <a href="/contact" className="rounded-full px-8 py-4 text-base font-semibold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300 text-center">
               Contact Us
             </a>
           </div>

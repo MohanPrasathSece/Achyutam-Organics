@@ -56,44 +56,54 @@ export const sendMail = async ({ to, subject, html }) => {
   }
 };
 
+const generateOrderTable = (items) => {
+  if (!items || !Array.isArray(items)) return "";
 
-export const sendOrderEmails = async ({ order }) => {
-  const formattedItems = order.items
+  const formattedItems = items
     .map(
       (item) => `
         <tr>
-          <td style="padding: 6px 12px; border: 1px solid #eee;">${item.name}</td>
-          <td style="padding: 6px 12px; border: 1px solid #eee;">${item.quantity}</td>
-          <td style="padding: 6px 12px; border: 1px solid #eee;">₹${item.price.toLocaleString("en-IN")}</td>
+          <td style="padding: 10px 12px; border: 1px solid #e5e7eb; color: #374151;">${item.name}</td>
+          <td style="padding: 10px 12px; border: 1px solid #e5e7eb; color: #374151; text-align: center;">${item.quantity}</td>
+          <td style="padding: 10px 12px; border: 1px solid #e5e7eb; color: #374151; text-align: right;">₹${(Number(item.price) || 0).toLocaleString("en-IN")}</td>
         </tr>
       `
     )
     .join("");
 
-  const orderTable = `
-    <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
+  return `
+    <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; margin-top: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb;">
       <thead>
-        <tr>
-          <th style="padding: 8px 12px; text-align: left; background: #f0fdf4; border: 1px solid #eee; color: #065f46;">Product</th>
-          <th style="padding: 8px 12px; text-align: left; background: #f0fdf4; border: 1px solid #eee; color: #065f46;">Qty</th>
-          <th style="padding: 8px 12px; text-align: left; background: #f0fdf4; border: 1px solid #eee; color: #065f46;">Price</th>
+        <tr style="background: #f9fafb;">
+          <th style="padding: 12px; text-align: left; border: 1px solid #e5e7eb; color: #065f46; font-size: 13px; text-transform: uppercase;">Product</th>
+          <th style="padding: 12px; text-align: center; border: 1px solid #e5e7eb; color: #065f46; font-size: 13px; text-transform: uppercase;">Qty</th>
+          <th style="padding: 12px; text-align: right; border: 1px solid #e5e7eb; color: #065f46; font-size: 13px; text-transform: uppercase;">Price</th>
         </tr>
       </thead>
       <tbody>${formattedItems}</tbody>
     </table>
   `;
+};
 
-  let addressBlock = "";
-  if (order.shippingAddress && typeof order.shippingAddress === 'object') {
-    addressBlock = `
-      <p style="margin:0;">${order.shippingAddress.line1 || ""}</p>
-      ${order.shippingAddress.line2 ? `<p style="margin:0;">${order.shippingAddress.line2}</p>` : ""}
-      <p style="margin:0;">${order.shippingAddress.city || ""}, ${order.shippingAddress.state || ""} ${order.shippingAddress.postalCode || ""}</p>
-      <p style="margin:0;">${order.shippingAddress.country || ""}</p>
+const generateAddressBlock = (address) => {
+  if (!address) return `<p style="margin:0; color: #6b7280; font-style: italic;">No address provided</p>`;
+  
+  if (typeof address === 'object') {
+    return `
+      <div style="color: #4b5563; line-height: 1.5;">
+        <p style="margin:0;">${address.line1 || ""}</p>
+        ${address.line2 ? `<p style="margin:0;">${address.line2}</p>` : ""}
+        <p style="margin:0;">${address.city || ""}, ${address.state || ""} ${address.postalCode || ""}</p>
+        <p style="margin:0;">${address.country || ""}</p>
+      </div>
     `;
-  } else if (order.address) {
-    addressBlock = `<p style="margin:0;">${order.address}</p>`;
   }
+  return `<p style="margin:0; color: #4b5563;">${address}</p>`;
+};
+
+export const sendOrderEmails = async ({ order }) => {
+  const orderTable = generateOrderTable(order.items);
+  const addressBlock = generateAddressBlock(order.shipping_address || order.shippingAddress || order.address);
 
   const ownerHtml = `
     <h2 style="font-family: 'Cormorant Garamond', serif; color:#065f46;">New Achyutam Organics Order</h2>
@@ -132,7 +142,7 @@ export const sendOrderEmails = async ({ order }) => {
   ]);
 };
 
-export const sendStatusUpdateEmail = async ({ email, customerName, status, orderId, trackingNumber, trackingUrl }) => {
+export const sendStatusUpdateEmail = async ({ email, customerName, status, orderId, trackingNumber, trackingUrl, items, address, totalAmount }) => {
   const statusMessages = {
     Confirmed: "Great news! Your organic order has been confirmed and is now being prepared using traditional methods.",
     Shipped: `Your farm-fresh products are on their way! They've officially left our Katni farm.`,
@@ -143,33 +153,54 @@ export const sendStatusUpdateEmail = async ({ email, customerName, status, order
 
   const message = statusMessages[status] || `Your order status has been updated to ${status}.`;
 
+  const orderTable = items ? generateOrderTable(items) : "";
+  const addressBlock = address ? generateAddressBlock(address) : "";
+
   let trackingBlock = "";
   if ((status === 'Shipped' || status === 'Out for Delivery') && (trackingNumber || trackingUrl)) {
     trackingBlock = `
       <div style="margin-top: 20px; padding: 15px; background-color: #f0fdf4; border-left: 4px solid #10b981; border-radius: 4px;">
         <h4 style="margin: 0 0 10px 0; color: #065f46;">Tracking Information</h4>
-        ${trackingNumber ? `<p style="margin: 5px 0;"><strong>Tracking ID:</strong> ${trackingNumber}</p>` : ""}
+        ${trackingNumber ? `<p style="margin: 5px 0; color: #374151;"><strong>Tracking ID:</strong> ${trackingNumber}</p>` : ""}
         ${trackingUrl ? `<p style="margin: 5px 0;"><a href="${trackingUrl}" style="color: #059669; font-weight: bold; text-decoration: underline;">Track your package here &rarr;</a></p>` : ""}
       </div>
     `;
   }
 
   const html = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #f0f0f0; border-radius: 12px; overflow: hidden;">
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #f0f0f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
       <div style="background: linear-gradient(135deg, #065f46 0%, #059669 100%); padding: 32px 24px; text-align: center;">
         <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-family: 'Cormorant Garamond', serif;">Achyutam Organics</h1>
       </div>
-      <div style="padding: 24px; color: #444; line-height: 1.6;">
-        <h2 style="color: #065f46;">Order Update: ${status}</h2>
+      <div style="padding: 24px; color: #374151; line-height: 1.6;">
+        <h2 style="color: #065f46; margin-top: 0;">Order Update: ${status}</h2>
         <p>Dear ${customerName},</p>
         <p>${message}</p>
         ${trackingBlock}
-        <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; margin: 24px 0;">
-          <p style="margin: 0; font-size: 14px; color: #065f46;"><strong>Order ID:</strong> #${orderId}</p>
-          <p style="margin: 4px 0 0; font-size: 14px; color: #065f46;"><strong>Status:</strong> ${status}</p>
+
+        <div style="margin-top: 32px; border-top: 1px solid #f0f0f0; padding-top: 24px;">
+           <h3 style="color: #065f46; font-size: 18px; margin-bottom: 12px;">Order Summary</h3>
+           <div style="background: #f9fafb; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+              <p style="margin: 0; font-size: 14px; color: #374151;"><strong>Order ID:</strong> #${orderId}</p>
+              <p style="margin: 4px 0 0; font-size: 14px; color: #374151;"><strong>Current Status:</strong> <span style="color: #059669; font-weight: bold;">${status}</span></p>
+           </div>
+           
+           ${items ? `
+             <h4 style="color: #065f46; margin: 20px 0 10px 0;">Items Ordered</h4>
+             ${orderTable}
+             ${totalAmount ? `<p style="text-align: right; margin-top: 12px; font-size: 16px;"><strong>Total:</strong> ₹${totalAmount.toLocaleString("en-IN")}</p>` : ""}
+           ` : ""}
+
+           ${address ? `
+             <h4 style="color: #065f46; margin: 24px 0 10px 0;">Delivery Address</h4>
+             <div style="background: #ffffff; border: 1px solid #e5e7eb; padding: 16px; border-radius: 8px;">
+               ${addressBlock}
+             </div>
+           ` : ""}
         </div>
-        <p>If you have any questions, simply reply to this email or reach out to us on WhatsApp.</p>
-        <p style="margin-top: 32px;">Purity in every drop,<br/><strong>Team Achyutam Organics</strong></p>
+
+        <p style="margin-top: 32px; font-size: 14px; color: #6b7280;">If you have any questions, simply reply to this email or reach out to us on WhatsApp.</p>
+        <p style="margin-top: 32px; border-top: 1px solid #f0f0f0; padding-top: 20px;">Purity in every drop,<br/><strong>Team Achyutam Organics</strong></p>
       </div>
     </div>
   `;

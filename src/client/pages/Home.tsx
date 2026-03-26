@@ -242,14 +242,7 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [heroBgs.length]);
 
-  useEffect(() => {
-    const state = location.state as { scrollToHero?: boolean } | null;
-    if (state?.scrollToHero) {
-      document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" });
-      navigate(location.pathname, { replace: true, state: { ...state, scrollToHero: false } });
-    }
-  }, [location.state, location.pathname, navigate]);
-
+  
 
 
   const featuredProductsSchema = {
@@ -350,17 +343,17 @@ const Home = () => {
         </div>
 
         <div className="relative z-10 text-left px-6 md:px-12 animate-fade-in-slow max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600/90 border border-blue-300/40 mb-8 shadow-lg backdrop-blur-sm">
-            <div className="w-4 h-4 rounded-full bg-blue-200 animate-pulse" />
-            <p className="text-xs md:text-sm tracking-[0.2em] text-white uppercase font-semibold">The Gold Standard of Organic Ghee</p>
+          <div className="inline-flex items-center gap-1 px-2 py-1 md:gap-2 md:px-4 md:py-2 rounded-full bg-blue-600/90 border border-blue-300/40 mb-8 shadow-lg backdrop-blur-sm">
+            <div className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-blue-200 animate-pulse" />
+            <p className="text-[10px] md:text-xs tracking-[0.2em] text-white uppercase font-semibold">The Gold Standard of Organic Ghee</p>
           </div>
 
-          <h1 className="font-playfair text-4xl sm:text-6xl md:text-7xl mb-8 text-foreground tracking-tighter leading-[0.95]">
+          <h1 className="font-playfair text-3xl sm:text-5xl md:text-7xl mb-8 text-foreground tracking-tighter leading-[0.95]">
             A Legacy of <br />
             <span className="text-accent">Pure Nutrition</span>
           </h1>
 
-          <p className="text-sm md:text-lg text-foreground/80 max-w-2xl mb-12 leading-relaxed">
+          <p className="text-base md:text-lg text-foreground/80 max-w-2xl mb-12 leading-relaxed">
             Pure Desi Gir Cow Ghee from indigenous Gir cows delivered all over India. Fresh Gir cow milk available daily in Katni only. Experience the taste of tradition from our single-breed specialty farm.
           </p>
 
@@ -368,8 +361,8 @@ const Home = () => {
             <Button
               asChild
               variant="default"
-              size="sm"
-              className="rounded-full px-8 py-4 md:px-12 md:py-6 text-sm md:text-base bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.02] transition-all shadow-xl hover:shadow-accent/20"
+              size="lg"
+              className="rounded-full px-10 py-5 md:px-12 md:py-6 text-base lg:text-lg bg-accent text-accent-foreground hover:brightness-95 hover:scale-[1.02] transition-all shadow-xl hover:shadow-accent/20"
             >
               <Link to="/products" className="flex items-center gap-2 md:gap-3">
                 Order Fresh Ghee
@@ -401,7 +394,7 @@ const Home = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
                 <div className="text-white">
                   <h3 className="text-xl md:text-2xl font-playfair font-bold mb-2 text-white">Premium Quality Ghee</h3>
-                  <p className="text-white/90 text-sm md:text-base">Traditional Bilona Method - ₹2100 per litre</p>
+                  <p className="text-white/90 text-base lg:text-lg">Traditional Bilona Method - ₹2100 per litre</p>
                 </div>
               </div>
             </div>
@@ -415,7 +408,7 @@ const Home = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
                 <div className="text-white">
                   <h3 className="text-xl md:text-2xl font-playfair font-bold mb-2 text-white">Farm Fresh Milk</h3>
-                  <p className="text-white/90 text-sm md:text-base">Daily Delivery - ₹80 per litre (only Katni)</p>
+                  <p className="text-white/90 text-base lg:text-lg">Daily Delivery - ₹80 per litre (only Katni)</p>
                 </div>
               </div>
             </div>
@@ -445,7 +438,7 @@ const Home = () => {
                 The Legend of <br />
                 <span className="text-accent underline decoration-accent/30 underline-offset-8">Bilona Ghee</span>
               </h2>
-              <div className="space-y-6 text-foreground/80 leading-relaxed text-lg">
+              <div className="space-y-6 text-foreground/80 leading-relaxed text-base lg:text-lg">
                 <p>
                   Achyutam Organics was born from a simple mission: to restore the purity of traditional Indian dairy. Our ghee isn't just a product—it's a tribute to the ancient Vedic techniques passed down through generations.
                 </p>
@@ -479,10 +472,10 @@ const Home = () => {
                 <div className="w-16 h-16 rounded-2xl bg-accent text-accent-foreground flex items-center justify-center mb-6 shadow-glow mx-auto group-hover:rotate-12 transition-transform">
                   <item.icon className="w-8 h-8" />
                 </div>
-                <h3 className="font-lato font-semibold text-sm md:text-lg mb-2">
+                <h3 className="font-lato font-semibold text-base md:text-lg mb-2">
                       {item.title}
                     </h3>
-                <p className="text-muted-foreground font-lato leading-relaxed">{item.desc}</p>
+                <p className="text-muted-foreground font-lato leading-relaxed text-base lg:text-lg">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -495,7 +488,7 @@ const Home = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="font-playfair text-3xl sm:text-5xl md:text-6xl mb-4">What Our Community Says</h2>
-            <p className="text-muted-foreground font-lato text-lg">Real stories from our valued customers.</p>
+            <p className="text-muted-foreground font-lato text-base lg:text-lg">Real stories from our valued customers.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -522,7 +515,7 @@ const Home = () => {
                   </div>
                   <div className="ml-4">
                     <p className="font-playfair text-foreground text-lg">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                    <p className="text-lg text-white/90 max-w-2xl mx-auto">{testimonial.location}</p>
                   </div>
                 </div>
                 <div className="flex mb-4">
@@ -530,7 +523,7 @@ const Home = () => {
                     <span key={star} className="text-accent text-lg">★</span>
                   ))}
                 </div>
-                <p className="text-foreground/80 font-lato text-lg leading-relaxed">"{testimonial.quote}"</p>
+                <p className="text-foreground/80 font-lato text-base lg:text-lg leading-relaxed">"{testimonial.quote}"</p>
               </div>
             ))}
           </div>
@@ -546,7 +539,7 @@ const Home = () => {
           <div className="text-center mb-16">
             <h2 className="font-playfair text-3xl md:text-5xl mb-6">Frequently Asked Questions</h2>
             <div className="w-16 h-1 bg-accent mx-auto rounded-full mb-6" />
-            <p className="text-muted-foreground mb-8">
+            <p className="text-muted-foreground text-base lg:text-lg mb-8">
               Find answers to common questions about our products
             </p>
           </div>
@@ -555,7 +548,7 @@ const Home = () => {
             {FAQ_ITEMS.map((faq, i) => (
               <div key={i} className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300">
                 <button
-                  className="w-full text-left p-6 text-sm sm:text-base transition-colors hover:text-accent focus:outline-none"
+                  className="w-full text-left p-6 text-base lg:text-lg transition-colors hover:text-accent focus:outline-none"
                   onClick={() => toggleFaq(i)}
                 >
                   <div className="flex items-center justify-between">
@@ -565,7 +558,7 @@ const Home = () => {
                     </span>
                   </div>
                 </button>
-                <div className={`px-6 pb-6 text-muted-foreground leading-relaxed transition-all duration-300 ${openFaqIndex === i ? 'block' : 'hidden'}`}>
+                <div className={`px-6 pb-6 text-muted-foreground leading-relaxed text-base lg:text-lg transition-all duration-300 ${openFaqIndex === i ? 'block' : 'hidden'}`}>
                   {faq.a}
                 </div>
               </div>
@@ -573,7 +566,7 @@ const Home = () => {
           </div>
           
           <div className="text-center mt-12">
-            <a href="/faq" className="rounded-full px-8 py-4 text-sm sm:text-base font-semibold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300">
+            <a href="/faq" className="rounded-full px-8 py-4 text-base font-semibold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300">
               View All Questions
             </a>
           </div>

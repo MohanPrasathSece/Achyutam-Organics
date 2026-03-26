@@ -66,19 +66,18 @@ const OrderManagement = () => {
             // Format demo orders to match Supabase structure
             const formattedDemoOrders = demoOrders.map((order: any) => ({
                 ...order,
-                created_at: order.createdAt,
-                customer_name: order.customer.name,
-                customer_email: order.customer.email,
-                customer_phone: order.customer.phone,
-                total_price: order.totalAmount,
-                payment_method: order.paymentMethod,
-                status: order.status,
-                order_number: order.id,
-                // Add address fields
-                shipping_address: order.shippingAddress,
-                isDemo: true // Mark as demo order
+                created_at: order.createdAt || order.created_at,
+                customer_name: order.customer?.name || order.customer_name,
+                customer_email: order.customer?.email || order.customer_email || order.email,
+                customer_phone: order.customer?.phone || order.customer_phone || order.phone,
+                total_price: order.totalAmount || order.total_price,
+                payment_method: order.paymentMethod || order.payment_method,
+                status: (order.status || "pending").toLowerCase(),
+                order_number: order.id || order.order_number,
+                shipping_address: order.shippingAddress || order.shipping_address,
+                isDemo: true
             }));
-            
+
             // Combine both arrays, with Supabase orders first
             const allOrders = [...(data || []), ...formattedDemoOrders];
             setOrders(allOrders);
@@ -88,15 +87,15 @@ const OrderManagement = () => {
             const demoOrders = JSON.parse(localStorage.getItem('demoOrders') || '[]');
             const formattedDemoOrders = demoOrders.map((order: any) => ({
                 ...order,
-                created_at: order.createdAt,
-                customer_name: order.customer.name,
-                customer_email: order.customer.email,
-                customer_phone: order.customer.phone,
-                total_price: order.totalAmount,
-                payment_method: order.paymentMethod,
-                status: order.status,
-                order_number: order.id,
-                shipping_address: order.shippingAddress,
+                created_at: order.createdAt || order.created_at,
+                customer_name: order.customer?.name || order.customer_name,
+                customer_email: order.customer?.email || order.customer_email || order.email,
+                customer_phone: order.customer?.phone || order.customer_phone || order.phone,
+                total_price: order.totalAmount || order.total_price,
+                payment_method: order.paymentMethod || order.payment_method,
+                status: (order.status || "pending").toLowerCase(),
+                order_number: order.id || order.order_number,
+                shipping_address: order.shippingAddress || order.shipping_address,
                 isDemo: true
             }));
             setOrders(formattedDemoOrders);
@@ -117,10 +116,30 @@ const OrderManagement = () => {
 
     const updateStatus = async (order: any, newStatus: string) => {
         const orderId = order.id;
+        
+        // Status mapping to match DB CHECK constraints (lowercase, no spaces where required)
+        const statusMap: Record<string, string> = {
+            "Pending": "pending",
+            "Confirmed": "confirmed",
+            "Shipped": "shipped",
+            "Out for Delivery": "out for delivery",
+            "Delivered": "delivered",
+            "Cancelled": "cancelled"
+        };
+        
+        const dbStatus = statusMap[newStatus] || newStatus.toLowerCase();
+
+        if (order.isDemo || !orderId) {
+            toast({ title: `Order ${newStatus} (Demo)`, description: "Demo orders are not synced to database." });
+            setOrders(prev => prev.map(o => o.order_number === order.order_number ? { ...o, status: dbStatus } : o));
+            if (selectedOrder) setSelectedOrder({ ...selectedOrder, status: dbStatus });
+            return;
+        }
+
         try {
             const { error } = await supabase
                 .from("orders")
-                .update({ status: newStatus })
+                .update({ status: dbStatus })
                 .eq("id", orderId);
 
             if (error) throw error;
@@ -135,7 +154,7 @@ const OrderManagement = () => {
                 },
                 body: JSON.stringify({
                     orderId,
-                    status: newStatus,
+                    status: dbStatus,
                     trackingNumber: order.tracking_number || "",
                     trackingId: order.tracking_url || ""
                 })
@@ -143,7 +162,7 @@ const OrderManagement = () => {
 
             toast({ title: `Order ${newStatus}` });
             fetchOrders();
-            if (selectedOrder) setSelectedOrder({ ...selectedOrder, status: newStatus });
+            if (selectedOrder) setSelectedOrder({ ...selectedOrder, status: dbStatus });
         } catch (error: any) {
             toast({ title: "Update Failed", description: error.message, variant: "destructive" });
         }
@@ -359,7 +378,10 @@ const OrderManagement = () => {
             </div>
 
             <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
-                <DialogContent className="max-w-4xl w-[95%] md:w-full bg-white rounded-3xl p-6 md:p-10 font-lato admin max-h-[90vh] overflow-y-auto">
+                <DialogContent 
+                    className="max-w-4xl w-[95%] md:w-full bg-white rounded-3xl p-6 md:p-10 font-lato admin max-h-[90vh] overflow-y-auto"
+                    aria-describedby={undefined}
+                >
                     {selectedOrder && (
                         <>
                             <DialogHeader>
@@ -432,6 +454,7 @@ const OrderManagement = () => {
                                                 value={selectedOrder.tracking_number || ""}
                                                 onChange={(e) => setSelectedOrder({ ...selectedOrder, tracking_number: e.target.value })}
                                                 onBlur={async (e) => {
+                                                    if (!selectedOrder?.id || selectedOrder.isDemo) return;
                                                     try {
                                                         const session = await supabase.auth.getSession();
                                                         await fetch("/api/orders/update-tracking", {
@@ -460,6 +483,7 @@ const OrderManagement = () => {
                                                     value={selectedOrder.tracking_url || ""}
                                                     onChange={(e) => setSelectedOrder({ ...selectedOrder, tracking_url: e.target.value })}
                                                     onBlur={async (e) => {
+                                                        if (!selectedOrder?.id || selectedOrder.isDemo) return;
                                                         try {
                                                             const session = await supabase.auth.getSession();
                                                             await fetch("/api/orders/update-tracking", {
@@ -497,26 +521,24 @@ const OrderManagement = () => {
 
                             <div className="mt-8 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
                                 <div className="flex flex-wrap justify-center gap-2 w-full md:w-auto">
-                                    {['Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'].map((status) => {
-                                        const steps = ['Confirmed', 'Shipped', 'Out for Delivery', 'Delivered'];
-                                        const currentStepIndex = steps.indexOf(selectedOrder.status);
-                                        const thisStepIndex = steps.indexOf(status);
+                                    {['Confirmed', 'Shipped', 'Delivered', 'Cancelled'].map((status) => {
+                                        const steps = ['confirmed', 'shipped', 'delivered'];
+                                        const currentStatus = (selectedOrder.status || "").toLowerCase();
+                                        const currentStepIndex = steps.indexOf(currentStatus);
+                                        const thisStepMapped = status.toLowerCase();
+                                        const thisStepIndex = steps.indexOf(thisStepMapped);
 
-                                        const isCompleted = status !== 'Cancelled' &&
+                                        const isCompleted = thisStepMapped !== 'cancelled' &&
                                             currentStepIndex !== -1 &&
                                             thisStepIndex <= currentStepIndex;
 
-                                        const isPast = status !== 'Cancelled' &&
-                                            currentStepIndex !== -1 &&
-                                            thisStepIndex < currentStepIndex;
-
-                                        const isAlreadyCancelled = selectedOrder.status === 'Cancelled';
-                                        const isAlreadyDelivered = selectedOrder.status === 'Delivered';
+                                        const isAlreadyCancelled = currentStatus === 'cancelled';
+                                        const isAlreadyDelivered = currentStatus === 'delivered';
 
                                         // Lock logic: Cannot go back, cannot change if cancelled or delivered
                                         const isLocked = (thisStepIndex !== -1 && thisStepIndex <= currentStepIndex) || isAlreadyCancelled || isAlreadyDelivered;
 
-                                        const isCancelled = selectedOrder.status === 'Cancelled' && status === 'Cancelled';
+                                        const isCancelled = currentStatus === 'cancelled' && thisStepMapped === 'cancelled';
 
                                         return (
                                             <Button
@@ -531,7 +553,7 @@ const OrderManagement = () => {
                                                         ? "bg-emerald-500 border-emerald-500 text-white hover:bg-emerald-600 font-bold shadow-sm"
                                                         : isCancelled
                                                             ? "bg-red-500 border-red-500 text-white font-bold"
-                                                            : selectedOrder.status === status
+                                                            : currentStatus === thisStepMapped
                                                                 ? "bg-slate-800 border-slate-800 text-white font-bold"
                                                                 : "hover:bg-slate-100 text-slate-600 font-medium",
                                                     isLocked && "opacity-50 grayscale pointer-events-none"

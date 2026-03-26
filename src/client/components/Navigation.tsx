@@ -54,11 +54,7 @@ const Navigation = () => {
           <button
             type="button"
             onClick={() => {
-              if (location.pathname === "/") {
-                document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" });
-              } else {
-                navigate("/", { state: { scrollToHero: true } });
-              }
+              navigate("/");
             }}
             className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md flex items-center"
           >
@@ -92,10 +88,10 @@ const Navigation = () => {
             type="button"
             aria-label={`View cart${hasCartItems ? ` with ${totalQuantity} item${totalQuantity === 1 ? "" : "s"}` : ""}`}
             className={cn(
-              "flex items-center gap-3 px-5 py-3 rounded-full shadow-soft border border-blue-400/30 backdrop-blur-md relative",
-              "transition-all duration-300 hover:shadow-glow hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
-              "bg-blue-500 text-white hover:bg-blue-600",
-              isTransparent ? "bg-blue-500/80 text-white hover:bg-blue-600/80" : ""
+              "flex items-center gap-3 px-5 py-3 rounded-full shadow-soft border border-blue-400/30 backdrop-blur-md",
+              "transition-all duration-300 hover:shadow-glow hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-blue-500",
+              "text-primary hover:text-primary/80",
+              "md:bg-blue-500 md:hover:bg-blue-600"
             )}
             onClick={() => {
               setIsMobileMenuOpen(false);
@@ -116,9 +112,9 @@ const Navigation = () => {
             aria-expanded={isMobileMenuOpen}
             aria-label="Toggle menu"
             className={cn(
-              "inline-flex h-11 w-11 items-center justify-center rounded-xl shadow-soft",
-              "bg-primary text-primary-foreground border border-primary/20 backdrop-blur-md",
-              "transition-all hover:shadow-glow hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:hidden",
+              "inline-flex h-11 w-11 items-center justify-center rounded-xl",
+              "text-foreground border border-foreground/20 backdrop-blur-md",
+              "transition-all hover:shadow-glow hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground md:hidden",
               "animate-menu-bounce"
             )}
             onClick={() => setIsMobileMenuOpen((prev) => !prev)}
@@ -151,7 +147,6 @@ const Navigation = () => {
                     if (isActive(link.href)) {
                       e.preventDefault();
                       setIsMobileMenuOpen(false);
-                      window.scrollTo({ top: 0, behavior: "smooth" });
                     }
                   }}
                   className={cn(
@@ -166,6 +161,15 @@ const Navigation = () => {
                 </Link>
               ))}
             </div>
+            
+            {/* Close Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              aria-label="Close menu"
+            >
+              <X className="h-6 w-6 text-foreground" />
+            </button>
           </div>
         </div>
       ) : null}
