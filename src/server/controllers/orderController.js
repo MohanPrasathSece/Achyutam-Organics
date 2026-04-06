@@ -226,17 +226,44 @@ export const createCODOrder = async (req, res) => {
     }
 
     // 3. Send Confirmation Emails
-    sendOrderEmails({
-      order: {
-        ...newOrder,
-        customer: { name: newOrder.customer_name, email: newOrder.email, phone: newOrder.phone },
-        items: newOrder.items,
-        amount: newOrder.total_price,
-        displayId: orderNumber,
-        shippingAddress: newOrder.shipping_address,
-        payment_method: "COD"
-      }
-    }).catch(e => console.error("COD Order Email Failed:", e));
+    console.log("📧 SENDING COD ORDER EMAILS:", {
+      orderId: orderNumber,
+      customerEmail: newOrder.email,
+      customerName: newOrder.customer_name,
+      amount: newOrder.total_price,
+      paymentMethod: "COD",
+      timestamp: new Date().toISOString()
+    });
+
+    try {
+      const emailResults = await sendOrderEmails({
+        order: {
+          ...newOrder,
+          customer: { name: newOrder.customer_name, email: newOrder.email, phone: newOrder.phone },
+          items: newOrder.items,
+          amount: newOrder.total_price,
+          displayId: orderNumber,
+          shippingAddress: newOrder.shipping_address,
+          payment_method: "COD"
+        }
+      });
+      
+      console.log("✅ COD ORDER EMAILS SENT:", {
+        orderId: orderNumber,
+        customerEmail: newOrder.email,
+        timestamp: new Date().toISOString(),
+        results: emailResults
+      });
+    } catch (emailError) {
+      console.error("❌ COD ORDER EMAILS FAILED:", {
+        orderId: orderNumber,
+        customerEmail: newOrder.email,
+        error: emailError.message,
+        timestamp: new Date().toISOString(),
+        stack: emailError.stack
+      });
+      // Don't fail the order creation, just log the email error
+    }
 
     return res.json({
       success: true,
@@ -405,19 +432,50 @@ export const verifyPayment = async (req, res) => {
 
       // Map Supabase order back to expected format for email utils if necessary
       // Background email sending to make checkout "very very fast"
-      sendOrderEmails({
-        order: {
-          ...updatedOrder,
-          customer: { name: updatedOrder.customer_name, email: updatedOrder.email, phone: updatedOrder.phone },
-          items: updatedOrder.items,
-          amount: updatedOrder.total_price,
+      console.log("📧 SENDING PREPAID ORDER EMAILS:", {
+        orderId: getDisplayId(updatedOrder),
+        razorpayOrderId: updatedOrder.razorpay_order_id,
+        razorpayPaymentId: updatedOrder.razorpay_payment_id,
+        customerEmail: updatedOrder.email,
+        customerName: updatedOrder.customer_name,
+        amount: updatedOrder.total_price,
+        paymentMethod: updatedOrder.payment_method || "Prepaid",
+        timestamp: new Date().toISOString()
+      });
+
+      try {
+        const emailResults = await sendOrderEmails({
+          order: {
+            ...updatedOrder,
+            customer: { name: updatedOrder.customer_name, email: updatedOrder.email, phone: updatedOrder.phone },
+            items: updatedOrder.items,
+            amount: updatedOrder.total_price,
+            razorpayOrderId: updatedOrder.razorpay_order_id,
+            razorpayPaymentId: updatedOrder.razorpay_payment_id || razorpayPaymentId,
+            displayId: getDisplayId(updatedOrder),
+            shippingAddress: updatedOrder.shipping_address,
+            payment_method: updatedOrder.payment_method || "Prepaid"
+          }
+        });
+        
+        console.log("✅ PREPAID ORDER EMAILS SENT:", {
+          orderId: getDisplayId(updatedOrder),
           razorpayOrderId: updatedOrder.razorpay_order_id,
-          razorpayPaymentId: updatedOrder.razorpay_payment_id || razorpayPaymentId,
-          displayId: getDisplayId(updatedOrder),
-          shippingAddress: updatedOrder.shipping_address,
-          payment_method: updatedOrder.payment_method || "Prepaid"
-        }
-      }).catch(e => console.error("Background Order Email Failed:", e));
+          customerEmail: updatedOrder.email,
+          timestamp: new Date().toISOString(),
+          results: emailResults
+        });
+      } catch (emailError) {
+        console.error("❌ PREPAID ORDER EMAILS FAILED:", {
+          orderId: getDisplayId(updatedOrder),
+          razorpayOrderId: updatedOrder.razorpay_order_id,
+          customerEmail: updatedOrder.email,
+          error: emailError.message,
+          timestamp: new Date().toISOString(),
+          stack: emailError.stack
+        });
+        // Don't fail the payment verification, just log the email error
+      }
 
     } catch (saveError) {
       console.error("Failed to send post-payment emails or update stock", saveError);

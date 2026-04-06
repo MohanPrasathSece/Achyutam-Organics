@@ -58,12 +58,25 @@ export const getTransporter = () => {
 export const sendMail = async ({ to, subject, html }) => {
   const mailer = getTransporter();
   if (!mailer) {
-    console.warn("Skipping email send because transporter is not configured.");
-    return { success: false, error: "Email transporter not configured" };
+    const errorMsg = "Email transporter not configured";
+    console.warn("⚠️ EMAIL ERROR:", errorMsg);
+    console.warn("🔧 Required env vars: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS");
+    return { success: false, error: errorMsg, details: "Missing SMTP configuration" };
   }
 
   const from = (process.env.EMAIL_FROM || process.env.SMTP_USER);
-  console.log(`📧 Sending Email: "${subject}" | TO: ${to} | FROM: ${from}`);
+  const emailLog = {
+    timestamp: new Date().toISOString(),
+    to,
+    from,
+    subject,
+    smtpHost: process.env.SMTP_HOST,
+    smtpPort: process.env.SMTP_PORT,
+    smtpUser: process.env.SMTP_USER,
+    environment: process.env.NODE_ENV || 'development'
+  };
+
+  console.log("📧 EMAIL SENDING ATTEMPT:", JSON.stringify(emailLog, null, 2));
 
   try {
     const info = await mailer.sendMail({
@@ -72,22 +85,60 @@ export const sendMail = async ({ to, subject, html }) => {
       subject,
       html,
     });
-    console.log(`✅ Email Sent Successfully: ${info.messageId}`);
+    
+    const successLog = {
+      success: true,
+      messageId: info.messageId,
+      timestamp: new Date().toISOString(),
+      to,
+      subject
+    };
+    
+    console.log("✅ EMAIL SENT SUCCESSFULLY:", JSON.stringify(successLog, null, 2));
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error(`❌ Email Delivery Failed: ${error.message}`);
-    console.error("Full error:", error);
+    const errorLog = {
+      success: false,
+      error: error.message,
+      code: error.code,
+      timestamp: new Date().toISOString(),
+      to,
+      subject,
+      smtpHost: process.env.SMTP_HOST,
+      smtpPort: process.env.SMTP_PORT,
+      smtpUser: process.env.SMTP_USER,
+      environment: process.env.NODE_ENV || 'development',
+      stack: error.stack
+    };
+
+    console.error("❌ EMAIL DELIVERY FAILED:", JSON.stringify(errorLog, null, 2));
     
-    // Log specific error types for debugging
-    if (error.code === 'ECONNREFUSED') {
-      console.error("Connection refused - check SMTP settings");
-    } else if (error.code === 'EAUTH') {
-      console.error("Authentication failed - check SMTP credentials");
-    } else if (error.code === 'ENOTFOUND') {
-      console.error("Host not found - check SMTP_HOST");
+    // Specific error diagnostics
+    const diagnostics = {
+      'ECONNREFUSED': {
+        issue: "SMTP server connection refused",
+        solution: "Check SMTP_HOST and SMTP_PORT. Server might be down or blocking connections."
+      },
+      'EAUTH': {
+        issue: "SMTP authentication failed", 
+        solution: "Check SMTP_USER and SMTP_PASS. For Gmail, use App Password not regular password."
+      },
+      'ENOTFOUND': {
+        issue: "SMTP host not found",
+        solution: "Check SMTP_HOST spelling and DNS resolution."
+      },
+      'ETIMEDOUT': {
+        issue: "Connection timeout",
+        solution: "Check network connectivity and firewall settings. Try different port."
+      }
+    };
+
+    const diagnostic = diagnostics[error.code];
+    if (diagnostic) {
+      console.error("🔧 DIAGNOSTIC:", JSON.stringify(diagnostic, null, 2));
     }
     
-    return { success: false, error: error.message };
+    return { success: false, error: error.message, code: error.code, diagnostic };
   }
 };
 

@@ -5,6 +5,14 @@ export const getApiUrl = () => {
   if (envUrl) {
     return envUrl.replace(/\/$/, "");
   }
+  
+  // Fallback for production when VITE_API_BASE_URL is not set
+  if (import.meta.env.PROD && typeof window !== "undefined") {
+    const origin = window.location.origin;
+    // If deployed on same domain, use same origin for API
+    return origin;
+  }
+  
   return DEFAULT_API_URL;
 };
 

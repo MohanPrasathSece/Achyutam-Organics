@@ -77,7 +77,12 @@
 
 2. **Configure Vercel**
    - Follow prompts to configure project
-   - Set environment variables in Vercel dashboard
+   - Set environment variables in Vercel dashboard:
+     ```bash
+     VITE_API_BASE_URL=https://www.achyutamorganic.com
+     VITE_FRONTEND_URL=https://www.achyutamorganic.com
+     CLIENT_ORIGIN=https://www.achyutamorganic.com,https://achyutamorganic.com
+     ```
    - Deploy automatically
 
 ### Backend Deployment
