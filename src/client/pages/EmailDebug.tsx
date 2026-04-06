@@ -56,6 +56,9 @@ const EmailDebug = () => {
     }
   };
 
+  // Check if we're in development mode
+  const isDevelopment = import.meta.env.DEV;
+
   const clearLogs = () => {
     setLogs([]);
   };
@@ -97,10 +100,12 @@ const EmailDebug = () => {
           </CardHeader>
           <CardContent>
             <div className="flex gap-4">
-              <Button onClick={testEmailConfig} disabled={isLoading}>
-                {isLoading ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Mail className="w-4 h-4 mr-2" />}
-                Test Email Configuration
-              </Button>
+              {isDevelopment && (
+                <Button onClick={testEmailConfig} disabled={isLoading}>
+                  {isLoading ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Mail className="w-4 h-4 mr-2" />}
+                  Test Email Configuration
+                </Button>
+              )}
               <Button variant="outline" onClick={clearLogs}>
                 Clear Logs
               </Button>

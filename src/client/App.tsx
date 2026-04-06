@@ -11,7 +11,6 @@ import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { CartProvider } from "./context/cart";
 import ScrollToTop from "./components/ScrollToTop";
 import SchemaMarkup from "./components/SchemaMarkup";
-import EmailStatusMonitor from "./components/EmailStatusMonitor";
 
 // Lazy-loaded components
 const Home = lazy(() => import("./pages/Home"));
@@ -29,7 +28,6 @@ const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const AdminLogin = lazy(() => import("./pages/admin/Login"));
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
-const EmailDebug = lazy(() => import("./pages/EmailDebug"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,9 +64,6 @@ const AppContent = () => {
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-          {/* Debug Routes */}
-          <Route path="/email-debug" element={<EmailDebug />} />
-          
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/*" element={
@@ -81,8 +76,6 @@ const AppContent = () => {
         </Routes>
       </Suspense>
       {!isAdminRoute && <Footer />}
-      {/* Email Status Monitor - Only show in production */}
-      {import.meta.env.PROD && <EmailStatusMonitor />}
     </>
   );
 };

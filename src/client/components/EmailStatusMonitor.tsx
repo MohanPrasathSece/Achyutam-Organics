@@ -15,6 +15,7 @@ const EmailStatusMonitor = () => {
   const [logs, setLogs] = useState<EmailLog[]>([]);
   const [emailConfig, setEmailConfig] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const isDevelopment = import.meta.env.DEV;
 
   // Capture console logs for emails
   useEffect(() => {
@@ -103,9 +104,11 @@ const EmailStatusMonitor = () => {
             <Button size="sm" variant="outline" onClick={clearLogs}>
               Clear
             </Button>
-            <Button size="sm" onClick={testEmailConfig} disabled={isLoading}>
-              {isLoading ? <RefreshCw className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
-            </Button>
+            {isDevelopment && (
+              <Button size="sm" onClick={testEmailConfig} disabled={isLoading}>
+                {isLoading ? <RefreshCw className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>
