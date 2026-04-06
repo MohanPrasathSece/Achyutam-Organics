@@ -397,6 +397,9 @@ const OrderManagement = () => {
                     className="max-w-4xl w-[95%] md:w-full bg-white rounded-3xl p-6 md:p-10 font-lato admin max-h-[90vh] overflow-y-auto"
                     aria-describedby={undefined}
                 >
+                    <DialogHeader className="hidden">
+                        <DialogTitle>Order Details</DialogTitle>
+                    </DialogHeader>
                     {selectedOrder && (
                         <>
                             <DialogHeader>

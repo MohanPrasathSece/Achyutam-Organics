@@ -9,12 +9,22 @@ export const getTransporter = () => {
     SMTP_PORT,
     SMTP_USER,
     SMTP_PASS,
+    EMAIL_FROM,
   } = process.env;
 
   if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) {
     console.warn("⚠️ Email credentials missing. Emails will not be sent.");
+    console.log("Required env vars: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS");
     return null;
   }
+
+  console.log("📧 Setting up email transporter with:", {
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: Number(SMTP_PORT) === 465,
+    user: SMTP_USER,
+    from: EMAIL_FROM || SMTP_USER
+  });
 
   transporter = nodemailer.createTransport({
     host: SMTP_HOST,
@@ -26,6 +36,19 @@ export const getTransporter = () => {
     },
     tls: {
       rejectUnauthorized: false
+    },
+    // Add connection timeout and retry
+    connectionTimeout: 60000,
+    greetingTimeout: 30000,
+    socketTimeout: 60000,
+  });
+
+  // Verify transporter connection
+  transporter.verify((error, success) => {
+    if (error) {
+      console.error("❌ Email transporter verification failed:", error);
+    } else {
+      console.log("✅ Email transporter is ready to send messages");
     }
   });
 
@@ -36,7 +59,7 @@ export const sendMail = async ({ to, subject, html }) => {
   const mailer = getTransporter();
   if (!mailer) {
     console.warn("Skipping email send because transporter is not configured.");
-    return;
+    return { success: false, error: "Email transporter not configured" };
   }
 
   const from = (process.env.EMAIL_FROM || process.env.SMTP_USER);
@@ -50,9 +73,21 @@ export const sendMail = async ({ to, subject, html }) => {
       html,
     });
     console.log(`✅ Email Sent Successfully: ${info.messageId}`);
+    return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error(`❌ Email Delivery Failed: ${error.message}`);
-    throw error;
+    console.error("Full error:", error);
+    
+    // Log specific error types for debugging
+    if (error.code === 'ECONNREFUSED') {
+      console.error("Connection refused - check SMTP settings");
+    } else if (error.code === 'EAUTH') {
+      console.error("Authentication failed - check SMTP credentials");
+    } else if (error.code === 'ENOTFOUND') {
+      console.error("Host not found - check SMTP_HOST");
+    }
+    
+    return { success: false, error: error.message };
   }
 };
 
@@ -112,9 +147,9 @@ export const sendOrderEmails = async ({ order }) => {
     <p><strong>Email:</strong> ${order.customer.email}</p>
     <p><strong>Phone:</strong> ${order.customer.phone}</p>
     <p><strong>Order ID:</strong> ${order.displayId || order.razorpayOrderId}</p>
-    <p><strong>Razorpay Order:</strong> ${order.razorpayOrderId || "N/A (Cash on Delivery)"}</p>
-    <p><strong>Payment ID:</strong> ${order.razorpayPaymentId || (order.payment_method === 'COD' ? "Cash on Delivery" : "Pending")}</p>
-    <p><strong>Payment Method:</strong> ${order.payment_method === 'COD' ? "Cash on Delivery" : "Prepaid"}</p>
+    <p><strong>Payment Method:</strong> ${order.payment_method === 'COD' ? 'Cash on Delivery' : 'Prepaid'}</p>
+    ${order.razorpayOrderId ? `<p><strong>Razorpay Order:</strong> ${order.razorpayOrderId}</p>` : ''}
+    ${order.razorpayPaymentId ? `<p><strong>Payment ID:</strong> ${order.razorpayPaymentId}</p>` : ''}
     <h3 style="margin-top:24px;">Items</h3>
     ${orderTable}
     <p style="margin-top:24px;"><strong>Total:</strong> ₹${order.amount.toLocaleString("en-IN")}</p>
@@ -127,19 +162,30 @@ export const sendOrderEmails = async ({ order }) => {
     <p>Hello ${order.customer.name},</p>
     <p>We're delighted to confirm your Achyutam Organics order. Our team will begin preparing your fresh dairy products.</p>
     <p><strong>Order ID:</strong> #${order.displayId || order.razorpayOrderId}</p>
+    <p><strong>Payment Method:</strong> ${order.payment_method === 'COD' ? 'Cash on Delivery' : 'Prepaid'}</p>
     <h3 style="margin-top:24px;">Your Selection</h3>
     ${orderTable}
-    <p style="margin-top:24px;"><strong>Total paid:</strong> ₹${order.amount.toLocaleString("en-IN")}</p>
+    <p style="margin-top:24px;"><strong>Total${order.payment_method === 'COD' ? ' (to be paid on delivery)' : ' paid'}:</strong> ₹${order.amount.toLocaleString("en-IN")}</p>
     <h3 style="margin-top:24px;">Shipping Address</h3>
     ${addressBlock}
     <p style="margin-top:24px;">We'll send a dispatch update as soon as your products leave our farm.</p>
     <p style="margin-top:16px;">With purity,<br/>Achyutam Organics</p>
   `;
 
-  await Promise.all([
+  const emailResults = await Promise.allSettled([
     sendMail({ to: (process.env.OWNER_EMAIL || "saritaagarwal287@gmail.com"), subject: "New Achyutam Organics Order", html: ownerHtml }),
     sendMail({ to: order.customer.email, subject: "Your Achyutam Organics order is confirmed", html: customerHtml }),
   ]);
+
+  // Log results for debugging
+  emailResults.forEach((result, index) => {
+    const recipient = index === 0 ? "Owner" : "Customer";
+    if (result.status === 'fulfilled') {
+      console.log(`✅ ${recipient} email sent successfully`);
+    } else {
+      console.error(`❌ ${recipient} email failed:`, result.reason);
+    }
+  });
 };
 
 export const sendStatusUpdateEmail = async ({ email, customerName, status, orderId, trackingNumber, trackingUrl, items, address, totalAmount }) => {
@@ -205,11 +251,18 @@ export const sendStatusUpdateEmail = async ({ email, customerName, status, order
     </div>
   `;
 
-  await sendMail({
+  const result = await sendMail({
     to: email,
     subject: `Update on your Achyutam Organics Order #${orderId}: ${status}`,
     html
   });
+
+  if (!result.success) {
+    console.error(`❌ Status update email failed for ${email}:`, result.error);
+    throw new Error(`Failed to send status update email: ${result.error}`);
+  } else {
+    console.log(`✅ Status update email sent to ${email}`);
+  }
 };
 
 export const sendLowStockEmail = async ({ productName, productId, remainingStock }) => {
