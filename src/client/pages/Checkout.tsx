@@ -17,6 +17,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { CheckCircle2, ArrowRight, Phone, MapPin, Package, Truck } from "lucide-react";
 
 const checkoutSchema = z.object({
@@ -428,6 +429,9 @@ const Checkout = () => {
             {/* Success Modal */}
             <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
                 <DialogContent className="max-w-md w-[95%] bg-white rounded-3xl p-0 overflow-hidden border-none shadow-2xl fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[100]">
+                    <VisuallyHidden>
+                        <DialogTitle>Order Success</DialogTitle>
+                    </VisuallyHidden>
                     <div className="relative p-8 text-center bg-white">
                         <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-subtle">
                             <CheckCircle2 className="w-10 h-10 text-emerald-600" />

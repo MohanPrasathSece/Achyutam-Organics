@@ -11,6 +11,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit2, Trash2, ImagePlus, Package, PackageX } from "lucide-react";
 import { cn } from "@/lib/utils";
