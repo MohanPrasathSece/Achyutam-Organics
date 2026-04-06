@@ -99,6 +99,65 @@ export const createApp = () => {
   app.use("/api/admin", adminRoutes);
   app.use("/api/public", publicRoutes);
 
+  // Email test endpoint
+  app.get("/api/test-email", async (req, res) => {
+    try {
+      const { sendMail } = await import("./utils/email.js");
+      
+      // Log environment variables (without exposing sensitive data)
+      console.log("Email configuration check:", {
+        SMTP_HOST: process.env.SMTP_HOST ? "✅ Set" : "❌ Missing",
+        SMTP_PORT: process.env.SMTP_PORT ? "✅ Set" : "❌ Missing", 
+        SMTP_USER: process.env.SMTP_USER ? "✅ Set" : "❌ Missing",
+        SMTP_PASS: process.env.SMTP_PASS ? "✅ Set" : "❌ Missing",
+        EMAIL_FROM: process.env.EMAIL_FROM ? "✅ Set" : "❌ Missing",
+        OWNER_EMAIL: process.env.OWNER_EMAIL ? "✅ Set" : "❌ Missing",
+        NODE_ENV: process.env.NODE_ENV || "development"
+      });
+
+      // Test email sending
+      const result = await sendMail({
+        to: process.env.OWNER_EMAIL || "test@example.com",
+        subject: "Test Email from Production",
+        html: `
+          <h2>Email Test</h2>
+          <p>This is a test email from the production server.</p>
+          <p>Timestamp: ${new Date().toISOString()}</p>
+          <p>Environment: ${process.env.NODE_ENV || 'development'}</p>
+        `
+      });
+
+      res.json({ 
+        success: true, 
+        message: "Test email sent successfully",
+        result,
+        config: {
+          SMTP_HOST: process.env.SMTP_HOST ? "✅ Configured" : "❌ Missing",
+          SMTP_PORT: process.env.SMTP_PORT ? "✅ Configured" : "❌ Missing",
+          SMTP_USER: process.env.SMTP_USER ? "✅ Configured" : "❌ Missing",
+          SMTP_PASS: process.env.SMTP_PASS ? "✅ Configured" : "❌ Missing"
+        }
+      });
+    } catch (error) {
+      console.error("Email test failed:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: error.message,
+        config: {
+          SMTP_HOST: process.env.SMTP_HOST ? "✅ Configured" : "❌ Missing",
+          SMTP_PORT: process.env.SMTP_PORT ? "✅ Configured" : "❌ Missing",
+          SMTP_USER: process.env.SMTP_USER ? "✅ Configured" : "❌ Missing",
+          SMTP_PASS: process.env.SMTP_PASS ? "✅ Configured" : "❌ Missing"
+        }
+      });
+    }
+  });
+
+  // Health check endpoint
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "OK", timestamp: new Date().toISOString() });
+  });
+
   // Serve product images
   const publicPath = path.resolve(__dirname, "../../public");
   app.use("/product-images", express.static(path.join(publicPath, "product-images")));
