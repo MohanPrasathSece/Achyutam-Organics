@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cart";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
 import { ArrowLeft, Plus, Minus, ShoppingCart, X } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 import ghee250gm from "@/assets/ghee_product/ghee_250gm.jpeg";
 import ghee500ml from "@/assets/ghee_product/ghee_500ml.jpeg";
 import ghee1kg from "@/assets/ghee_product/ghee_1kg.jpeg";
@@ -96,40 +97,54 @@ const QuantityModal = ({
   );
 };
 
-// Product data - in a real app this would come from API
-const getProductData = (id: string) => {
-  // All ghee products (101, 102, 103) should return the same ghee data
-  if (id === "101" || id === "102" || id === "103") {
-    return {
-      name: "Pure Desi Gir Cow Ghee",
-      description: "Premium quality desi Gir cow ghee made using traditional Bilona method. Rich in aroma and nutrition.",
-      variants: [
-        { id: "101", name: "250gm", price: "₹550 per litre", image: ghee250gm },
-        { id: "102", name: "500ml", price: "₹1050 per litre", image: ghee500ml },
-        { id: "103", name: "1kg", price: "₹2100 per litre", image: ghee1kg }
-      ],
-      features: ["100% Organic", "Traditional Bilona Method", "A2 Gir Cow Milk", "No Preservatives"],
-      nutritionalInfo: "Rich in healthy fats, vitamins A, D, E, and K",
-      storage: "Store in cool, dry place away from direct sunlight",
-      category: "Ghee"
-    };
+// Fallback images for products
+const getProductImage = (productName: string) => {
+  if (productName?.toLowerCase().includes('ghee')) {
+    return ghee500ml; // Default ghee image
   }
-  
-  const products = {
-    "104": {
-      name: "Fresh Gir Cow Milk",
-      description: "Pure and fresh Gir cow milk delivered daily at your doorstep. Sourced from healthy grass-fed Gir cows.",
+  if (productName?.toLowerCase().includes('milk')) {
+    return freshMilk; // Default milk image
+  }
+  return ghee500ml; // Default fallback
+};
+
+// Fetch product data from database
+const fetchProductData = async (id: string) => {
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("id", id)
+      .single();
+    
+    if (error) throw error;
+    
+    // Transform database product to match the expected format
+    return {
+      id: data.id,
+      name: data.name,
+      description: data.description || "Premium quality organic product from Achyutam Organics.",
+      price: `₹${data.price}`,
+      image: data.image || getProductImage(data.name),
+      category: data.category,
+      stock_status: data.stock_status,
+      features: ["100% Organic", "Traditional Method", "No Preservatives", "Farm Fresh"],
+      nutritionalInfo: data.description || "Rich in essential nutrients",
+      storage: "Store in cool, dry place away from direct sunlight",
+      // Create a single variant from the product itself
       variants: [
-        { id: "104", name: "Daily Delivery - 1L", price: "₹80 per litre", image: freshMilk }
-      ],
-      features: ["Farm Fresh", "Daily Delivery", "No Preservatives", "Grass-fed Cows"],
-      nutritionalInfo: "Rich in calcium, protein, and essential nutrients",
-      storage: "Refrigerate immediately, consume within 2 days",
-      category: "Milk"
-    }
-  };
-  
-  return products[id];
+        { 
+          id: data.id, 
+          name: data.unit || "1 unit", 
+          price: `₹${data.price}`, 
+          image: data.image || getProductImage(data.name)
+        }
+      ]
+    };
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return null;
+  }
 };
 
 const ProductDetail = () => {
@@ -142,11 +157,33 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState<number>(1);
   const [showQuantityModal, setShowQuantityModal] = useState(false);
   const [modalAction, setModalAction] = useState<'cart' | 'buy'>('cart');
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   
-  const product = getProductData(id);
+  useEffect(() => {
+    const loadProduct = async () => {
+      if (!id) return;
+      
+      setLoading(true);
+      const productData = await fetchProductData(id);
+      setProduct(productData);
+      setLoading(false);
+      
+      // Set default variant
+      if (productData?.variants?.length > 0) {
+        setSelectedVariant(productData.variants[0].id);
+      }
+    };
+    
+    loadProduct();
+  }, [id]);
+  
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
   
   if (!product) {
-    return <div>Product not found</div>;
+    return <div className="min-h-screen flex items-center justify-center">Product not found</div>;
   }
 
   const handleAddToCart = (variantId?: string, qty?: number) => {
@@ -163,11 +200,12 @@ const ProductDetail = () => {
       return;
     }
     
+    // Extract numeric price from string like "₹450"
     const price = Number(variant.price.replace(/[^0-9.-]+/g, "")) || 0;
     
     addItem({
       id: variant.id,
-      name: `${product.name} - ${variant.name}`,
+      name: `${product.name}`,
       price: price,
       image: variant.image,
       quantity: quantityToUse,
@@ -175,7 +213,7 @@ const ProductDetail = () => {
     
     toast({
       title: "Added to cart",
-      description: `${product.name} - ${variant.name} added to your basket.`,
+      description: `${product.name} added to your basket.`,
     });
   };
   
