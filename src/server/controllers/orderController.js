@@ -54,9 +54,19 @@ const verifyRequiredFields = (data) => {
   return result.data;
 };
 
-const calculateAmounts = (items, giftPrice = 0) => {
+const calculateAmounts = (items, city, postalCode, giftPrice = 0) => {
+  const isKatni = city?.toLowerCase().trim() === 'katni' || postalCode?.startsWith('483');
   const productsAmount = items.reduce((total, item) => {
-    const itemPrice = Number(item.price) || 0;
+    let itemPrice = Number(item.price) || 0;
+    
+    // Enforce Katni Special Price for Ghee Products
+    if (isKatni) {
+      const name = item.name.toLowerCase();
+      if (name.includes('1kg') || name.includes('1 kg') || name.includes('1 litre') || name.includes('liter') || name.includes('1l') || name.includes('1 l')) itemPrice = 1800;
+      else if (name.includes('500ml') || name.includes('500 ml') || name.includes('500g')) itemPrice = 900;
+      else if (name.includes('250gm') || name.includes('250 ml') || name.includes('250g')) itemPrice = 450;
+    }
+
     const itemQty = Number(item.quantity) || 0;
     return total + itemPrice * itemQty;
   }, 0);
@@ -108,7 +118,7 @@ export const createOrder = async (req, res) => {
       }
     }
 
-    const { amount, amountInPaise } = calculateAmounts(items, giftOptionPrice);
+    const { amount, amountInPaise } = calculateAmounts(items, shippingAddress.city, shippingAddress.postalCode, giftOptionPrice);
 
     const razorpayOrder = await razorpayClient.orders.create({
       amount: amountInPaise,
@@ -184,7 +194,7 @@ export const createCODOrder = async (req, res) => {
       }
     }
 
-    const { amount } = calculateAmounts(items, giftOptionPrice);
+    const { amount } = calculateAmounts(items, shippingAddress.city, shippingAddress.postalCode, giftOptionPrice);
     // Generate a purely numeric order number to avoid type errors in DB (integer column)
     const orderNumber = Number(Date.now().toString().slice(-6) + Math.floor(100 + Math.random() * 900).toString());
 

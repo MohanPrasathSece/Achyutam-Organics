@@ -387,6 +387,14 @@ const ProductDetail = () => {
                     )}
                     <div className="text-foreground font-semibold text-sm md:text-base mb-1">{variant.name}</div>
                     <div className="text-base md:text-lg text-accent-foreground">{variant.price}</div>
+                    {product.category?.toLowerCase() === 'ghee' && (
+                      <div className="text-[11px] text-emerald-600 font-bold mt-1 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">
+                        Katni: ₹{
+                          variant.name.toLowerCase().includes('1kg') || variant.name.toLowerCase().includes('1 kg') || variant.name.toLowerCase().includes('1l') || variant.name.toLowerCase().includes('1 l') || variant.name.toLowerCase().includes('liter') ? '1800' : 
+                          variant.name.toLowerCase().includes('500ml') || variant.name.toLowerCase().includes('500 ml') || variant.name.toLowerCase().includes('500g') ? '900' : '450'
+                        }
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

@@ -98,9 +98,19 @@ const ProductOptions = () => {
                 <h3 className="text-sm font-semibold text-gray-900 mb-1 leading-tight">
                   {product.name}
                 </h3>
-                <p className="text-lg font-bold text-primary mb-3">
-                  {product.price}
-                </p>
+                <div className="flex flex-col mb-3">
+                  <p className="text-lg font-bold text-primary">
+                    {product.price}
+                  </p>
+                  {category?.toLowerCase() === 'ghee' && (
+                    <p className="text-xs text-emerald-600 font-bold bg-emerald-50 px-2 py-1 rounded-md self-start mt-1 border border-emerald-100 shadow-sm">
+                      Katni Special: ₹{
+                        product.name.toLowerCase().includes('1kg') || product.name.toLowerCase().includes('1 kg') || product.name.toLowerCase().includes('1l') || product.name.toLowerCase().includes('1 l') || product.name.toLowerCase().includes('liter') ? '1800' : 
+                        product.name.toLowerCase().includes('500ml') || product.name.toLowerCase().includes('500 ml') || product.name.toLowerCase().includes('500g') ? '900' : '450'
+                      }
+                    </p>
+                  )}
+                </div>
                 
                 {/* Delivery Info */}
                 <div className="mb-6">

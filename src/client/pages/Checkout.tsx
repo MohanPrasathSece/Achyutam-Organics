@@ -49,6 +49,34 @@ const Checkout = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [orderDetails, setOrderDetails] = useState<any>(null);
+    
+    // Katni Special Pricing Logic
+    const isKatni = form.city.toLowerCase().trim() === 'katni' || 
+                    form.city.toLowerCase().trim() === 'murwara' || 
+                    form.pincode.startsWith('483');
+    
+    const getDiscountedPrice = (item: any) => {
+        if (!isKatni) return item.price;
+        const name = item.name.toLowerCase();
+        if (name.includes('1kg') || name.includes('1 kg') || name.includes('1 litre') || name.includes('liter') || name.includes('1l') || name.includes('1 l')) return 1800;
+        if (name.includes('500ml') || name.includes('500 ml') || name.includes('500g') || name.includes('500 g')) return 900;
+        if (name.includes('250gm') || name.includes('250 ml') || name.includes('250g') || name.includes('250 g')) return 450;
+        return item.price;
+    };
+
+    const displayItems = items.map(item => ({
+        ...item,
+        price: getDiscountedPrice(item)
+    }));
+
+    const displaySubtotal = displayItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const hasKatniDiscount = isKatni && items.some(item => {
+        const name = item.name.toLowerCase();
+        return name.includes('1kg') || name.includes('1 litre') || name.includes('1l') || 
+               name.includes('500ml') || name.includes('500 ml') || name.includes('500g') ||
+               name.includes('250gm') || name.includes('250 ml') || name.includes('250g');
+    });
+
 
     if (items.length === 0 && !showSuccessModal) {
         navigate("/cart");
@@ -109,7 +137,7 @@ const Checkout = () => {
                             postalCode: form.pincode,
                             country: "India",
                         },
-                        items: items.map(item => ({
+                        items: displayItems.map(item => ({
                             id: item.id,
                             name: item.name,
                             price: item.price,
@@ -127,7 +155,7 @@ const Checkout = () => {
 
                 setOrderDetails({
                     id: data.orderNumber || data.orderId,
-                    totalAmount: subtotal,
+                    totalAmount: displaySubtotal,
                     paymentMethod: "Cash on Delivery",
                     shippingAddress: { city: form.city }
                 });
@@ -169,7 +197,7 @@ const Checkout = () => {
                         postalCode: form.pincode,
                         country: "India",
                     },
-                    items: items.map(item => ({
+                    items: displayItems.map(item => ({
                         id: item.id,
                         name: item.name,
                         price: item.price,
@@ -220,7 +248,7 @@ const Checkout = () => {
 
                         setOrderDetails({
                             id: verifyData.orderNumber || verifyData.orderId || "ONLINE",
-                            totalAmount: subtotal,
+                            totalAmount: displaySubtotal,
                             paymentMethod: "Online Payment",
                             shippingAddress: { city: form.city }
                         });
@@ -350,6 +378,16 @@ const Checkout = () => {
                                                     );
                                                 }
                                             })()}
+                                            
+                                            {hasKatniDiscount && (
+                                                <div className="mt-3 text-sm text-amber-700 bg-amber-50 p-4 rounded-2xl border border-amber-100 flex items-start gap-3">
+                                                    <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-xs text-amber-700 font-bold">✨</div>
+                                                    <div>
+                                                        <p className="font-bold">Katni Special Discount Applied!</p>
+                                                        <p className="opacity-80 text-xs">Special pricing has been applied to Ghee products for your location.</p>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </section>
@@ -382,13 +420,21 @@ const Checkout = () => {
                         <div className="bg-white rounded-xl md:rounded-3xl border border-slate-100 shadow-xl p-4 md:p-8">
                             <h3 className="font-playfair text-lg md:text-2xl mb-4 md:mb-6">Order Summary</h3>
                             <div className="space-y-4 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                                {items.map((item, index) => (
+                                {displayItems.map((item, index) => (
                                     <div key={`${item.id}-${index}`} className="flex justify-between items-start gap-4 pb-4 border-b border-slate-50 last:border-0 last:pb-0">
                                         <div className="flex-1">
                                             <p className="font-bold text-slate-800 leading-tight text-sm md:text-base">{item.name}</p>
                                             <p className="text-xs text-muted-foreground mt-1">Quantity: {item.quantity}</p>
+                                            {isKatni && (item.name.toLowerCase().includes('1kg') || item.name.toLowerCase().includes('liter') || item.name.toLowerCase().includes('1l') || item.name.toLowerCase().includes('500ml') || item.name.toLowerCase().includes('250g') || item.name.toLowerCase().includes('250gm')) && (
+                                                <p className="text-[10px] text-emerald-600 font-bold mt-1">Katni Special Price Applied</p>
+                                            )}
                                         </div>
-                                        <span className="font-bold text-emerald-700 text-sm md:text-base">₹{item.price * item.quantity}</span>
+                                        <div className="text-right">
+                                            <span className="font-bold text-emerald-700 text-sm md:text-base">₹{item.price * item.quantity}</span>
+                                            {isKatni && (item.name.toLowerCase().includes('1kg') || item.name.toLowerCase().includes('liter') || item.name.toLowerCase().includes('1l') || item.name.toLowerCase().includes('500ml') || item.name.toLowerCase().includes('250g') || item.name.toLowerCase().includes('250gm')) && (
+                                                <p className="text-[10px] text-slate-400 line-through">₹{items.find(i => i.id === item.id)?.price! * item.quantity}</p>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -396,7 +442,7 @@ const Checkout = () => {
                             <div className="space-y-3 border-t border-slate-100 pt-6">
                                 <div className="flex justify-between text-xs md:text-sm text-slate-600">
                                     <span>Subtotal</span>
-                                    <span>₹{subtotal}</span>
+                                    <span>₹{displaySubtotal}</span>
                                 </div>
                                 <div className="flex justify-between text-xs md:text-sm">
                                     <span>Delivery</span>
@@ -404,7 +450,7 @@ const Checkout = () => {
                                 </div>
                                 <div className="flex justify-between text-xl pt-4 border-t border-slate-100 font-bold">
                                     <span>Total</span>
-                                    <span>₹{subtotal}</span>
+                                    <span>₹{displaySubtotal}</span>
                                 </div>
                             </div>
 
@@ -414,7 +460,7 @@ const Checkout = () => {
                                 size="lg"
                                 className="w-full mt-6 md:mt-8 rounded-full bg-emerald-700 py-3 md:py-4 text-xs md:text-base font-bold shadow-lg shadow-emerald-100 hover:bg-emerald-800 hover:scale-[1.02] transition-all disabled:opacity-50"
                             >
-                                {isProcessing ? "Processing..." : form.payment === "cod" ? `Place Order ₹${subtotal}` : `Pay ₹${subtotal}`}
+                                {isProcessing ? "Processing..." : form.payment === "cod" ? `Place Order ₹${displaySubtotal}` : `Pay ₹${displaySubtotal}`}
                             </Button>
                         </div>
 
